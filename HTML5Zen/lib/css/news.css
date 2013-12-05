@@ -1,0 +1,25 @@
+#news {
+    width: 100%;
+}
+
+#newsList {
+    width: 100px;
+    height: 365px;
+    display: inline-block;
+    border: 1px solid #aaa;
+    vertical-align: top;
+}
+
+#newsList li:hover {
+    background: #eee;
+    cursor: pointer;
+}
+
+#newsDetail {
+    width: 300px;
+    height: 345px;
+    border: 1px solid #aaa;
+    display: inline-block;
+    vertical-align: top;
+    padding: 10px;
+}

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"><![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"><![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9"><![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>&lt;Your Application Title&gt;</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!--CSS STYLES-->
+        <link rel="stylesheet" href="lib/css/normalize.css">
+        <link rel="stylesheet" href="lib/css/news.css">
+        <link rel="stylesheet" href="lib/css/main.css">
+        <!--/CSS STYLES-->
+
+        <script src="lib/js/vendor/modernizr-2.6.2.min.js"></script>
+
+    </head>
+    <body>
+    <div id="mainContent">
+        <h1>HTML5Zen - HTML5 Application Development Framework</h1>
+
+            <h2>Below is an example application</h2>
+            <div class="news">
+                <div id="newsList">
+                    <ul>
+                        <script id="newsListTemplate" type="text/x-handlebars-template">
+                            <li id="newsListItem_{{id}}">{{title}}</li>
+                        </script>
+                    </ul>
+                </div>
+                <div id="newsDetail">
+                    <p>Please select a news item</p>
+                    <script id="newsDetailTemplate" type="text/x-handlebars-template">
+                        <h3>{{title}}</h3>
+                        <p>{{description}}</p>
+                    </script>
+                </div>
+            </div>
+
+            <h2>Documentation</h2>
+
+            <!--JS SCRIPTS-->
+            <script src="lib/js/vendor/jquery-1.10.2.min.js"></script>
+            <script src="lib/js/vendor/handlebars-v1.1.2.js"></script>
+            <script src="lib/js/app/utilities/HTML5ZenDOM.js"></script>
+
+            <script src="lib/js/app/namespace.js"></script>
+
+            <script src="lib/js/app/utilities/console.js"></script>
+            <script src="lib/js/app/utilities/template.js"></script>
+
+            <script src="lib/js/app/modules/News/controls/newsDetail/NewsDetail.controller.js"></script>
+            <script src="lib/js/app/modules/News/controls/newsDetail/NewsDetail.template.js"></script>
+            <script src="lib/js/app/modules/News/controls/newsDetail/NewsDetail.view.js"></script>
+            <script src="lib/js/app/modules/News/controls/newsList/NewsList.controller.js"></script>
+            <script src="lib/js/app/modules/News/controls/newsList/NewsList.template.js"></script>
+            <script src="lib/js/app/modules/News/controls/newsList/NewsList.view.js"></script>
+            <script src="lib/js/app/modules/News/News.controller.js"></script>
+            <script src="lib/js/app/modules/News/News.service.js"></script>
+
+            <script src="test/mockServices/News.service.js"></script>
+
+            <script src="lib/js/app/main.js"></script>
+            <!--/JS SCRIPTS-->
+        </div>
+    </body>
+</html>
