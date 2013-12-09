@@ -1,7 +1,7 @@
-(function($) {
+(function ($) {
     "use strict";
 
-    APP.view.NewsDetail = function() {
+    APP.view.NewsDetail = function () {
 
         var $container;
 
@@ -28,4 +28,4 @@
         }
     }
 
-}(HTML5ZenDOM));
+}(APP.DOM));

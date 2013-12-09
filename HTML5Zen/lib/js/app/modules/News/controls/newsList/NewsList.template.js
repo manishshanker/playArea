@@ -1,10 +1,10 @@
-(function() {
+(function () {
     "use strict";
 
-    APP.template.NewsList = function() {
+    APP.template.NewsList = function () {
 
         function load(onSuccess) {
-            APP.templateEngine.getById("newsListTemplate", function(template) {
+            APP.templateEngine.getById("newsListTemplate", function (template) {
                 onSuccess(template);
             });
         }

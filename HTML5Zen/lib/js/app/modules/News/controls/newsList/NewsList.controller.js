@@ -1,7 +1,7 @@
-(function() {
+(function () {
     "use strict";
 
-    APP.controller.NewsList = function(options) {
+    APP.controller.NewsList = function (options) {
 
         var view, template, controlData;
 

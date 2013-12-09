@@ -4,10 +4,11 @@
 
 #newsList {
     width: 100px;
-    height: 365px;
+    height: 380px;
     display: inline-block;
     border: 1px solid #aaa;
     vertical-align: top;
+	padding: 10px;
 }
 
 #newsList li:hover {
@@ -17,7 +18,7 @@
 
 #newsDetail {
     width: 300px;
-    height: 345px;
+    height: 380px;
     border: 1px solid #aaa;
     display: inline-block;
     vertical-align: top;

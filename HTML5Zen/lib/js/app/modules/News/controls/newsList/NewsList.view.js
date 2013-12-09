@@ -1,11 +1,12 @@
-(function($) {
+(function ($) {
     "use strict";
 
     APP.view.NewsList = function (options) {
 
         var $container;
 
-        function update(data) {}
+        function update(data) {
+        }
 
         function destroy() {
             $container.off("click", "li");
@@ -15,7 +16,7 @@
         function render(data, template) {
             var n = data.length;
             var html = [];
-            while(n--) {
+            while (n--) {
                 html[n] = template(data[n]);
             }
             $container.html(html.join(""));
@@ -41,4 +42,4 @@
         }
     }
 
-}(HTML5ZenDOM));
+}(APP.DOM));

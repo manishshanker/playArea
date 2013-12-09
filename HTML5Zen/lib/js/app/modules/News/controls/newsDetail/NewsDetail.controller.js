@@ -1,7 +1,7 @@
-(function() {
+(function () {
     "use strict";
 
-    APP.controller.NewsDetail = function() {
+    APP.controller.NewsDetail = function () {
 
         var view;
         var template;

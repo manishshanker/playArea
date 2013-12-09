@@ -1,23 +1,28 @@
-(function($) {
+(function () {
     "use strict";
 
-    APP.controller.News = function() {
+    APP.controller.News = function () {
 
         var service;
         var newsData;
         var newsList, newsDetail;
 
         function loadNewsDetails(selectedItemId) {
-            newsDetail.load(HTML5ZenDOM.grep(newsData, function(item) {
-                return item.id == selectedItemId;
+            newsDetail.load(APP.DOM.grep(newsData, function (item) {
+                return String(item.id) === String(selectedItemId);
             })[0]);
         }
 
         function load() {
-            service.getData(function(data) {
+            service.getData(function (data) {
                 newsData = data;
                 newsList.load(data);
             });
+
+            APP.messaging.subscribe("appStateChange", function() {
+                console.log(location.hash);
+            });
+
         }
 
         /*Needs to be present to gracefully destroy dom elements not required anymore*/
@@ -38,7 +43,7 @@
         return {
             load: load,
             destroy: destroy
-        }
-    }
+        };
+    };
 
-}(HTML5ZenDOM));
+}());

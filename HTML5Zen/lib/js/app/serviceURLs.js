@@ -1,7 +1,8 @@
-(function(){
+(function () {
+    "use strict";
 
     APP.serviceURL = {
-        news : {
+        news: {
             getData: ""
         }
     };
