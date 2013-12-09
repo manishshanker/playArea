@@ -7,8 +7,11 @@
 
         function load(defaultPage) {
             $(window).on("hashchange", onLocationChange);
-            showPage(defaultPage);
-            onLocationChange();
+            if (location.hash) {
+                onLocationChange();
+            } else {
+                location.href = "#/" + defaultPage;
+            }
         }
 
         function onLocationChange() {
