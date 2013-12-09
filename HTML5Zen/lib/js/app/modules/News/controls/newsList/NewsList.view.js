@@ -1,16 +1,21 @@
 (function ($) {
     "use strict";
 
-    APP.view.NewsList = function (options) {
+    APP.view.NewsList = function () {
 
-        var $container;
+        var $container, $selectedItem;
 
-        function update(data) {
+        function selectItem(itemId) {
+            if ($selectedItem) {
+                $selectedItem.removeClass("selected");
+            }
+            $selectedItem = $("#newsItem_" + itemId);
+            $selectedItem.addClass("selected");
         }
 
         function destroy() {
-            $container.off("click", "li");
             $container.empty();
+            $selectedItem = null;
         }
 
         function render(data, template) {
@@ -20,15 +25,6 @@
                 html[n] = template(data[n]);
             }
             $container.html(html.join(""));
-            bindEvents();
-        }
-
-        function bindEvents() {
-            $container.on("click", "li", onItemClick);
-        }
-
-        function onItemClick() {
-            options.onNewsItemSelected($(this).attr("id").split("_")[1]);
         }
 
         (function init() {
@@ -37,9 +33,9 @@
 
         return {
             render: render,
-            update: update,
-            destroy: destroy
-        }
-    }
+            destroy: destroy,
+            selectItem: selectItem
+        };
+    };
 
 }(APP.DOM));

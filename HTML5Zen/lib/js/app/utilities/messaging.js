@@ -5,11 +5,13 @@
         var messageBus = $(document);
 
         function publish(subject, message) {
-            messageBus.trigger(subject, message);
+            messageBus.trigger(subject, [message]);
         }
 
         function subscribe(subject, callback) {
-            messageBus.on(subject, callback);
+            messageBus.on(subject, function (e, message) {
+                callback(message);
+            });
         }
 
         return {

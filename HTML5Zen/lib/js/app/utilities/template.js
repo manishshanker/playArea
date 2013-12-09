@@ -1,20 +1,42 @@
 (function ($) {
     "use strict";
 
-    function Template() {
+    var cache = false;
+    var templateCache = {};
+
+    var Template = function () {
 
         function getByURL(url, onSuccess) {
-            $.get(url, function (templateHTML) {
-                onSuccess(Handlebars.compile(templateHTML));
-            });
+            if (cache && templateCache[url]) {
+                onSuccess(getCompiledTemplate(templateCache[url]));
+            } else {
+                $.get(url, function (templateHTML) {
+                    if (cache) {
+                        templateCache[url] = templateHTML;
+                    }
+                    onSuccess(getCompiledTemplate(templateCache[url]));
+                });
+            }
+        }
+
+        function getCompiledTemplate(template) {
+            return Handlebars.compile(template);
         }
 
         function getById(id, onSuccess) {
-            onSuccess(Handlebars.compile($("#" + id).html()));
+            var template = templateCache[id] || $("#" + id).html();
+            if (cache) {
+                templateCache[id] = template;
+            }
+            onSuccess(getCompiledTemplate(template));
         }
 
         function getByCSSSelector(cssSelector, onSuccess) {
-            onSuccess(Handlebars.compile($(cssSelector).html()));
+            var template = templateCache[cssSelector] || $(cssSelector).html();
+            if (cache) {
+                templateCache[cssSelector] = template;
+            }
+            onSuccess(getCompiledTemplate(template));
         }
 
         return {
@@ -23,8 +45,8 @@
             getByURL: getByURL
         };
 
-    }
+    };
 
     APP.templateEngine = new Template();
 
-}(jQuery));
+}(APP.DOM));

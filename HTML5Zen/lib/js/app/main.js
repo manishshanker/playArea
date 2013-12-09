@@ -1,7 +1,7 @@
 (function () {
     "use strict";
 
-    var news = new APP.controller.News();
-    news.load();
-    APP.navigation.load();
+    new APP.controller.News().load();
+    APP.navigation.load("introduction");
+
 }());

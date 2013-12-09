@@ -1,17 +1,25 @@
 (function () {
     "use strict";
 
-    APP.template.NewsList = function () {
+    var cachedTemplate;
+
+    APP.template.NewsList = (function () {
 
         function load(onSuccess) {
-            APP.templateEngine.getById("newsListTemplate", function (template) {
-                onSuccess(template);
-            });
+            onSuccess(cachedTemplate);
         }
+
+        (function init() {
+            if (!cachedTemplate) {
+                APP.templateEngine.getById("newsListTemplate", function (template) {
+                    cachedTemplate = template;
+                });
+            }
+        }());
 
         return {
             load: load
-        }
-    };
+        };
+    }());
 
 }());

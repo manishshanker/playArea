@@ -1,18 +1,19 @@
-(function() {
+(function () {
+    "use strict";
 
-    APP.service.News = function() {
+    APP.service.News = function () {
         function getData(callback) {
             callback(
 
-                (function() {
+                (function () {
                     var items = [];
                     var n = 0;
-                    while(n<20) {
+                    while (n < 20) {
                         items.push({
                             id: n,
                             title: "News " + n,
-                            description: "Description " + n +" lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum"
-                        })
+                            description: "Description " + n + " lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum"
+                        });
                         n++;
                     }
                     return items;
@@ -22,7 +23,7 @@
 
         return {
             getData: getData
-        }
-    }
+        };
+    };
 
 }());

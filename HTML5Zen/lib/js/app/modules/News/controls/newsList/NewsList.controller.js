@@ -3,25 +3,35 @@
 
     APP.controller.NewsList = function (options) {
 
-        var view, template, controlData;
+        var view, controlData;
 
         function load(data) {
             controlData = data;
-            template.load(onTemplateLoad);
+            APP.template.NewsList.load(onTemplateLoad);
         }
 
         function onTemplateLoad(templateData) {
             view.render(controlData, templateData);
         }
 
+        function selectItem(itemId) {
+            view.selectItem(itemId);
+        }
+
+        function destroy() {
+            view.destroy();
+            view = null;
+        }
+
         (function init() {
             view = new APP.view.NewsList({onNewsItemSelected: options.onNewsItemSelected});
-            template = new APP.template.NewsList();
         }());
 
         return {
-            load: load
-        }
-    }
+            load: load,
+            selectItem: selectItem,
+            destroy: destroy
+        };
+    };
 
 }());

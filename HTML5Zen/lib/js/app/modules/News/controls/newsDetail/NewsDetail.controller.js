@@ -3,27 +3,37 @@
 
     APP.controller.NewsDetail = function () {
 
+        var loaded = false;
         var view;
-        var template;
         var controlData;
 
         function load(data) {
             controlData = data;
-            template.load(onTemplateLoad);
-//            view.loading();
+            APP.template.NewsDetail.getNewsDetailTemplate(onTemplateLoad);
         }
 
         function onTemplateLoad(template) {
             view.render(controlData, template);
+            loaded = true;
+        }
+
+        function destroy() {
+            view.destroy();
+            loaded = false;
+        }
+
+        function onNoNewsDetailTemplateLoaded(template) {
+            view.setStateNoNewsSelected(template);
         }
 
         (function init() {
             view = new APP.view.NewsDetail();
-            template = new APP.template.NewsDetail();
+            APP.template.NewsDetail.getNoNewsDetailTemplate(onNoNewsDetailTemplateLoaded)
         }());
 
         return {
-            load: load
+            load: load,
+            destroy: destroy
         }
     }
 

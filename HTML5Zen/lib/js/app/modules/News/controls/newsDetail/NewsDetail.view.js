@@ -7,10 +7,11 @@
 
         function destroy() {
             $container.empty();
+            $container = null;
         }
 
-        function loading() {
-            $container.html("Loading...");
+        function setStateNoNewsSelected(template) {
+            $container.html(template());
         }
 
         function render(data, template) {
@@ -24,8 +25,8 @@
         return {
             render: render,
             destroy: destroy,
-            loading: loading
-        }
-    }
+            setStateNoNewsSelected: setStateNoNewsSelected
+        };
+    };
 
 }(APP.DOM));

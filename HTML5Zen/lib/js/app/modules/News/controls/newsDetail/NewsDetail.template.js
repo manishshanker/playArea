@@ -1,24 +1,31 @@
 (function () {
     "use strict";
 
-    var newsDetailTemplate;
+    var cachedNewsDetailTemplate, cachedNoNewsDetailTemplate;
 
-    APP.template.NewsDetail = function () {
+    APP.template.NewsDetail = (function () {
 
-        function load(onSuccess) {
-            if (newsDetailTemplate) {
-                onSuccess(newsDetailTemplate);
-            } else {
-                APP.templateEngine.getById("newsDetailTemplate", function (template) {
-                    newsDetailTemplate = template;
-                    onSuccess(newsDetailTemplate);
-                });
-            }
+        function getNewsDetailTemplate(onSuccess) {
+            onSuccess(cachedNewsDetailTemplate);
         }
+
+        function getNoNewsDetailTemplate(onSuccess) {
+            onSuccess(cachedNoNewsDetailTemplate);
+        }
+
+        (function init() {
+            APP.templateEngine.getById("newsDetailTemplate", function (template) {
+                cachedNewsDetailTemplate = template;
+            });
+            APP.templateEngine.getById("noNewsDetailTemplate", function (template) {
+                cachedNoNewsDetailTemplate = template;
+            });
+        }());
 
         return {
-            load: load
-        }
-    }
+            getNewsDetailTemplate: getNewsDetailTemplate,
+            getNoNewsDetailTemplate: getNoNewsDetailTemplate
+        };
+    }());
 
 }());
