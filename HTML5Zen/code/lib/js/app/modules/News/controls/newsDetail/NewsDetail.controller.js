@@ -23,6 +23,7 @@
         }
 
         (function init() {
+            APP.template.NewsDetail.load();
             view = new APP.view.NewsDetail();
             APP.template.NewsDetail.getNewsDetailTemplate(onTemplateLoad);
         }());

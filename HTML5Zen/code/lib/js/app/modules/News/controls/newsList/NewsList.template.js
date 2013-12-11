@@ -5,19 +5,20 @@
 
     APP.template.NewsList = (function () {
 
-        function load(onSuccess) {
+        function getNewsListTemplate(onSuccess) {
             onSuccess(cachedTemplate);
         }
 
-        (function init() {
+        function load() {
             if (!cachedTemplate) {
                 APP.templateEngine.getById("newsListTemplate", function (template) {
                     cachedTemplate = template;
                 });
             }
-        }());
+        }
 
         return {
+            getNewsListTemplate: getNewsListTemplate,
             load: load
         };
     }());

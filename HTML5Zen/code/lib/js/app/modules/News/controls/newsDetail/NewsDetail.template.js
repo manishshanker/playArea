@@ -9,14 +9,17 @@
             onSuccess(cachedNewsDetailTemplate);
         }
 
-        (function init() {
-            APP.templateEngine.getById("newsDetailTemplate", function (template) {
-                cachedNewsDetailTemplate = template;
-            });
-        }());
+        function load() {
+            if (!cachedNewsDetailTemplate) {
+                APP.templateEngine.getById("newsDetailTemplate", function (template) {
+                    cachedNewsDetailTemplate = template;
+                });
+            }
+        }
 
         return {
-            getNewsDetailTemplate: getNewsDetailTemplate
+            getNewsDetailTemplate: getNewsDetailTemplate,
+            load: load
         };
     }());
 

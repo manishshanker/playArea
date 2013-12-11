@@ -7,7 +7,7 @@
 
         function load(data) {
             controlData = data;
-            APP.template.NewsList.load(onTemplateLoad);
+            APP.template.NewsList.getNewsListTemplate(onTemplateLoad);
         }
 
         function onTemplateLoad(templateData) {
@@ -24,7 +24,8 @@
         }
 
         (function init() {
-            view = new APP.view.NewsList({onNewsItemSelected: options.onNewsItemSelected});
+            APP.template.NewsList.load();
+            view = new APP.view.NewsList();
         }());
 
         return {
