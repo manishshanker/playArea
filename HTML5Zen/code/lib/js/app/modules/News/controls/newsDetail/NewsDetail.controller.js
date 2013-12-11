@@ -5,7 +5,7 @@
 
         var loaded = false;
         var view;
-        var controlData;
+        var controlData = {};
 
         function load(data) {
             controlData = data;
@@ -22,19 +22,15 @@
             loaded = false;
         }
 
-        function onNoNewsDetailTemplateLoaded(template) {
-            view.setStateNoNewsSelected(template);
-        }
-
         (function init() {
             view = new APP.view.NewsDetail();
-            APP.template.NewsDetail.getNoNewsDetailTemplate(onNoNewsDetailTemplateLoaded)
+            APP.template.NewsDetail.getNewsDetailTemplate(onTemplateLoad);
         }());
 
         return {
             load: load,
             destroy: destroy
-        }
-    }
+        };
+    };
 
 }());

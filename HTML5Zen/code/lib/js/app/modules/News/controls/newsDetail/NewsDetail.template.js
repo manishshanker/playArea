@@ -1,7 +1,7 @@
 (function () {
     "use strict";
 
-    var cachedNewsDetailTemplate, cachedNoNewsDetailTemplate;
+    var cachedNewsDetailTemplate;
 
     APP.template.NewsDetail = (function () {
 
@@ -9,22 +9,14 @@
             onSuccess(cachedNewsDetailTemplate);
         }
 
-        function getNoNewsDetailTemplate(onSuccess) {
-            onSuccess(cachedNoNewsDetailTemplate);
-        }
-
         (function init() {
             APP.templateEngine.getById("newsDetailTemplate", function (template) {
                 cachedNewsDetailTemplate = template;
             });
-            APP.templateEngine.getById("noNewsDetailTemplate", function (template) {
-                cachedNoNewsDetailTemplate = template;
-            });
         }());
 
         return {
-            getNewsDetailTemplate: getNewsDetailTemplate,
-            getNoNewsDetailTemplate: getNoNewsDetailTemplate
+            getNewsDetailTemplate: getNewsDetailTemplate
         };
     }());
 

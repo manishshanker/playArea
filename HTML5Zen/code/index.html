@@ -63,13 +63,13 @@
                     </ul>
                 </div>
                 <div id="newsDetail">
-                    <script id="noNewsDetailTemplate" type="text/x-handlebars-template">
-                        <p>{{i18n "Please select a news item"}}</p>
-                    </script>
                     <script id="newsDetailTemplate" type="text/x-handlebars-template">
-                        <h3>{{title}}</h3>
-
-                        <p>{{description}}</p>
+	                    {{#if title}}
+                            <h3>{{title}}</h3>
+                            <p>{{description}}</p>
+	                    {{else}}
+	                        <p>{{i18n "Please select a news item"}}</p>
+	                    {{/if}}
                     </script>
                 </div>
             </div>
