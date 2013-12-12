@@ -5,7 +5,7 @@
  
     phantom.viewportSize = {width: 800, height: 600};
  
-    console.log("Opening " + url);
+    //console.log("Opening " + url);
  
     var page = new WebPage();
  

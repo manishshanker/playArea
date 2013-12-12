@@ -9,6 +9,7 @@
     <script src="chai.js"></script>
     <script src="sinon.js"></script>
     <script src="sinon-chai.js"></script>
+    <script src="mochaSimpleReporter.js"></script>
     <script type="text/javascript">
 
         function changeListener() {
@@ -22,36 +23,19 @@
             }
         }
 
-        function CustomMochaReport(runner) {
-            mocha.reporters.Base.call(this, runner);
-            var stats = this.stats;
-
-            runner.on('fail', function (test, err) {
-                console.log("failed: " + test.fullTitle() + "' message='" + err.message + "']");
-            });
-
-            runner.on('pending', function (test) {
-                console.log("ignored: " + test.fullTitle() + "' message='" + err.message + "']");
-            });
-
-            runner.on('end', function () {
-                if (stats.passes===stats.tests) {
-                    console.log("SUCCESS: " + stats.passes + " of " + stats.tests + " passed.");
-                } else {
-                    console.log("FAILED: " + stats.failures + " of " + stats.tests + " failed.");
-                }
-                console.log("Test Execution Finished! Status: " + (stats.passes===stats.tests?"PASSED":"FAILED") + ", Time taken: " + stats.duration);
-                changeListener();
-            });
-        }
-
         mocha.setup({
             ui:'bdd',
             reporter:function (runner) {
-                new mocha.reporters.HTML(runner);
-//                new CustomMochaReport(runner);
-                new mocha.reporters.Teamcity(runner);
-//                new mocha.reporters.XUnit(runner);
+                var isPhantomJS = (navigator.userAgent.indexOf("PhantomJS")>-1);
+                var isTeamcity = location.href.indexOf("teamcity")>-1;
+                new mocha.reporters.simpleReporter(runner, changeListener);
+                if (!isPhantomJS) {
+                    new mocha.reporters.HTML(runner);
+                }
+                if (isPhantomJS && isTeamcity) {
+                    new mocha.reporters.Teamcity(runner);
+                }
+                //new mocha.reporters.XUnit(runner);
             },
             ignoreLeaks:true,
             timeout:5000 // ms
@@ -68,7 +52,7 @@
 <script>
     setTimeout(function () {
         mocha.run();
-    }, 250);
+    }, 1000);
 </script>
 </body>
 </html>
