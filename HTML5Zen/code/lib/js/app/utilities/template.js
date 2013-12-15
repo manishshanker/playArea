@@ -1,52 +1,44 @@
 (function ($) {
     "use strict";
 
-    var cache = false;
-    var templateCache = {};
+    function getByURL(url, onSuccess) {
+        $.get(url, function (templateHTML) {
+            onSuccess(getCompiledTemplate(templateHTML));
+        });
+    }
 
-    var Template = function () {
+    function getCompiledTemplate(template) {
+        return Handlebars.compile(template);
+    }
 
-        function getByURL(url, onSuccess) {
-            if (cache && templateCache[url]) {
-                onSuccess(getCompiledTemplate(templateCache[url]));
-            } else {
-                $.get(url, function (templateHTML) {
-                    if (cache) {
-                        templateCache[url] = templateHTML;
-                    }
-                    onSuccess(getCompiledTemplate(templateCache[url]));
-                });
-            }
+    function getById(id) {
+        var template = $("#" + id).html();
+        if (!template) {
+            throw new Error("Template id: " + id + ", not found!!");
+        } else {
+            return getCompiledTemplate(template);
         }
+    }
 
-        function getCompiledTemplate(template) {
-            return Handlebars.compile(template);
+    function getByCSSSelector(cssSelector) {
+        var template = $(cssSelector).html();
+        if (!template) {
+            throw new Error("Template selector: " + cssSelector + ", not matched any!!");
+        } else {
+            return getCompiledTemplate(template);
         }
+    }
 
-        function getById(id, onSuccess) {
-            var template = templateCache[id] || $("#" + id).html();
-            if (cache) {
-                templateCache[id] = template;
-            }
-            onSuccess(getCompiledTemplate(template));
-        }
+    function process(template, templateData) {
+        return template(templateData);
+    }
 
-        function getByCSSSelector(cssSelector, onSuccess) {
-            var template = templateCache[cssSelector] || $(cssSelector).html();
-            if (cache) {
-                templateCache[cssSelector] = template;
-            }
-            onSuccess(getCompiledTemplate(template));
-        }
 
-        return {
-            getById: getById,
-            getByCSSSelector: getByCSSSelector,
-            getByURL: getByURL
-        };
-
+    APP.templateEngine = {
+        getById: getById,
+        getByCSSSelector: getByCSSSelector,
+        getByURL: getByURL,
+        process: process
     };
-
-    APP.templateEngine = new Template();
 
 }(APP.DOM));

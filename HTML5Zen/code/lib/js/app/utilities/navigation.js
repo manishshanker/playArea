@@ -1,35 +1,42 @@
 (function ($) {
     "use strict";
 
-    var currentPage;
+    var currentView;
 
     var Navigation = function () {
 
-        function load(defaultPage) {
+        function load(defaultView) {
             $(window).on("hashchange", onLocationChange);
             if (location.hash) {
                 onLocationChange();
             } else {
-                location.href = "#/" + defaultPage;
+                location.href = "#/" + defaultView;
             }
         }
 
         function onLocationChange() {
-            var locationData = parseLocationData(location.hash);
-            APP.messaging.publish("appStateChange-unselected-page-" + currentPage, locationData);
-            showPage(locationData.page);
-            APP.messaging.publish("appStateChange-selected-page-" + currentPage, locationData);
-            APP.messaging.publish("appStateChange", locationData);
+            var appStateData = parseLocationData(location.hash);
+            if (appStateData.page !== currentView) {
+                hidePage(currentView, appStateData);
+                currentView = appStateData.page;
+                showPage(currentView, appStateData);
+            } else {
+                APP.messaging.publish("appStateChange-view-stateChange-" + currentView, appStateData);
+            }
+            APP.messaging.publish("appStateChange", appStateData);
         }
 
-        function showPage(page) {
-            if (currentPage) {
-                $("a[href^='#/" + currentPage + "']").removeClass("selected");
-                $("#" + currentPage).removeClass("page-visible");
+        function hidePage(page, appStateData) {
+            if (page) {
+                $("a[href^='#/" + page + "']").removeClass("selected");
+                $("#" + page).removeClass("page-visible");
+                APP.messaging.publish("appStateChange-view-changedFrom-" + page, appStateData);
             }
+        }
+        function showPage(page, appStateData) {
             $("#" + page).addClass("page-visible");
             $("a[href^='#/" + page + "']").addClass("selected");
-            currentPage = page;
+            APP.messaging.publish("appStateChange-view-changedTo-" + currentView, appStateData);
         }
 
         function parseLocationData(locationData) {

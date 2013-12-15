@@ -3,7 +3,7 @@
 
     APP.serviceURL = {
         news: {
-            getData: ""
+            fetch: ""
         }
     };
 

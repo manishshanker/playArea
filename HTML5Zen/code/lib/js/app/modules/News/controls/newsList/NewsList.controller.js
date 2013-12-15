@@ -1,38 +1,18 @@
 (function () {
     "use strict";
 
-    APP.controller.NewsList = function (options) {
-
-        var view, controlData;
-
-        function load(data) {
-            controlData = data;
-            APP.template.NewsList.getNewsListTemplate(onTemplateLoad);
+    APP.controller.NewsList = APP.Controller.$extend({
+        init: function (options, view, template) {
+            this.options = options;
+            this.view = view || new APP.view.NewsList();
+            this.template = template || new APP.Template("newsListTemplate");
+        },
+        render: function (data) {
+            this.view.render(this.template.process(data));
+        },
+        selectItem: function (id) {
+            this.view.selectItem(id);
         }
-
-        function onTemplateLoad(templateData) {
-            view.render(controlData, templateData);
-        }
-
-        function selectItem(itemId) {
-            view.selectItem(itemId);
-        }
-
-        function destroy() {
-            view.destroy();
-            view = null;
-        }
-
-        (function init() {
-            APP.template.NewsList.load();
-            view = new APP.view.NewsList();
-        }());
-
-        return {
-            load: load,
-            selectItem: selectItem,
-            destroy: destroy
-        };
-    };
+    });
 
 }());

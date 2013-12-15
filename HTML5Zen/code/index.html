@@ -56,11 +56,9 @@
 
             <div class="news">
                 <div id="newsList">
-                    <ul>
-                        <script id="newsListTemplate" type="text/x-handlebars-template">
-                            <li><a id="newsItem_{{id}}" href="#/example/news/{{id}}">{{title}}</a></li>
-                        </script>
-                    </ul>
+                    <script id="newsListTemplate" type="text/x-handlebars-template">
+                        {{#list this}}<a id="newsItem_{{id}}" href="#/example/news/{{id}}">{{title}}</a>{{/list}}
+                    </script>
                 </div>
                 <div id="newsDetail">
                     <script id="newsDetailTemplate" type="text/x-handlebars-template">
@@ -117,17 +115,21 @@
     <script src="lib/js/app/namespace.js"></script>
 
     <script src="lib/js/app/utilities/DOM.js"></script>
+    <script src="lib/js/app/utilities/classExtend.js"></script>
     <script src="lib/js/app/utilities/template.js"></script>
     <script src="lib/js/app/utilities/navigation.js"></script>
     <script src="lib/js/app/utilities/messaging.js"></script>
     <script src="lib/js/app/utilities/i18n.js"></script>
     <script src="lib/js/app/utilities/hbi18nHelper.js"></script>
+    <script src="lib/js/app/utilities/hbListHelper.js"></script>
+    <script src="lib/js/app/utilities/baseClass/Service.js"></script>
+    <script src="lib/js/app/utilities/baseClass/Template.js"></script>
+    <script src="lib/js/app/utilities/baseClass/View.js"></script>
+    <script src="lib/js/app/utilities/baseClass/Controller.js"></script>
 
     <script src="lib/js/app/modules/News/controls/newsDetail/NewsDetail.controller.js"></script>
-    <script src="lib/js/app/modules/News/controls/newsDetail/NewsDetail.template.js"></script>
     <script src="lib/js/app/modules/News/controls/newsDetail/NewsDetail.view.js"></script>
     <script src="lib/js/app/modules/News/controls/newsList/NewsList.controller.js"></script>
-    <script src="lib/js/app/modules/News/controls/newsList/NewsList.template.js"></script>
     <script src="lib/js/app/modules/News/controls/newsList/NewsList.view.js"></script>
     <script src="lib/js/app/modules/News/News.controller.js"></script>
     <script src="lib/js/app/modules/News/News.service.js"></script>

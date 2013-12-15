@@ -49,6 +49,7 @@
                 <fileset dir="${jsSource}" casesensitive="false" includes="**/namespace.js"/>
                 <fileset dir="${jsSource}" casesensitive="false" includes="plugins/**/*.js" />
                 <fileset dir="${jsSource}" casesensitive="false" includes="utilities/DOM.js" />
+                <fileset dir="${jsSource}" casesensitive="false" includes="utilities/classExtend.js" />
                 <fileset dir="${jsSource}" casesensitive="false" includes="utilities/**/*.js" />
                 <fileset dir="${jsSource}" casesensitive="false" includes="modules/**/*.js" />
                 <fileset dir="${outputDir}\mockServices" casesensitive="false" includes="**/*.js"/>

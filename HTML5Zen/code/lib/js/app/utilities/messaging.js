@@ -14,9 +14,14 @@
             });
         }
 
+        function unsubscribe(subject) {
+            messageBus.off(subject);
+        }
+
         return {
             publish: publish,
-            subscribe: subscribe
+            subscribe: subscribe,
+            unsubscribe: unsubscribe
         };
     };
 
