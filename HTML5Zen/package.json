@@ -1,0 +1,22 @@
+{
+    "name": "html5spaframework",
+    "version": "0.0.1",
+    "description": "HTML5 Single Page Application Framework",
+    "main": " ",
+    "directories": {
+        "doc": "doc",
+        "test": "test"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Manish Shanker",
+    "license": "ISC",
+    "devDependencies": {
+        "karma": "~0.10.8",
+        "karma-coverage": "0.1.2",
+        "karma-teamcity-reporter": "0.1.1",
+        "phantomjs": "1.9.1-0",
+        "karma-phantomjs-launcher": "0.1.1"
+    }
+}
