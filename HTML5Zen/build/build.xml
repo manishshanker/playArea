@@ -47,6 +47,7 @@
                 <fileset dir="${jsLibSource}" casesensitive="false" includes="jquery-1.10.2.min.js"/>
                 <fileset dir="${jsLibSource}" casesensitive="false" includes="**/*.js" excludes="jquery-1.10.2.min.js"/>
                 <fileset dir="${jsSource}" casesensitive="false" includes="**/namespace.js"/>
+                <fileset dir="${jsSource}" casesensitive="false" includes="**/serviceURLs.js"/>
                 <fileset dir="${jsSource}" casesensitive="false" includes="plugins/**/*.js" />
                 <fileset dir="${jsSource}" casesensitive="false" includes="utilities/DOM.js" />
                 <fileset dir="${jsSource}" casesensitive="false" includes="utilities/classExtend.js" />
