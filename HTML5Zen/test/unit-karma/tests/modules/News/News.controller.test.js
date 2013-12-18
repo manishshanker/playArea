@@ -7,23 +7,31 @@ describe("News.controller", function () {
             var $fragments = $("<div id='fragments'></div>");
             $fragments.html("<div id='newsListTemplate'>{{title}}</div><div id='newsDetailTemplate'>{{title}}</div>");
             $("body").append($fragments);
-            var template = new APP.Template("newsListTemplate");
-            spyOn(template, "process");
-            var newsList = new APP.controller.NewsList(null, null, template);
-            var controller = new APP.controller.News(null, null, newsList, null);
+            var newsListTemplate = new APP.Template("newsListTemplate");
+            spyOn(newsListTemplate, "process");
+            var newsDetailTemplate = new APP.Template("newsDetailTemplate");
+            spyOn(newsDetailTemplate, "process");
+            var controller = new APP.controller.News(null, null, null, null, {
+                newsList: new APP.controller.NewsList(null, null, {
+                    newsList: newsListTemplate
+                }),
+                newsDetail: new APP.controller.NewsDetail(null, null, {
+                    newsDetail: newsDetailTemplate
+                })
+            });
             controller.load();
             APP.messaging.publish("appStateChange-view-changedTo-example", {});
             runs(function () {
                 setTimeout(function () {
-                    expect(template.process).toHaveBeenCalled();
+                    expect(newsListTemplate.process).toHaveBeenCalled();
+                    expect(newsDetailTemplate.process).toHaveBeenCalled();
                     $fragments.remove();
                     flag = true;
                 }, 500);
             });
-
             waitsFor(function () {
                 return flag;
-            }, "Should have called template methods", 600);
+            }, "Should have processed news list and detail template", 600);
         });
     });
 
@@ -32,9 +40,9 @@ describe("News.controller", function () {
             spyOn(APP.messaging, "subscribe");
             var controller = new APP.controller.News();
             controller.load();
-            expect(APP.messaging.subscribe).toHaveBeenCalledWith("appStateChange-view-changedTo-example", jasmine.any(Function));
-            expect(APP.messaging.subscribe).toHaveBeenCalledWith("appStateChange-view-stateChange-example", jasmine.any(Function));
-            expect(APP.messaging.subscribe).toHaveBeenCalledWith("appStateChange-view-changedFrom-example", jasmine.any(Function));
+            expect(APP.messaging.subscribe).toHaveBeenCalledWith(jasmine.any(Object), "appStateChange-view-changedTo-example", jasmine.any(Function));
+            expect(APP.messaging.subscribe).toHaveBeenCalledWith(jasmine.any(Object), "appStateChange-view-stateChange-example", jasmine.any(Function));
+            expect(APP.messaging.subscribe).toHaveBeenCalledWith(jasmine.any(Object), "appStateChange-view-changedFrom-example", jasmine.any(Function));
         });
 
         it("should call newsList select and load news detail", function () {
@@ -43,7 +51,10 @@ describe("News.controller", function () {
             var newsDetail = new APP.controller.NewsDetail();
             spyOn(newsList, "selectItem");
             spyOn(newsDetail, "load");
-            var controller = new APP.controller.News(null, null, newsList, newsDetail);
+            var controller = new APP.controller.News(null, null, null, null, {
+                newsList: newsList,
+                newsDetail: newsDetail
+            });
             controller.load();
             APP.messaging.publish("appStateChange-view-changedTo-example");
             runs(function () {
@@ -65,12 +76,15 @@ describe("News.controller", function () {
             var newsDetail = new APP.controller.NewsDetail();
             spyOn(newsList, "destroy");
             spyOn(newsDetail, "destroy");
-            var controller = new APP.controller.News(null, null, newsList, newsDetail);
+            var controller = new APP.controller.News(null, null, null, null, {
+                newsList: newsList,
+                newsDetail: newsDetail
+            });
             controller.load();
             APP.messaging.publish("appStateChange-view-changedTo-example");
             runs(function () {
                 setTimeout(function () {
-                    APP.messaging.publish("appStateChange-view-changedFrom-example", {moduleItem: 1});
+                    controller.destroy();
                     expect(newsList.destroy).toHaveBeenCalled();
                     expect(newsDetail.destroy).toHaveBeenCalled();
                     flag = true;

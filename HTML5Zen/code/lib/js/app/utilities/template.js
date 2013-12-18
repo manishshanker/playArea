@@ -1,6 +1,13 @@
 (function ($) {
     "use strict";
 
+    APP.templateEngine = {
+        getById: getById,
+        getByCSSSelector: getByCSSSelector,
+        getByURL: getByURL,
+        process: process
+    };
+
     function getByURL(url, onSuccess) {
         $.get(url, function (templateHTML) {
             onSuccess(getCompiledTemplate(templateHTML));
@@ -32,13 +39,5 @@
     function process(template, templateData) {
         return template(templateData);
     }
-
-
-    APP.templateEngine = {
-        getById: getById,
-        getByCSSSelector: getByCSSSelector,
-        getByURL: getByURL,
-        process: process
-    };
 
 }(APP.DOM));

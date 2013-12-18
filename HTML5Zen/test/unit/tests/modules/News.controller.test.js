@@ -7,22 +7,29 @@ require("js/app/utilities/baseClass/Controller.js");
 require("js/app/utilities/baseClass/Service.js");
 require("js/app/utilities/baseClass/Template.js");
 require("js/app/utilities/baseClass/View.js");
+require("js/app/serviceURLs.js");
 require("js/app/modules/News/News.controller.js");
-require("js/app/modules/News/News.service.js");
+require("js/app/modules/News/controls/newsList/NewsList.service.js");
 require("js/app/modules/News/controls/newsList/NewsList.controller.js");
 require("js/app/modules/News/controls/newsList/NewsList.view.js");
+require("js/app/modules/News/controls/newsDetail/NewsDetail.service.js");
 require("js/app/modules/News/controls/newsDetail/NewsDetail.controller.js");
 require("js/app/modules/News/controls/newsDetail/NewsDetail.view.js");
-require("../../test/mockServices/News.service.js");
+require("../../test/mockServices/NewsList.service.js");
 describe("News.controller", function () {
     describe(".init", function () {
         it("should call service fetch", function () {
             var $fragments = $("#fragments");
             $fragments.html("<div id='newsListTemplate'>{{title}}</div><div id='newsDetailTemplate'>{{title}}</div>");
-            var service = new APP.service.News();
-            var mockService = sinon.mock(service);
+            var newsListService = new APP.service.NewsList();
+            var newsDetailService = new APP.service.NewsDetail();
+            var mockService = sinon.mock(newsListService);
             var mockServiceExpectation = mockService.expects("fetch").once();
-            var controller = new APP.controller.News(null, service, null, null);
+//            options, views, templates, services, controls
+            var controller = new APP.controller.News(null, null, null, {
+                newsList: newsListService,
+                newsDetail: newsDetailService
+            }, null);
             controller.load();
             APP.messaging.publish("appStateChange-view-changedTo-example", {});
             mockServiceExpectation.verify();

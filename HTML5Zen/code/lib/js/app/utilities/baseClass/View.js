@@ -1,7 +1,7 @@
 (function ($) {
     "use strict";
 
-    var View = Classy.$extend({
+    APP.View = Class.extend({
         init: function () {
             this.$container = $(this.container);
         },
@@ -16,7 +16,5 @@
         bind: function () {
         }
     });
-
-    APP.View = View;
 
 }(APP.DOM));

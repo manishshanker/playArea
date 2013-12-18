@@ -7,7 +7,7 @@
      * @param {APP.view.NewsDetail=} view
      * @param {APP.Template=} template
      */
-    APP.controller.NewsDetail = APP.Controller.$extend({
+    APP.controller.NewsDetail = APP.Controller.extend({
         getTemplates: function () {
             return {
                 newsDetail: new APP.Template("newsDetailTemplate")

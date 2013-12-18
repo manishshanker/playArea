@@ -17,10 +17,14 @@ module.exports = function (config) {
             'tests/**/*test.js',
             '../../code/lib/js/vendor/**/*.js',
             '../../code/lib/js/app/namespace.js',
+            '../../code/lib/js/app/serviceURLs.js',
             '../../code/lib/js/app/utilities/DOM.js',
+            '../../code/lib/js/app/utilities/classExtend.js',
+            '../../code/lib/js/app/utilities/baseClass/*.js',
             '../../code/lib/js/app/utilities/*.js',
             '../../code/lib/js/app/utilities/**/*.js',
-            '../../code/lib/js/app/**/*.js'
+            '../../code/lib/js/app/**/*.js',
+            "../mockServices/**/*.js"
         ],
 
         preprocessors: {

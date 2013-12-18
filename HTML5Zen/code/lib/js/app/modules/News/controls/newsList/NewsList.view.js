@@ -1,7 +1,7 @@
 (function ($) {
     "use strict";
 
-    APP.view.NewsList = APP.View.$extend({
+    APP.view.NewsList = APP.View.extend({
         container: "#newsList",
         selectItem: function (itemId) {
             if (this._$selectedItem) {

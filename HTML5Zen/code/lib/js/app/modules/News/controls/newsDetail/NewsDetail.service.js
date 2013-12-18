@@ -1,7 +1,7 @@
 (function ($) {
     "use strict";
 
-    APP.service.NewsDetail = APP.Service.$extend({
+    APP.service.NewsDetail = APP.Service.extend({
         fetch: function (newsList, selectedItemId, callback) {
             callback = callback || this.updated;
             if (newsList) {

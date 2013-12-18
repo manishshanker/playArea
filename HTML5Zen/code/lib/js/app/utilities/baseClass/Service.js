@@ -6,7 +6,7 @@
 
     var privateVar = {};
 
-    var Service = Classy.$extend({
+    APP.Service = Class.extend({
         dataURL: null,
         fetch: function () {
             $.get(this.dataURL, function (data) {
@@ -42,5 +42,4 @@
         stop: noop
     });
 
-    APP.Service = Service;
 }(APP.DOM));

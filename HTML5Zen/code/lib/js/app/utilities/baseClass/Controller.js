@@ -9,7 +9,7 @@
      * @param {APP.Service=} services
      * @param {Function=} controls
      */
-    var Controller = Classy.$extend({
+    APP.Controller = Class.extend({
         boolOnHideDestroy: false,
         init: function (options, views, templates, services, controls) {
             this.views = views;
@@ -119,12 +119,6 @@
         }
     }
 
-    function proxy(scope, method) {
-        return function () {
-            method.apply(scope, arguments);
-        };
-    }
-
     function initServices(services, that) {
         var service;
         for (service in services) {
@@ -177,7 +171,5 @@
             }
         }
     }
-
-    APP.Controller = Controller;
 
 }());

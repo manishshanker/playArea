@@ -1,16 +1,22 @@
 (function () {
     "use strict";
 
-    APP.service.NewsList = APP.service.NewsList.$extend({
+    var interval;
+
+    APP.service.NewsList = APP.service.NewsList.extend({
         fetch: function () {
             this.updated(getMockData());
         },
         init: function () {
             var that = this;
-            that.$super();
-            setInterval(function () {
+            that._super();
+            interval = setInterval(function () {
                 that.fetch();
             }, 5000);
+        },
+        destroy: function() {
+            this._super();
+            clearInterval(interval);
         }
     });
 

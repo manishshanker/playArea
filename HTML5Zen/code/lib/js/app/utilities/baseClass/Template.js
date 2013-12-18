@@ -3,7 +3,7 @@
 
     var templateCache = {};
 
-    var Template = Classy.$extend({
+    APP.Template = Class.extend({
         init: function (path, loadType) {
             this.path = path;
             this.loadBy = loadType || APP.Template.LOAD.BY_ID;
@@ -33,7 +33,6 @@
         }
     });
 
-    APP.Template = Template;
     APP.Template.LOAD = {
         BY_ID: "APP_TEMPLATE_BY_ID",
         BY_URL: "APP_TEMPLATE_BY_URL"

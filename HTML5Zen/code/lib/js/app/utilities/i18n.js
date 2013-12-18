@@ -1,7 +1,7 @@
 (function () {
     "use strict";
 
-    var i18n = function (actualText, alias_key) {
+    APP.i18n = function (actualText, alias_key) {
         if (!APP.i18nT) {
             throw new Error("No resource bundle included for i18n!!");
         }
@@ -24,5 +24,4 @@
         return APP.i18nT[i18n_key] || "!!!" + actualText + "!!!";
     };
 
-    APP.i18n = i18n;
 }());

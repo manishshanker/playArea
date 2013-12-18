@@ -3,12 +3,13 @@
 
     /**
      *
-     * @param {Object} options
-     * @param {APP.service.News} service
-     * @param {APP.controller.NewsList} newsList
-     * @param {APP.controller.NewsDetail} newsDetail
+     * @param {Object=} options
+     * @param {[APP.View]=} views
+     * @param {[APP.Template]=} templates
+     * @param {[APP.Service]=} services
+     * @param {[APP.Controller]=} controls
      */
-    APP.controller.News = APP.Controller.$extend({
+    APP.controller.News = APP.Controller.extend({
         getControls: function () {
             return {
                 newsList: new APP.controller.NewsList(),

@@ -1,7 +1,7 @@
 (function () {
     "use strict";
 
-    APP.controller.NewsList = APP.Controller.$extend({
+    APP.controller.NewsList = APP.Controller.extend({
         getTemplates: function () {
             return {
                 newsList: new APP.Template("newsListTemplate")
