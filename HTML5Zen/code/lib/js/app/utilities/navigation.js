@@ -2,6 +2,7 @@
     "use strict";
 
     var currentView;
+    var viewState = {};
 
     var Navigation = function () {
 
@@ -20,22 +21,29 @@
                 hidePage(currentView, appStateData);
                 currentView = appStateData.page;
                 showPage(currentView, appStateData);
-            } else {
-                APP.messaging.publish("appStateChange-view-stateChange-" + currentView, appStateData);
             }
+            viewState[currentView] = appStateData;
+            APP.messaging.publish("appStateChange-view-stateChange-" + currentView, appStateData);
             APP.messaging.publish("appStateChange", appStateData);
         }
 
         function hidePage(page, appStateData) {
             if (page) {
-                $("a[href^='#/" + page + "']").removeClass("selected");
+                $("a[href$='#/" + page + "']").removeClass("selected");
                 $("#" + page).removeClass("page-visible");
                 APP.messaging.publish("appStateChange-view-changedFrom-" + page, appStateData);
             }
         }
+
         function showPage(page, appStateData) {
             $("#" + page).addClass("page-visible");
-            $("a[href^='#/" + page + "']").addClass("selected");
+            $("a[href$='#/" + page + "']").addClass("selected");
+            var cachedViewState = viewState[page];
+            if (cachedViewState) {
+                if (cachedViewState.moduleItem) {
+                    location.replace("#/" + page + "/" + cachedViewState.module + "/" + cachedViewState.moduleItem);
+                }
+            }
             APP.messaging.publish("appStateChange-view-changedTo-" + currentView, appStateData);
         }
 

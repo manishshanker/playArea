@@ -8,11 +8,15 @@
      * @param {APP.Template=} template
      */
     APP.controller.NewsDetail = APP.Controller.$extend({
-        init: function (options, view, template) {
-            this.options = options;
-            this.template = template || new APP.Template("newsDetailTemplate", APP.Template.LOAD.BY_ID);
-            this.view = view || new APP.view.NewsDetail();
-            this.load({});
+        getTemplates: function () {
+            return {
+                newsDetail: new APP.Template("newsDetailTemplate")
+            };
+        },
+        getViews: function () {
+            return {
+                newsDetail: new APP.view.NewsDetail()
+            };
         }
     });
 

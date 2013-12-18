@@ -2,7 +2,7 @@
     "use strict";
 
     APP.serviceURL = {
-        news: {
+        newsList: {
             fetch: ""
         }
     };

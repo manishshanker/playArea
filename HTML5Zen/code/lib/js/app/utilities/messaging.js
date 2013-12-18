@@ -8,9 +8,9 @@
             messageBus.trigger(subject, [message]);
         }
 
-        function subscribe(subject, callback) {
+        function subscribe(scope, subject, callback) {
             messageBus.on(subject, function (e, message) {
-                callback(message);
+                callback.call(scope, message);
             });
         }
 
