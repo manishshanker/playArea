@@ -64,4 +64,4 @@
 
     APP.DOM = HTML5ZenDOM;
 
-}(jQuery));
+}(Zepto));
