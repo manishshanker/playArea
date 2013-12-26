@@ -23,7 +23,7 @@
                 showPage(currentView, appStateData);
             }
             viewState[currentView] = appStateData;
-            APP.messaging.publish("appStateChange-view-stateChange-" + currentView, appStateData);
+            APP.messaging.publish("appStateChange-view-stateChange:" + currentView, appStateData);
             APP.messaging.publish("appStateChange", appStateData);
         }
 
@@ -31,7 +31,7 @@
             if (page) {
                 $("a[href$='#/" + page + "']").removeClass("selected");
                 $("#" + page).removeClass("page-visible");
-                APP.messaging.publish("appStateChange-view-changedFrom-" + page, appStateData);
+                APP.messaging.publish("appStateChange-view-changedFrom:" + page, appStateData);
             }
         }
 
@@ -44,7 +44,7 @@
                     location.replace("#/" + page + "/" + cachedViewState.module + "/" + cachedViewState.moduleItem);
                 }
             }
-            APP.messaging.publish("appStateChange-view-changedTo-" + currentView, appStateData);
+            APP.messaging.publish("appStateChange-view-changedTo:" + currentView, appStateData);
         }
 
         function parseLocationData(locationData) {
