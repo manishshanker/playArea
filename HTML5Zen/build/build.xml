@@ -1,8 +1,8 @@
 <project name="build" default="package" basedir=".\..">
 
-    <property name="jsSource" value="${basedir}\code\lib\js\app"/>
-    <property name="jsLibSource" value="${basedir}\code\lib\js\vendor"/>
-    <property name="cssSource" value="${basedir}\code\lib\css"/>
+    <property name="jsSource" value="${basedir}\src\lib\js\app"/>
+    <property name="jsLibSource" value="${basedir}\src\lib\js\vendor"/>
+    <property name="cssSource" value="${basedir}\src\lib\css"/>
     <property name="outputDir" value="${basedir}\out"/>
     <property name="outputHtmlFile" value="${outputDir}\index.html"/>
 
@@ -32,7 +32,7 @@
         <mkdir dir="${outputDir}"/>
         <mkdir dir="${outputDir}\mockServices"/>
         <copy todir="${outputDir}">
-            <fileset dir="${basedir}\code"/>
+            <fileset dir="${basedir}\src"/>
         </copy>
         <copy todir="${outputDir}\mockServices">
             <fileset dir="${basedir}\test\mockServices"/>

@@ -1,4 +1,4 @@
-require.scriptPath = "../../../code/lib/";
+require.scriptPath = "../../../src/lib/";
 require([
     "js/vendor/zepto.min.js",
     "js/app/namespace.js",

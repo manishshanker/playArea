@@ -15,15 +15,15 @@ module.exports = function (config) {
         // list of files / patterns to load in the browser
         files: [
             'tests/**/*test.js',
-            '../../code/lib/js/vendor/**/*.js',
-            '../../code/lib/js/app/namespace.js',
-            '../../code/lib/js/app/serviceURLs.js',
-            '../../code/lib/js/app/utilities/DOM.js',
-            '../../code/lib/js/app/utilities/classExtend.js',
-            '../../code/lib/js/app/utilities/baseClass/*.js',
-            '../../code/lib/js/app/utilities/*.js',
-            '../../code/lib/js/app/utilities/**/*.js',
-            '../../code/lib/js/app/**/*.js',
+            '../../src/lib/js/vendor/**/*.js',
+            '../../src/lib/js/app/namespace.js',
+            '../../src/lib/js/app/serviceURLs.js',
+            '../../src/lib/js/app/utilities/DOM.js',
+            '../../src/lib/js/app/utilities/classExtend.js',
+            '../../src/lib/js/app/utilities/baseClass/*.js',
+            '../../src/lib/js/app/utilities/*.js',
+            '../../src/lib/js/app/utilities/**/*.js',
+            '../../src/lib/js/app/**/*.js',
             "../mockServices/**/*.js"
         ],
 
@@ -31,12 +31,12 @@ module.exports = function (config) {
             // source files, that you wanna generate coverage for
             // do not include tests or libraries
             // (these files will be instrumented by Istanbul)
-            '../../code/lib/js/app/**/*.js': ['coverage']
+            '../../src/lib/js/app/**/*.js': ['coverage']
         },
 
         // list of files to exclude
         exclude: [
-            '../../code/lib/js/app/main.js'
+            '../../src/lib/js/app/main.js'
         ],
 
         coverageReporter: {

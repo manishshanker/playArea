@@ -14,10 +14,10 @@ test.describe('Page Loads', function () {
     });
 
     test.it('should redirect to introduction', function () {
-        driver.get('http://localhost:63343/playArea/HTML5Zen/code/index.html');
+        driver.get('http://localhost:63343/playArea/HTML5Zen/src/index.html');
         driver.wait(function () {
             return driver.getCurrentUrl().then(function (url) {
-                return "http://localhost:63343/playArea/HTML5Zen/code/index.html#/introduction" === url;
+                return "http://localhost:63343/playArea/HTML5Zen/src/index.html#/introduction" === url;
             });
         }, 1000);
     });
