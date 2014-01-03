@@ -13,7 +13,7 @@
     "author": "Manish Shanker",
     "license": "ISC",
     "dependencies": {
-        "selenium-webdriver": "2.39.0" /* Also requires chromedriver.exe on path */
+        "selenium-webdriver": "2.39.0"
     },
     "devDependencies": {
         "karma": "~0.10.8",

@@ -16,6 +16,9 @@ Dependencies
 
 npm install -g
 
+selenium-webdriver install local
+ensure chromedriver.exe is on system path
+
 For teamcity integration
 ------------------------
 
