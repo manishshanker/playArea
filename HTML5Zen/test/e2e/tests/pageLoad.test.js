@@ -5,6 +5,8 @@ var remote = require('selenium-webdriver/remote');
 
 test.describe('Page Loads', function () {
     "use strict";
+
+    var pageBaseURL = "http://localhost:63342";
     var driver;
 
     test.before(function () {
@@ -14,10 +16,10 @@ test.describe('Page Loads', function () {
     });
 
     test.it('should redirect to introduction', function () {
-        driver.get('http://localhost:63343/playArea/HTML5Zen/src/index.html');
+        driver.get(getURL("/playArea/HTML5Zen/src/index.html"));
         driver.wait(function () {
             return driver.getCurrentUrl().then(function (url) {
-                return "http://localhost:63343/playArea/HTML5Zen/src/index.html#/introduction" === url;
+                return getURL("/playArea/HTML5Zen/src/index.html#/introduction") === url;
             });
         }, 1000);
     });
@@ -25,4 +27,9 @@ test.describe('Page Loads', function () {
     test.after(function () {
         driver.quit();
     });
+
+    function getURL(path) {
+        return pageBaseURL + path;
+    }
+
 });
