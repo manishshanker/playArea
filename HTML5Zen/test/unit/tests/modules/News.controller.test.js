@@ -20,7 +20,7 @@ describe("News.controller", function () {
                 newsDetail: newsDetailService
             }, null);
             controller.load();
-            APP.messaging.publish("appStateChange-view-changedTo:example", {});
+            APP.messaging.publish("navigationChangedTo:example", {});
             mockServiceExpectation.verify();
             mockService.restore();
             $fragments.empty();
@@ -44,7 +44,7 @@ describe("News.controller", function () {
             $fragments.html("<div id='newsListTemplate'>{{title}}</div><div id='newsDetailTemplate'>{{title}}</div>");
             var controller = new APP.controller.News();
             controller.load();
-            APP.messaging.publish("appStateChange-view-changedTo:example", {});
+            APP.messaging.publish("navigationChangedTo:example", {});
             controller.destroy();
             $fragments.empty();
         });

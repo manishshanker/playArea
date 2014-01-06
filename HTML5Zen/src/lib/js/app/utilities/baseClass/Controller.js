@@ -54,7 +54,7 @@
                     loadTemplateAndRender(that, data, templates);
                 }
 
-                if (that.messages) {
+                if (that.messages || that.controlMessages) {
                     subsribeToMessages.call(this, that);
                 }
                 that._loaded = true;
@@ -72,11 +72,19 @@
             }
         },
         destroy: function () {
+            if (this.controlMessages) {
+                var controlMessages = this.controlMessages;
+                APP.messaging.unsubscribe(controlMessages.show);
+                APP.messaging.unsubscribe(controlMessages.hide);
+                APP.messaging.unsubscribe(controlMessages.stateChange);
+            }
             if (this.messages) {
-                var messages = this.messages;
-                APP.messaging.unsubscribe(messages.show);
-                APP.messaging.unsubscribe(messages.hide);
-                APP.messaging.unsubscribe(messages.stateChange);
+                var message;
+                for (message in this.messages) {
+                    if (this.messages.hasOwnProperty(message)) {
+                        APP.messaging.unsubscribe(this.messages[message]);
+                    }
+                }
             }
             if (this.views) {
                 loop(this.views, "destroy");
@@ -136,7 +144,7 @@
     }
 
     function subsribeToMessages(that) {
-        var messages = that.messages;
+        var messages = that.controlMessages;
         APP.messaging.subscribe(that, messages.show, this.onShow);
         APP.messaging.subscribe(that, messages.hide, this.onHide);
         APP.messaging.subscribe(that, messages.stateChange, function (stateData) {
@@ -148,12 +156,11 @@
                 }
             }
         });
+        messages = this.messages;
         var message;
         for (message in messages) {
             if (messages.hasOwnProperty(message)) {
-                if (typeof messages[message] !== "string") {
-                    APP.messaging.subscribe(that, message, messages[message]);
-                }
+                APP.messaging.subscribe(that, message, messages[message]);
             }
         }
     }

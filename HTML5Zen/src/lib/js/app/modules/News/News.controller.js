@@ -32,13 +32,15 @@
                 }
             };
         },
-        messages: {
-            show: "appStateChange-view-changedTo:example",
-            hide: "appStateChange-view-changedFrom:example",
-            stateChange: "appStateChange-view-stateChange:example"
-//            ,"message-name": function () {
+//        messages: {
+//            "message-name": function () {
 //
 //            }
+//        },
+        controlMessages: {
+            show: "navigationChangedTo:example",
+            hide: "navigationChangedFrom:example",
+            stateChange: "navigationStateChange:example"
         }
     });
 
