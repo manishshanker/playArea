@@ -2,19 +2,19 @@
   <library name="Mocha" type="javaScript">
     <properties>
       <sourceFilesUrls>
-        <item url="file://$PROJECT_DIR$/HTML5Zen/test/unit/runner/require.js" />
-        <item url="file://$PROJECT_DIR$/HTML5Zen/test/unit/runner/sinon-chai.js" />
-        <item url="file://$PROJECT_DIR$/HTML5Zen/test/unit/runner/sinon.js" />
-        <item url="file://$PROJECT_DIR$/HTML5Zen/test/unit/runner/mocha.js" />
-        <item url="file://$PROJECT_DIR$/HTML5Zen/test/unit/runner/chai.js" />
+        <item url="file://$PROJECT_DIR$/HAF/test/unit/runner/chai.js" />
+        <item url="file://$PROJECT_DIR$/HAF/test/unit/runner/mocha.js" />
+        <item url="file://$PROJECT_DIR$/HAF/test/unit/runner/sinon-chai.js" />
+        <item url="file://$PROJECT_DIR$/HAF/test/unit/runner/sinon.js" />
+        <item url="file://$PROJECT_DIR$/HAF/test/unit/runner/require.js" />
       </sourceFilesUrls>
     </properties>
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/HTML5Zen/test/unit/runner/require.js" />
-      <root url="file://$PROJECT_DIR$/HTML5Zen/test/unit/runner/sinon-chai.js" />
-      <root url="file://$PROJECT_DIR$/HTML5Zen/test/unit/runner/sinon.js" />
-      <root url="file://$PROJECT_DIR$/HTML5Zen/test/unit/runner/mocha.js" />
-      <root url="file://$PROJECT_DIR$/HTML5Zen/test/unit/runner/chai.js" />
+      <root url="file://$PROJECT_DIR$/HAF/test/unit/runner/chai.js" />
+      <root url="file://$PROJECT_DIR$/HAF/test/unit/runner/mocha.js" />
+      <root url="file://$PROJECT_DIR$/HAF/test/unit/runner/sinon-chai.js" />
+      <root url="file://$PROJECT_DIR$/HAF/test/unit/runner/sinon.js" />
+      <root url="file://$PROJECT_DIR$/HAF/test/unit/runner/require.js" />
     </CLASSES>
     <SOURCES />
   </library>
