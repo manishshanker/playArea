@@ -16,7 +16,7 @@ module.exports = function (config) {
         files: [
             'tests/**/*test.js',
             '../../src/lib/js/vendor/**/*.js',
-            '../../src/lib/js/app/namespace.js',
+            '../../src/lib/js/app/utilities/baseClass/namespace.js',
             '../../src/lib/js/app/serviceURLs.js',
             '../../src/lib/js/app/utilities/DOM.js',
             '../../src/lib/js/app/utilities/classExtend.js',
