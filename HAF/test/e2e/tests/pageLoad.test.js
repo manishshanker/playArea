@@ -15,10 +15,10 @@ test.describe('Page Loads', function () {
     });
 
     test.it('should redirect to introduction', function () {
-        driver.get(util.getURL("/playArea/HTML5Zen/src/index.html"));
+        driver.get(util.getURL("/playArea/HAF/src/index.html"));
         driver.wait(function () {
             return driver.getCurrentUrl().then(function (url) {
-                return util.getURL("/playArea/HTML5Zen/src/index.html#/introduction") === url;
+                return util.getURL("/playArea/HAF/src/index.html#/introduction") === url;
             });
         }, 1000);
     });
