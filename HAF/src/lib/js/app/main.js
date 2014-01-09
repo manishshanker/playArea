@@ -1,7 +1,8 @@
 (function (HAF) {
     "use strict";
 
-    (new HAF.controller.News()).load();
+    HAF.init(APP.i18nT);
+    (new APP.controller.News()).load();
     HAF.navigation.load("introduction");
 
 }(HAF));

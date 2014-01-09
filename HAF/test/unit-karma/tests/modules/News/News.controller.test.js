@@ -11,11 +11,11 @@ describe("News.controller", function () {
             spyOn(newsListTemplate, "process");
             var newsDetailTemplate = new HAF.Template("newsDetailTemplate");
             spyOn(newsDetailTemplate, "process");
-            var controller = new HAF.controller.News(null, null, null, null, {
-                newsList: new HAF.controller.NewsList(null, null, {
+            var controller = new APP.controller.News(null, null, null, null, {
+                newsList: new APP.controller.NewsList(null, null, {
                     newsList: newsListTemplate
                 }),
-                newsDetail: new HAF.controller.NewsDetail(null, null, {
+                newsDetail: new APP.controller.NewsDetail(null, null, {
                     newsDetail: newsDetailTemplate
                 })
             });
@@ -38,7 +38,7 @@ describe("News.controller", function () {
     describe(".load", function () {
         it("should subscribe to events", function () {
             spyOn(HAF.messaging, "subscribe");
-            var controller = new HAF.controller.News();
+            var controller = new APP.controller.News();
             controller.load();
             expect(HAF.messaging.subscribe).toHaveBeenCalledWith(jasmine.any(Object), "navigationChangedTo:example", jasmine.any(Function));
             expect(HAF.messaging.subscribe).toHaveBeenCalledWith(jasmine.any(Object), "navigationStateChange:example", jasmine.any(Function));
@@ -47,11 +47,11 @@ describe("News.controller", function () {
 
         it("should call newsList select and load news detail", function () {
             var flag;
-            var newsList = new HAF.controller.NewsList();
-            var newsDetail = new HAF.controller.NewsDetail();
+            var newsList = new APP.controller.NewsList();
+            var newsDetail = new APP.controller.NewsDetail();
             spyOn(newsList, "selectItem");
             spyOn(newsDetail, "load");
-            var controller = new HAF.controller.News(null, null, null, null, {
+            var controller = new APP.controller.News(null, null, null, null, {
                 newsList: newsList,
                 newsDetail: newsDetail
             });
@@ -72,11 +72,11 @@ describe("News.controller", function () {
 
         it("should call destroy", function () {
             var flag;
-            var newsList = new HAF.controller.NewsList();
-            var newsDetail = new HAF.controller.NewsDetail();
+            var newsList = new APP.controller.NewsList();
+            var newsDetail = new APP.controller.NewsDetail();
             spyOn(newsList, "destroy");
             spyOn(newsDetail, "destroy");
-            var controller = new HAF.controller.News(null, null, null, null, {
+            var controller = new APP.controller.News(null, null, null, null, {
                 newsList: newsList,
                 newsDetail: newsDetail
             });
@@ -102,7 +102,7 @@ describe("News.controller", function () {
             var $fragments = $("<div id='fragments'></div>");
             $fragments.html("<div id='newsListTemplate'>{{title}}</div><div id='newsDetailTemplate'>{{title}}</div>");
             $("body").append($fragments);
-            var controller = new HAF.controller.News();
+            var controller = new APP.controller.News();
             controller.load();
             HAF.messaging.publish("navigationChangedTo:example", {});
             runs(function () {

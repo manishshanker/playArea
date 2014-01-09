@@ -4,10 +4,10 @@
     /**
      *
      * @param {Object=} options
-     * @param {HAF.view.NewsDetail=} view
+     * @param {APP.view.NewsDetail=} view
      * @param {HAF.Template=} template
      */
-    HAF.controller.NewsDetail = HAF.Controller.extend({
+    APP.controller.NewsDetail = HAF.Controller.extend({
         getTemplates: function () {
             return {
                 newsDetail: new HAF.Template("newsDetailTemplate")
@@ -15,7 +15,7 @@
         },
         getViews: function () {
             return {
-                newsDetail: new HAF.view.NewsDetail()
+                newsDetail: new APP.view.NewsDetail()
             };
         }
     });

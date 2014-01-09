@@ -1,7 +1,7 @@
 (function (HAF, $) {
     "use strict";
 
-    HAF.view.NewsList = HAF.View.extend({
+    APP.view.NewsList = HAF.View.extend({
         container: "#newsList",
         selectItem: function (itemId) {
             if (this._$selectedItem) {

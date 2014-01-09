@@ -2,8 +2,9 @@
     "use strict";
 
     window.HAF = HAF = HAF || {};
-    HAF.controller = {};
-    HAF.service = {};
-    HAF.view = {};
+
+    HAF.init = function (locale) {
+        HAF.i18nT = locale;
+    };
 
 }(window.HAF, window));

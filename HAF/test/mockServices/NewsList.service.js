@@ -3,7 +3,7 @@
 
     var interval;
 
-    HAF.service.NewsList = HAF.service.NewsList.extend({
+    APP.service.NewsList = APP.service.NewsList.extend({
         fetch: function () {
             this.updated(getMockData());
         },

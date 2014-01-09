@@ -6,7 +6,7 @@ describe("NewsList.view", function () {
             var $fragments = $("<div id='fragments'></div>");
             $fragments.html("<div id='newsItem_1'>{{title}}</div>");
             $("body").append($fragments);
-            var view = new HAF.view.NewsList();
+            var view = new APP.view.NewsList();
             var $newsItem1 = $("#newsItem_1");
             expect($newsItem1.attr("class")).not.toMatch(/selected/);
             view.selectItem(1);

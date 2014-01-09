@@ -4,22 +4,22 @@
     /**
      *
      * @param {Object=} options
-     * @param {[HAF.View]=} views
+     * @param {[APP.View]=} views
      * @param {[HAF.Template]=} templates
      * @param {[HAF.Service]=} services
      * @param {[HAF.Controller]=} controls
      */
-    HAF.controller.News = HAF.Controller.extend({
+    APP.controller.News = HAF.Controller.extend({
         getControls: function () {
             return {
-                newsList: new HAF.controller.NewsList(),
-                newsDetail: new HAF.controller.NewsDetail()
+                newsList: new APP.controller.NewsList(),
+                newsDetail: new APP.controller.NewsDetail()
             };
         },
         getServices: function () {
             return {
-                newsList: new HAF.service.NewsList(),
-                newsDetail: new HAF.service.NewsDetail()
+                newsList: new APP.service.NewsList(),
+                newsDetail: new APP.service.NewsDetail()
             };
         },
         onStateChange: function () {

@@ -1,8 +1,8 @@
 (function (HAF) {
     "use strict";
 
-    HAF.service.NewsList = HAF.Service.extend({
-        dataURL: HAF.serviceURL.newsList.fetch
+    APP.service.NewsList = HAF.Service.extend({
+        dataURL: APP.serviceURL.newsList.fetch
     });
 
 }(HAF));

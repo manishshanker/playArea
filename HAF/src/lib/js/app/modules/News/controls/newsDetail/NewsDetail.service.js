@@ -1,7 +1,7 @@
 (function (HAF, $) {
     "use strict";
 
-    HAF.service.NewsDetail = HAF.Service.extend({
+    APP.service.NewsDetail = HAF.Service.extend({
         fetch: function (newsList, selectedItemId, callback) {
             callback = callback || this.updated;
             if (newsList) {

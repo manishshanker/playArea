@@ -15,14 +15,12 @@ module.exports = function (config) {
         // list of files / patterns to load in the browser
         files: [
             'tests/**/*test.js',
+            '../../src/lib/js/vendor/zepto.min.js',
+            '../../src/lib/js/vendor/handlebars-v1.1.2.js',
+            '../../src/lib/js/vendor/HAF.min.js',
             '../../src/lib/js/vendor/**/*.js',
-            '../../src/lib/js/app/utilities/baseClass/namespace.js',
+            '../../src/lib/js/app/namespace.js',
             '../../src/lib/js/app/serviceURLs.js',
-            '../../src/lib/js/app/utilities/DOM.js',
-            '../../src/lib/js/app/utilities/classExtend.js',
-            '../../src/lib/js/app/utilities/baseClass/*.js',
-            '../../src/lib/js/app/utilities/*.js',
-            '../../src/lib/js/app/utilities/**/*.js',
             '../../src/lib/js/app/**/*.js',
             "../mockServices/**/*.js"
         ],

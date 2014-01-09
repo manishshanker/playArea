@@ -11,11 +11,11 @@ describe("News.controller", function () {
         it("should call service fetch", function () {
             var $fragments = $("#fragments");
             $fragments.html("<div id='newsListTemplate'>{{title}}</div><div id='newsDetailTemplate'>{{title}}</div>");
-            var newsListService = new HAF.service.NewsList();
-            var newsDetailService = new HAF.service.NewsDetail();
+            var newsListService = new APP.service.NewsList();
+            var newsDetailService = new APP.service.NewsDetail();
             var mockService = sinon.mock(newsListService);
             var mockServiceExpectation = mockService.expects("fetch").once();
-            var controller = new HAF.controller.News(null, null, null, {
+            var controller = new APP.controller.News(null, null, null, {
                 newsList: newsListService,
                 newsDetail: newsDetailService
             }, null);
@@ -31,7 +31,7 @@ describe("News.controller", function () {
         it("should subscribe to events", function () {
             var mockNavView = sinon.mock(HAF.messaging);
             var expectation = mockNavView.expects("subscribe").thrice();
-            var controller = new HAF.controller.News();
+            var controller = new APP.controller.News();
             controller.load();
             expectation.verify();
             mockNavView.restore();
@@ -42,7 +42,7 @@ describe("News.controller", function () {
         it("should call destroy without failure", function () {
             var $fragments = $("#fragments");
             $fragments.html("<div id='newsListTemplate'>{{title}}</div><div id='newsDetailTemplate'>{{title}}</div>");
-            var controller = new HAF.controller.News();
+            var controller = new APP.controller.News();
             controller.load();
             HAF.messaging.publish("navigationChangedTo:example", {});
             controller.destroy();

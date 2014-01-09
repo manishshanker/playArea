@@ -1,7 +1,7 @@
 (function (HAF) {
     "use strict";
 
-    HAF.view.NewsDetail = HAF.View.extend({
+    APP.view.NewsDetail = HAF.View.extend({
         container: "#newsDetail"
     });
 

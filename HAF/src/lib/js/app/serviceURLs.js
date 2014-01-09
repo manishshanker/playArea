@@ -1,10 +1,10 @@
-(function (HAF) {
+(function () {
     "use strict";
 
-    HAF.serviceURL = {
+    APP.serviceURL = {
         newsList: {
             fetch: ""
         }
     };
 
-}(HAF));
+}());
