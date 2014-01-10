@@ -8,6 +8,7 @@
      * @param {HAF.Template=} template
      */
     APP.controller.NewsDetail = HAF.Controller.extend({
+        autoWire: true,
         init: function () {
             this.inject({
                 templates: {

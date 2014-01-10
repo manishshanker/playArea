@@ -10,7 +10,8 @@
      * @param {Function=} controls
      */
     HAF.Controller = Class.extend({
-        boolOnHideDestroy: false,
+        autoWire: false,
+        autoDestroy: false,
         init: function (options) {
             this.options = options;
         },
@@ -39,7 +40,7 @@
             var that = this;
             if (!that._loaded) {
                 var templates = this.templates;
-                if (templates) {
+                if (templates && this.autoWire) {
                     loadTemplateAndRender(that, data, templates);
                 }
 
@@ -48,7 +49,9 @@
                 }
                 that._loaded = true;
             } else {
-                this._render(data);
+                if (this.autoWire) {
+                    this._render(data);
+                }
             }
         },
         onStateChange: function () {
@@ -94,14 +97,14 @@
             this._exist = false;
         },
         onShow: function () {
-            if (!this._exist) {
+            if (!this._exist && this.autoWire) {
                 initServices(this.services, this);
-                this._exist = true;
             }
+            this._exist = true;
         },
         onHide: function () {
             loop(this.services, "stop");
-            if (this.boolOnHideDestroy) {
+            if (this.autoDestroy) {
                 this.destroy();
             }
         }

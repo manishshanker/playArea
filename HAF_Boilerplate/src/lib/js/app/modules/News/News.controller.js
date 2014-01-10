@@ -10,6 +10,7 @@
      * @param {[HAF.Controller]=} controls
      */
     APP.controller.News = HAF.Controller.extend({
+        autoWire: true,
         init: function () {
             this._super();
             this.inject({
