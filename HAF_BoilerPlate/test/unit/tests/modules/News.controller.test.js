@@ -15,10 +15,13 @@ describe("News.controller", function () {
             var newsDetailService = new APP.service.NewsDetail();
             var mockService = sinon.mock(newsListService);
             var mockServiceExpectation = mockService.expects("fetch").once();
-            var controller = new APP.controller.News(null, null, null, {
-                newsList: newsListService,
-                newsDetail: newsDetailService
-            }, null);
+            var controller = new APP.controller.News();
+            controller.inject({
+                services: {
+                    newsList: newsListService,
+                    newsDetail: newsDetailService
+                }
+            });
             controller.load();
             HAF.messaging.publish("navigationChangedTo:example", {});
             mockServiceExpectation.verify();
