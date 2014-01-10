@@ -59,9 +59,12 @@
         empty: function () {
             this.$item.empty();
             return this;
+        },
+        remove: function () {
+            this.$item.remove();
         }
     };
 
     HAF.DOM = HAFDOM;
 
-}(HAF, Zepto));
+}(HAF,  (window.Zepto || window.jQuery)));

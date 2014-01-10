@@ -19,7 +19,9 @@
     }
 
     function getById(id) {
-        var template = $("#" + id).html();
+        var $el = $("#" + id);
+        var template = $el.html();
+        $el.remove();
         if (!template) {
             throw new Error("Template id: " + id + ", not found!!");
         } else {

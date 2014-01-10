@@ -10,17 +10,18 @@
      * @param {[HAF.Controller]=} controls
      */
     APP.controller.News = HAF.Controller.extend({
-        getControls: function () {
-            return {
-                newsList: new APP.controller.NewsList(),
-                newsDetail: new APP.controller.NewsDetail()
-            };
-        },
-        getServices: function () {
-            return {
-                newsList: new APP.service.NewsList(),
-                newsDetail: new APP.service.NewsDetail()
-            };
+        init: function () {
+            this._super();
+            this.inject({
+                services: {
+                    newsList: new APP.service.NewsList(),
+                    newsDetail: new APP.service.NewsDetail()
+                },
+                controls: {
+                    newsList: new APP.controller.NewsList(),
+                    newsDetail: new APP.controller.NewsDetail()
+                }
+            });
         },
         onStateChange: function () {
             return {
@@ -32,11 +33,6 @@
                 }
             };
         },
-//        messages: {
-//            "message-name": function () {
-//
-//            }
-//        },
         controlMessages: {
             show: "navigationChangedTo:example",
             hide: "navigationChangedFrom:example",

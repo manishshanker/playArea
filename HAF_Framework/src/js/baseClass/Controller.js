@@ -11,25 +11,13 @@
      */
     HAF.Controller = Class.extend({
         boolOnHideDestroy: false,
-        init: function (options, views, templates, services, controls) {
-            this.views = views;
-            this.templates = templates;
+        init: function (options) {
             this.options = options;
-            this.services = services;
-            this.controls = controls;
         },
-        getViews: function () {
-            return this.views;
-        },
-        getTemplates: function () {
-            return this.templates;
-        },
-        getControls: function () {
-            return this.controls;
-        },
-        getServices: function () {
-            return this.service;
-        },
+        views: null,
+        templates: null,
+        controls: null,
+        services: null,
         render: function (data, viewName) {
             this.views[viewName].render(this.templates[viewName].process(data));
         },
@@ -41,13 +29,14 @@
                 }
             }
         },
+        inject: function (dependencies) {
+            this.views = dependencies.views || this.views;
+            this.templates = dependencies.templates || this.templates;
+            this.services = dependencies.services || this.services;
+            this.controls = dependencies.controls || this.controls;
+        },
         load: function (data) {
             var that = this;
-            that.views = that.views || that.getViews();
-            that.templates = that.templates || that.getTemplates();
-            that.controls = that.controls || that.getControls();
-            that.services = that.services || that.getServices();
-
             if (!that._loaded) {
                 var templates = this.templates;
                 if (templates) {

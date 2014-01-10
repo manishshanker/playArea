@@ -6,7 +6,7 @@
     HAF.Template = Class.extend({
         init: function (path, loadType) {
             this.path = path;
-            this.loadBy = loadType || HAF.Template.LOAD.BY_ID;
+            this.loadBy = loadType || HAF.Template.LOAD.DEFAULT;
             if (this.loadBy === HAF.Template.LOAD.BY_ID) {
                 templateCache[path] = templateCache[path] || HAF.templateEngine.getById(path);
             }
@@ -35,7 +35,8 @@
 
     HAF.Template.LOAD = {
         BY_ID: "APP_TEMPLATE_BY_ID",
-        BY_URL: "APP_TEMPLATE_BY_URL"
+        BY_URL: "APP_TEMPLATE_BY_URL",
+        DEFAULT: "APP_TEMPLATE_BY_ID"
     };
 
 }(HAF));

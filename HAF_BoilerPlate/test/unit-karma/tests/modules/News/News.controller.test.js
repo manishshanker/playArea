@@ -10,14 +10,25 @@ describe("News.controller", function () {
             var newsListTemplate = new HAF.Template("newsListTemplate");
             spyOn(newsListTemplate, "process");
             var newsDetailTemplate = new HAF.Template("newsDetailTemplate");
-            spyOn(newsDetailTemplate, "process");
-            var controller = new APP.controller.News(null, null, null, null, {
-                newsList: new APP.controller.NewsList(null, null, {
+            var newsListController = new APP.controller.NewsList();
+            newsListController.inject({
+                templates: {
                     newsList: newsListTemplate
-                }),
-                newsDetail: new APP.controller.NewsDetail(null, null, {
+                }
+            });
+            var newsDetailController = new APP.controller.NewsDetail();
+            newsDetailController.inject({
+                templates: {
                     newsDetail: newsDetailTemplate
-                })
+                }
+            });
+            spyOn(newsDetailTemplate, "process");
+            var controller = new APP.controller.News();
+            controller.inject({
+                controls: {
+                    newsList: newsListController,
+                    newsDetail: newsDetailController
+                }
             });
             controller.load();
             HAF.messaging.publish("navigationChangedTo:example", {});
@@ -51,9 +62,12 @@ describe("News.controller", function () {
             var newsDetail = new APP.controller.NewsDetail();
             spyOn(newsList, "selectItem");
             spyOn(newsDetail, "load");
-            var controller = new APP.controller.News(null, null, null, null, {
-                newsList: newsList,
-                newsDetail: newsDetail
+            var controller = new APP.controller.News();
+            controller.inject({
+                controls: {
+                    newsList: newsList,
+                    newsDetail: newsDetail
+                }
             });
             controller.load();
             HAF.messaging.publish("navigationChangedTo:example");
@@ -76,9 +90,12 @@ describe("News.controller", function () {
             var newsDetail = new APP.controller.NewsDetail();
             spyOn(newsList, "destroy");
             spyOn(newsDetail, "destroy");
-            var controller = new APP.controller.News(null, null, null, null, {
-                newsList: newsList,
-                newsDetail: newsDetail
+            var controller = new APP.controller.News();
+            controller.inject({
+                controls: {
+                    newsList: newsList,
+                    newsDetail: newsDetail
+                }
             });
             controller.load();
             HAF.messaging.publish("navigationChangedTo:example");

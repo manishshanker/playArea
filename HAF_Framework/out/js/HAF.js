@@ -2,9 +2,6 @@
     "use strict";
 
     window.HAF = HAF = HAF || {};
-    HAF.controller = {};
-    HAF.service = {};
-    HAF.view = {};
 
     HAF.init = function (locale) {
         HAF.i18nT = locale;
@@ -72,12 +69,15 @@
         empty: function () {
             this.$item.empty();
             return this;
+        },
+        remove: function () {
+            this.$item.remove();
         }
     };
 
     HAF.DOM = HAFDOM;
 
-}(HAF, Zepto));
+}(HAF,  (window.Zepto || window.jQuery)));
 (function () {
     "use strict";
 
@@ -126,25 +126,13 @@
      */
     HAF.Controller = Class.extend({
         boolOnHideDestroy: false,
-        init: function (options, views, templates, services, controls) {
-            this.views = views;
-            this.templates = templates;
+        init: function (options) {
             this.options = options;
-            this.services = services;
-            this.controls = controls;
         },
-        getViews: function () {
-            return this.views;
-        },
-        getTemplates: function () {
-            return this.templates;
-        },
-        getControls: function () {
-            return this.controls;
-        },
-        getServices: function () {
-            return this.service;
-        },
+        views: null,
+        templates: null,
+        controls: null,
+        services: null,
         render: function (data, viewName) {
             this.views[viewName].render(this.templates[viewName].process(data));
         },
@@ -156,13 +144,14 @@
                 }
             }
         },
+        inject: function (dependencies) {
+            this.views = dependencies.views || this.views;
+            this.templates = dependencies.templates || this.templates;
+            this.services = dependencies.services || this.services;
+            this.controls = dependencies.controls || this.controls;
+        },
         load: function (data) {
             var that = this;
-            that.views = that.views || that.getViews();
-            that.templates = that.templates || that.getTemplates();
-            that.controls = that.controls || that.getControls();
-            that.services = that.services || that.getServices();
-
             if (!that._loaded) {
                 var templates = this.templates;
                 if (templates) {
@@ -348,7 +337,7 @@
     HAF.Template = Class.extend({
         init: function (path, loadType) {
             this.path = path;
-            this.loadBy = loadType || HAF.Template.LOAD.BY_ID;
+            this.loadBy = loadType || HAF.Template.LOAD.DEFAULT;
             if (this.loadBy === HAF.Template.LOAD.BY_ID) {
                 templateCache[path] = templateCache[path] || HAF.templateEngine.getById(path);
             }
@@ -377,7 +366,8 @@
 
     HAF.Template.LOAD = {
         BY_ID: "APP_TEMPLATE_BY_ID",
-        BY_URL: "APP_TEMPLATE_BY_URL"
+        BY_URL: "APP_TEMPLATE_BY_URL",
+        DEFAULT: "APP_TEMPLATE_BY_ID"
     };
 
 }(HAF));
@@ -387,9 +377,11 @@
     HAF.View = Class.extend({
         init: function () {
             this.$container = $(this.container);
+            this.$el = this.$container.$item;
         },
         container: null,
         $container: null,
+        $el: null,
         render: function (html) {
             this.$container.html(html);
         },
@@ -397,7 +389,14 @@
             this.$container.empty();
         },
         bind: function () {
+        },
+        show: function () {
+            this.$el.show();
+        },
+        hide: function () {
+            this.$el.hide();
         }
+
     });
 
 }(HAF, HAF.DOM));
@@ -564,7 +563,9 @@
     }
 
     function getById(id) {
-        var template = $("#" + id).html();
+        var $el = $("#" + id);
+        var template = $el.html();
+        $el.remove();
         if (!template) {
             throw new Error("Template id: " + id + ", not found!!");
         } else {
