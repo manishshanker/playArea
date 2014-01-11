@@ -60,8 +60,8 @@
         }
 
         function route(context, pattern, callback, callbackFailure) {
-            var items = new RegExp(("^" + pattern + "$").replace("?", ".").replace(/:[a-zA-Z0-9]+/g, function (a) {
-                return "([a-zA-Z0-9]+)";
+            var items = new RegExp(("^" + pattern + "$").replace("?", ".").replace(/:[a-zA-Z0-9-_]+/g, function (a) {
+                return "([a-zA-Z0-9-_]+)";
             })).exec(currentPath.substring(1));
             if (items) {
                 items.splice(0, 1);
