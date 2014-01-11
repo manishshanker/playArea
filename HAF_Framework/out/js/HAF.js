@@ -560,6 +560,7 @@
         function parseLocationData(locationData) {
             var a = locationData.substr(1).split("/");
             return {
+                path: locationData,
                 page: a[1],
                 module: a[2],
                 moduleItem: a[3]
