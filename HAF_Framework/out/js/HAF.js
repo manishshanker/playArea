@@ -588,13 +588,17 @@
             };
         }
 
-        function route(pattern, callback) {
-            var items = new RegExp(pattern.replace("?", ".").replace(/:[a-zA-Z0-9]+/g, function (a) {
+        function route(context, pattern, callback, callbackFailure) {
+            var items = new RegExp(("^" + pattern + "$").replace("?", ".").replace(/:[a-zA-Z0-9]+/g, function (a) {
                 return "([a-zA-Z0-9]+)";
-            })).exec(currentPath)
+            })).exec(currentPath.substring(1));
             if (items) {
                 items.splice(0, 1);
-                callback.apply(null, items);
+                callback.apply(context, items);
+            } else {
+                if (callbackFailure) {
+                    callbackFailure.call(context);
+                }
             }
         }
 
