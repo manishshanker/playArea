@@ -127,6 +127,7 @@
     HAF.Controller = Class.extend({
         autoWire: false,
         autoDestroy: false,
+        autoShowHide: false,
         init: function (options) {
             this.options = options;
         },
@@ -212,13 +213,29 @@
             this._exist = false;
         },
         onShow: function () {
+            autoShowHide(this, true);
             if (!this._exist && this.autoWire) {
                 initServices(this.services, this);
             }
             this._exist = true;
         },
+        hide: function () {
+            autoShowHide(this, false);
+            if (this.autoWire) {
+                loop(this.services, "stop");
+            }
+        },
+        show: function () {
+            autoShowHide(this, true);
+            if (this.autoWire) {
+                loop(this.services, "start");
+            }
+        },
         onHide: function () {
-            loop(this.services, "stop");
+            if (this.autoWire) {
+                loop(this.services, "stop");
+            }
+            autoShowHide(this, false);
             if (this.autoDestroy) {
                 this.destroy();
             }
@@ -227,9 +244,11 @@
 
     function loop(collection, method, data) {
         var item;
-        for (item in collection) {
-            if (collection.hasOwnProperty(item)) {
-                collection[item][method](data);
+        if (collection) {
+            for (item in collection) {
+                if (collection.hasOwnProperty(item)) {
+                    collection[item][method](data);
+                }
             }
         }
     }
@@ -286,6 +305,13 @@
         }
     }
 
+    function autoShowHide(that, isShow) {
+        if (that.autoShowHide) {
+            loop(that.views, isShow ? "show" : "hide");
+            loop(that.controls, isShow ? "show" : "hide");
+        }
+    }
+
 }(HAF));
 (function (HAF, $) {
     "use strict";
@@ -328,7 +354,8 @@
         destroy: function () {
             delete privateVar[this._id_];
         },
-        stop: noop
+        stop: noop,
+        start: noop
     });
 
 }(HAF, HAF.DOM));
@@ -391,16 +418,17 @@
         destroy: function () {
             this.$container.empty();
         },
-        bind: function () {
+        bind: noop,
+        hide: function () {
+            this.$el.hide();
         },
         show: function () {
             this.$el.show();
-        },
-        hide: function () {
-            this.$el.hide();
         }
-
     });
+
+    function noop() {
+    }
 
 }(HAF, HAF.DOM));
 (function () {

@@ -39,7 +39,8 @@
         destroy: function () {
             delete privateVar[this._id_];
         },
-        stop: noop
+        stop: noop,
+        start: noop
     });
 
 }(HAF, HAF.DOM));

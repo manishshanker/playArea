@@ -15,15 +15,16 @@
         destroy: function () {
             this.$container.empty();
         },
-        bind: function () {
+        bind: noop,
+        hide: function () {
+            this.$el.hide();
         },
         show: function () {
             this.$el.show();
-        },
-        hide: function () {
-            this.$el.hide();
         }
-
     });
+
+    function noop() {
+    }
 
 }(HAF, HAF.DOM));

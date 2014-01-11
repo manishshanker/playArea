@@ -12,6 +12,7 @@
     HAF.Controller = Class.extend({
         autoWire: false,
         autoDestroy: false,
+        autoShowHide: false,
         init: function (options) {
             this.options = options;
         },
@@ -97,13 +98,29 @@
             this._exist = false;
         },
         onShow: function () {
+            autoShowHide(this, true);
             if (!this._exist && this.autoWire) {
                 initServices(this.services, this);
             }
             this._exist = true;
         },
+        hide: function () {
+            autoShowHide(this, false);
+            if (this.autoWire) {
+                loop(this.services, "stop");
+            }
+        },
+        show: function () {
+            autoShowHide(this, true);
+            if (this.autoWire) {
+                loop(this.services, "start");
+            }
+        },
         onHide: function () {
-            loop(this.services, "stop");
+            if (this.autoWire) {
+                loop(this.services, "stop");
+            }
+            autoShowHide(this, false);
             if (this.autoDestroy) {
                 this.destroy();
             }
@@ -112,9 +129,11 @@
 
     function loop(collection, method, data) {
         var item;
-        for (item in collection) {
-            if (collection.hasOwnProperty(item)) {
-                collection[item][method](data);
+        if (collection) {
+            for (item in collection) {
+                if (collection.hasOwnProperty(item)) {
+                    collection[item][method](data);
+                }
             }
         }
     }
@@ -168,6 +187,13 @@
             if (templates.hasOwnProperty(template)) {
                 templates[template].load(renderFunction(template));
             }
+        }
+    }
+
+    function autoShowHide(that, isShow) {
+        if (that.autoShowHide) {
+            loop(that.views, isShow ? "show" : "hide");
+            loop(that.controls, isShow ? "show" : "hide");
         }
     }
 
