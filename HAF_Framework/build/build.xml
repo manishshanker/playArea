@@ -37,6 +37,7 @@
         <echo message="BEGIN: JS MERGE"/>
         <concat destfile="${outputDir}\js\HAF.js" fixlastline="true">
             <union>
+                <fileset dir="${jsSource}" casesensitive="false" includes="copyright.js"/>
                 <fileset dir="${jsSource}" casesensitive="false" includes="baseClass/namespace.js"/>
                 <fileset dir="${jsSource}" casesensitive="false" includes="DOM.js" />
                 <fileset dir="${jsSource}" casesensitive="false" includes="classExtend.js" />
