@@ -531,6 +531,7 @@
     "use strict";
 
     var currentView;
+    var currentPath;
     var viewState = {};
 
     var Navigation = function () {
@@ -545,7 +546,8 @@
         }
 
         function onLocationChange() {
-            var appStateData = parseLocationData(location.hash);
+            currentPath = location.hash;
+            var appStateData = parseLocationData(currentPath);
             if (appStateData.page !== currentView) {
                 hidePage(currentView, appStateData);
                 currentView = appStateData.page;
@@ -586,8 +588,19 @@
             };
         }
 
+        function route(pattern, callback) {
+            var items = new RegExp(pattern.replace("?", ".").replace(/:[a-zA-Z0-9]+/g, function (a) {
+                return "([a-zA-Z0-9]+)";
+            })).exec(currentPath)
+            if (items) {
+                items.splice(0, 1);
+                callback.apply(null, items);
+            }
+        }
+
         return {
-            load: load
+            load: load,
+            route: route
         };
     };
 
