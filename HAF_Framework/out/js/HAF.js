@@ -558,7 +558,7 @@
     "use strict";
 
     var Messaging = function () {
-        var messageBus = $(document);
+        var messageBus = $({});
 
         function publish(subject, message) {
             messageBus.trigger(subject, [message]);
@@ -582,6 +582,8 @@
     };
 
     HAF.messaging = new Messaging();
+    HAF.Messaging = Messaging;
+    
 }(HAF, HAF.DOM));
 (function (HAF, $) {
     "use strict";
