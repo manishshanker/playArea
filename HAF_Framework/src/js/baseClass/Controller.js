@@ -1,18 +1,11 @@
 (function (HAF) {
     "use strict";
 
-    /**
-     *
-     * @param {Object=} options
-     * @param {HAF.View=} views
-     * @param {HAF.Template=} templates
-     * @param {HAF.Service=} services
-     * @param {Function=} controls
-     */
-    HAF.Controller = Class.extend({
+    HAF.Controller = HAF.Base.extend({
         autoWire: false,
         autoDestroy: false,
         autoShowHide: false,
+        messages: null,
         init: function (options) {
             this.options = options;
         },
@@ -20,15 +13,18 @@
         templates: null,
         controls: null,
         services: null,
-        render: function (data, viewName) {
-            this.views[viewName].render(this.templates[viewName].process(data));
+        load: function (data) {
+            load(this, data);
         },
-        _render: function (data) {
-            var templates = this.templates, template;
-            for (template in templates) {
-                if (templates.hasOwnProperty(template)) {
-                    this.render(data, template);
-                }
+        onUpdateReceive: function (data, item) {
+            onUpdateReceive(this, data, item);
+        },
+        destroy: function () {
+            destroy(this);
+        },
+        render: function (data, viewName) {
+            if (this.autoWire) {
+                this.views[viewName].render(this.templates[viewName].process(data));
             }
         },
         inject: function (dependencies) {
@@ -37,99 +33,129 @@
             this.services = dependencies.services || this.services;
             this.controls = dependencies.controls || this.controls;
         },
-        load: function (data) {
-            var that = this;
-            if (!that._loaded) {
-                var templates = this.templates;
-                if (templates && this.autoWire) {
-                    loadTemplateAndRender(that, data, templates);
-                }
-
-                if (that.messages || that.controlMessages) {
-                    subscribeToMessages(that);
-                }
-                that._loaded = true;
-            } else {
-                if (this.autoWire) {
-                    this._render(data);
-                }
-            }
-        },
-        onStateChange: function () {
-        },
-        onUpdateReceive: function (data, item) {
-            var that = this;
-            that.controls[item].load(data);
-            if (that.lastStateData && that.onStateChange()[item]) {
-                that.onStateChange()[item].call(that, that.controls[item], that.lastStateData);
-            }
-        },
-        destroy: function () {
-            if (this.controlMessages) {
-                var controlMessages = this.controlMessages;
-                HAF.messaging.unsubscribe(controlMessages.show);
-                HAF.messaging.unsubscribe(controlMessages.hide);
-                HAF.messaging.unsubscribe(controlMessages.stateChange);
-            }
-            if (this.messages) {
-                var message;
-                for (message in this.messages) {
-                    if (this.messages.hasOwnProperty(message)) {
-                        HAF.messaging.unsubscribe(this.messages[message]);
-                    }
-                }
-            }
-            if (this.views) {
-                loop(this.views, "destroy");
-            }
-            if (this.controls) {
-                loop(this.controls, "destroy");
-            }
-            if (this.services) {
-                loop(this.services, "destroy");
-            }
-            this.services = null;
-            this.views = null;
-            this.lastStateData = null;
-            this.templates = null;
-            this.options = null;
-            this.controls = null;
-            this._loaded = false;
-            this._exist = false;
-        },
+        onStateChange: HAF.Base.noop,
         onShow: function () {
             autoShowHide(this, true);
-            if (!this._exist && this.autoWire) {
-                initServices(this.services, this);
-            }
-            this._exist = true;
+            autoInitServices(this);
+        },
+        onHide: function () {
+            autoStopServices(this);
+            autoShowHide(this, false);
+            autoDestroy(this);
         },
         hide: function () {
             autoShowHide(this, false);
-            if (this.autoWire) {
-                loop(this.services, "stop");
-            }
+            autoStopServices(this);
         },
         show: function () {
             autoShowHide(this, true);
-            if (this.autoWire) {
-                loop(this.services, "start");
-            }
-        },
-        onHide: function () {
-            if (this.autoWire) {
-                loop(this.services, "stop");
-            }
-            autoShowHide(this, false);
-            if (this.autoDestroy) {
-                this.destroy();
-            }
+            autoStartServices(this);
         }
     });
 
+    function load(ctx, data) {
+        if (!ctx._loaded) {
+            autoLoadAndRenderTemplates(ctx, data);
+            subscribeToMessages(ctx);
+            ctx._loaded = true;
+        } else {
+            autoRenderTemplates(ctx, data);
+        }
+    }
+
+    function autoInitServices(ctx) {
+        if (!ctx._exist && ctx.autoWire) {
+            initServices(ctx.services, ctx);
+        }
+        ctx._exist = true;
+    }
+
+    function autoDestroy(ctx) {
+        if (ctx.autoDestroy) {
+            ctx.destroy();
+        }
+    }
+
+    function autoStartServices(ctx) {
+        if (ctx.autoWire) {
+            loop(ctx.services, "start");
+        }
+    }
+
+    function autoStopServices(ctx) {
+        if (ctx.autoWire) {
+            loop(ctx.services, "stop");
+        }
+    }
+
+    function onUpdateReceive(ctx, data, item) {
+        ctx.controls[item].load(data);
+        if (ctx.lastStateData && ctx.onStateChange()[item]) {
+            ctx.onStateChange()[item].call(ctx, ctx.controls[item], ctx.lastStateData);
+        }
+    }
+
+    function autoLoadAndRenderTemplates(ctx, data) {
+        var templates = ctx.templates;
+        if (templates && ctx.autoWire) {
+            loadTemplateAndRender(ctx, data, templates);
+        }
+    }
+
+    function autoRenderTemplates(ctx, data) {
+        if (ctx.autoWire) {
+            renderTemplates(ctx, data);
+        }
+    }
+
+    function destroy(ctx) {
+        destroyControlMessages(ctx);
+        destroyMessages(ctx);
+        loop(ctx.views, "destroy");
+        loop(ctx.controls, "destroy");
+        loop(ctx.services, "destroy");
+        ctx.services = null;
+        ctx.views = null;
+        ctx.lastStateData = null;
+        ctx.templates = null;
+        ctx.options = null;
+        ctx.controls = null;
+        ctx._loaded = false;
+        ctx._exist = false;
+    }
+
+    function destroyControlMessages(ctx) {
+        if (ctx.controlMessages) {
+            var controlMessages = ctx.controlMessages;
+            HAF.messaging.unsubscribe(controlMessages.show);
+            HAF.messaging.unsubscribe(controlMessages.hide);
+            HAF.messaging.unsubscribe(controlMessages.stateChange);
+        }
+    }
+
+    function destroyMessages(ctx) {
+        if (ctx.messages) {
+            var message;
+            for (message in ctx.messages) {
+                if (ctx.messages.hasOwnProperty(message)) {
+                    HAF.messaging.unsubscribe(ctx.messages[message]);
+                }
+            }
+        }
+    }
+
+    function renderTemplates(ctx, data) {
+        var templates = ctx.templates, template;
+        for (template in templates) {
+            if (templates.hasOwnProperty(template)) {
+                ctx.render(data, template);
+            }
+        }
+    }
+
     function loop(collection, method, data) {
         var item;
-        if (collection) {
+        if (collection && collection.length) {
             for (item in collection) {
                 if (collection.hasOwnProperty(item)) {
                     collection[item][method](data);
@@ -154,24 +180,27 @@
         };
     }
 
-    function subscribeToMessages(that) {
-        var messages = that.controlMessages;
-        HAF.messaging.subscribe(that, messages.show, that.onShow);
-        HAF.messaging.subscribe(that, messages.hide, that.onHide);
-        HAF.messaging.subscribe(that, messages.stateChange, function (stateData) {
-            that.lastStateData = stateData;
-            var stateChanges = that.onStateChange(), stateChange;
+    function subscribeToMessages(ctx) {
+        if (!(ctx.messages || ctx.controlMessages)) {
+            return;
+        }
+        var messages = ctx.controlMessages;
+        HAF.messaging.subscribe(ctx, messages.show, ctx.onShow);
+        HAF.messaging.subscribe(ctx, messages.hide, ctx.onHide);
+        HAF.messaging.subscribe(ctx, messages.stateChange, function (stateData) {
+            ctx.lastStateData = stateData;
+            var stateChanges = ctx.onStateChange(), stateChange;
             for (stateChange in stateChanges) {
                 if (stateChanges.hasOwnProperty(stateChange)) {
-                    stateChanges[stateChange].call(that, that.controls[stateChange], stateData);
+                    stateChanges[stateChange].call(ctx, ctx.controls[stateChange], stateData);
                 }
             }
         });
-        messages = that.messages;
+        messages = ctx.messages;
         var message;
         for (message in messages) {
             if (messages.hasOwnProperty(message)) {
-                HAF.messaging.subscribe(that, message, messages[message]);
+                HAF.messaging.subscribe(ctx, message, messages[message]);
             }
         }
     }

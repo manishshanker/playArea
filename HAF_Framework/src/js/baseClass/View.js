@@ -1,7 +1,7 @@
 (function (HAF, $) {
     "use strict";
 
-    HAF.View = Class.extend({
+    HAF.View = HAF.Base.extend({
         init: function () {
             this.$container = $(this.container);
             this.$el = this.$container.$item;
@@ -15,7 +15,7 @@
         destroy: function () {
             this.$container.empty();
         },
-        bind: noop,
+        bind: HAF.Base.noop,
         hide: function () {
             this.$el.hide();
         },
@@ -23,8 +23,5 @@
             this.$el.show();
         }
     });
-
-    function noop() {
-    }
 
 }(HAF, HAF.DOM));

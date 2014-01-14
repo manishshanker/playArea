@@ -1,46 +1,42 @@
 (function (HAF, $) {
     "use strict";
 
-    var noop = function () {
-    };
-
     var privateVar = {};
 
-    HAF.Service = Class.extend({
+    HAF.Service = HAF.Base.extend({
         dataURL: null,
+        init: function () {
+            privateVar[this.guid()] = {};
+            privateVar[this.guid()].updateCallBack = [];
+        },
         fetch: function () {
             $.get(this.dataURL, function (data) {
                 this.updated(data);
             });
         },
-        update: noop,
-        get: noop,
+        update: HAF.Base.noop,
+        get: HAF.Base.noop,
         lastResult: function () {
-            return privateVar[this._id_].lastResult;
+            return privateVar[this.guid()].lastResult;
         },
         onUpdate: function (callback) {
-            privateVar[this._id_].updateCallBack.push(callback);
-        },
-        init: function () {
-            this._id_ = (new Date()).getTime() + Math.floor(Math.random() * 1000000);
-            privateVar[this._id_] = {};
-            privateVar[this._id_].updateCallBack = [];
+            privateVar[this.guid()].updateCallBack.push(callback);
         },
         updated: function (data) {
             var n, l;
-            var privateVar2 = privateVar[this._id_];
-            privateVar2.lastResult = data;
-            if (privateVar2) {
-                for (n = 0, l = privateVar2.updateCallBack.length; n < l; n++) {
-                    privateVar2.updateCallBack[n](data);
+            var localPrivateVar = privateVar[this.guid()];
+            localPrivateVar.lastResult = data;
+            if (localPrivateVar) {
+                for (n = 0, l = localPrivateVar.updateCallBack.length; n < l; n++) {
+                    localPrivateVar.updateCallBack[n](data);
                 }
             }
         },
         destroy: function () {
-            delete privateVar[this._id_];
+            delete privateVar[this.guid()];
         },
-        stop: noop,
-        start: noop
+        stop: HAF.Base.noop,
+        start: HAF.Base.noop
     });
 
 }(HAF, HAF.DOM));

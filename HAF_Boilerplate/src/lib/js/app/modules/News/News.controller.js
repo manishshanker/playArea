@@ -1,18 +1,9 @@
 (function (HAF) {
     "use strict";
 
-    /**
-     *
-     * @param {Object=} options
-     * @param {[APP.View]=} views
-     * @param {[HAF.Template]=} templates
-     * @param {[HAF.Service]=} services
-     * @param {[HAF.Controller]=} controls
-     */
     APP.controller.News = HAF.Controller.extend({
         autoWire: true,
         init: function () {
-            this._super();
             this.inject({
                 services: {
                     newsList: new APP.service.NewsList(),
