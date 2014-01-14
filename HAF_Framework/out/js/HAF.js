@@ -216,6 +216,16 @@
         }
     });
 
+    function load(ctx, data) {
+        if (!ctx._loaded) {
+            autoLoadAndRenderTemplates(ctx, data);
+            subscribeToMessages(ctx);
+            ctx._loaded = true;
+        } else {
+            autoRenderTemplates(ctx, data);
+        }
+    }
+
     function autoInitServices(ctx) {
         if (!ctx._exist && ctx.autoWire) {
             initServices(ctx.services, ctx);
@@ -248,22 +258,16 @@
         }
     }
 
-    function autoRenderTemplates(ctx, data) {
+    function autoLoadAndRenderTemplates(ctx, data) {
         var templates = ctx.templates;
         if (templates && ctx.autoWire) {
             loadTemplateAndRender(ctx, data, templates);
         }
     }
 
-    function load(ctx, data) {
-        if (!ctx._loaded) {
-            autoRenderTemplates(ctx, data);
-            subscribeToMessages(ctx);
-            ctx._loaded = true;
-        } else {
-            if (ctx.autoWire) {
-                renderTemplates(ctx, data);
-            }
+    function autoRenderTemplates(ctx, data) {
+        if (ctx.autoWire) {
+            renderTemplates(ctx, data);
         }
     }
 
@@ -314,7 +318,7 @@
 
     function loop(collection, method, data) {
         var item;
-        if (collection && collection.length) {
+        if (collection) {
             for (item in collection) {
                 if (collection.hasOwnProperty(item)) {
                     collection[item][method](data);
@@ -325,10 +329,12 @@
 
     function initServices(services, that) {
         var service;
-        for (service in services) {
-            if (services.hasOwnProperty(service)) {
-                services[service].onUpdate(getFunction(that, service));
-                services[service].fetch();
+        if (services) {
+            for (service in services) {
+                if (services.hasOwnProperty(service)) {
+                    services[service].onUpdate(getFunction(that, service));
+                    services[service].fetch();
+                }
             }
         }
     }
@@ -433,33 +439,36 @@
 
     var templateCache = {};
 
-    HAF.Template = Class.extend({
+    HAF.Template = HAF.Base.extend({
         init: function (path, loadType) {
             this.path = path;
             this.loadBy = loadType || HAF.Template.LOAD.DEFAULT;
             if (this.loadBy === HAF.Template.LOAD.BY_ID) {
-                templateCache[path] = templateCache[path] || HAF.templateEngine.getById(path);
+                templateCache[this.guid()] = templateCache[this.guid()] || HAF.templateEngine.getById(path);
             }
         },
         process: function (data) {
-            if (!templateCache[this.path]) {
+            if (!templateCache[this.guid()]) {
                 throw new Error("Template not in cache!!");
             }
-            return HAF.templateEngine.process(templateCache[this.path], data);
+            return HAF.templateEngine.process(templateCache[this.guid()], data);
         },
         load: function (onSuccess) {
             var that = this;
             if (that.loadBy === HAF.Template.LOAD.BY_URL) {
-                if (templateCache[that.path]) {
+                if (templateCache[this.guid()]) {
                     onSuccess();
                 }
                 HAF.templateEngine.getByURL(that.path, function (template) {
-                    templateCache[that.path] = template;
+                    templateCache[this.guid()] = template;
                     onSuccess();
                 });
             } else {
                 onSuccess();
             }
+        },
+        destroy: function () {
+            delete templateCache[this.guid()];
         }
     });
 

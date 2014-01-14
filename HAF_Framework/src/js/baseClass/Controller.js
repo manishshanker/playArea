@@ -155,7 +155,7 @@
 
     function loop(collection, method, data) {
         var item;
-        if (collection && collection.length) {
+        if (collection) {
             for (item in collection) {
                 if (collection.hasOwnProperty(item)) {
                     collection[item][method](data);
@@ -166,10 +166,12 @@
 
     function initServices(services, that) {
         var service;
-        for (service in services) {
-            if (services.hasOwnProperty(service)) {
-                services[service].onUpdate(getFunction(that, service));
-                services[service].fetch();
+        if (services) {
+            for (service in services) {
+                if (services.hasOwnProperty(service)) {
+                    services[service].onUpdate(getFunction(that, service));
+                    services[service].fetch();
+                }
             }
         }
     }
