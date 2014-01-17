@@ -3,8 +3,8 @@
 
     APP.controller.News = HAF.Controller.extend({
         autoWire: true,
-        init: function () {
-            this.inject({
+        init: function (dependency) {
+            this.inject(dependency || {
                 services: {
                     newsList: new APP.service.NewsList(),
                     newsDetail: new APP.service.NewsDetail()

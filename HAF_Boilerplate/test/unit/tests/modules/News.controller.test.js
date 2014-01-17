@@ -7,31 +7,38 @@ require("js/app/modules/News/controls/newsDetail/NewsDetail.controller.js");
 require("js/app/modules/News/controls/newsDetail/NewsDetail.view.js");
 require("../../test/mockServices/NewsList.service.js");
 describe("News.controller", function () {
+
+    var $fragments;
+
     describe(".init", function () {
         it("should call service fetch", function () {
-            var $fragments = $("#fragments");
+            $fragments = $("#fragments");
             $fragments.html("<div id='newsListTemplate'>{{title}}</div><div id='newsDetailTemplate'>{{title}}</div>");
             var newsListService = new APP.service.NewsList();
             var newsDetailService = new APP.service.NewsDetail();
             var mockService = sinon.mock(newsListService);
             var mockServiceExpectation = mockService.expects("fetch").once();
-            var controller = new APP.controller.News();
-            controller.inject({
+            var controller = new APP.controller.News({
                 services: {
                     newsList: newsListService,
                     newsDetail: newsDetailService
+                },
+                controls: {
+                    newsList: new APP.controller.NewsList(),
+                    newsDetail: new APP.controller.NewsDetail()
                 }
             });
             controller.load();
             HAF.messaging.publish("navigationChangedTo:example", {});
             mockServiceExpectation.verify();
             mockService.restore();
-            $fragments.empty();
         });
     });
 
     describe(".load", function () {
         it("should subscribe to events", function () {
+            $fragments = $("#fragments");
+            $fragments.html("<div id='newsListTemplate'>{{title}}</div><div id='newsDetailTemplate'>{{title}}</div>");
             var mockNavView = sinon.mock(HAF.messaging);
             var expectation = mockNavView.expects("subscribe").thrice();
             var controller = new APP.controller.News();
@@ -43,13 +50,12 @@ describe("News.controller", function () {
 
     describe(".destroy", function () {
         it("should call destroy without failure", function () {
-            var $fragments = $("#fragments");
+            $fragments = $("#fragments");
             $fragments.html("<div id='newsListTemplate'>{{title}}</div><div id='newsDetailTemplate'>{{title}}</div>");
             var controller = new APP.controller.News();
             controller.load();
             HAF.messaging.publish("navigationChangedTo:example", {});
             controller.destroy();
-            $fragments.empty();
         });
     });
 });

@@ -9,8 +9,8 @@
      */
     APP.controller.NewsDetail = HAF.Controller.extend({
         autoWire: true,
-        init: function () {
-            this.inject({
+        init: function (dependency) {
+            this.inject(dependency || {
                 templates: {
                     newsDetail: new HAF.Template("newsDetailTemplate")
                 },
