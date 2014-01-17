@@ -24,7 +24,7 @@
         <delete dir="${outputDir}"/>
     </target>
 
-    <target name="build" depends="copy-source-to-build-folder, merge-css, minify-css, update-css-reference, merge-js, minify-js, update-js-reference, add-timestamp-to-path, generate-manifest"></target>
+    <target name="build" depends="copy-source-to-build-folder, copy-mock-services-to-build-folder, merge-css, minify-css, update-css-reference, merge-js, minify-js, update-js-reference, add-timestamp-to-path, generate-manifest"></target>
 
     <target name="copy-source-to-build-folder">
         <echo message="${outputDir}"/>
@@ -34,9 +34,18 @@
         <copy todir="${outputDir}">
             <fileset dir="${basedir}\src"/>
         </copy>
+    </target>
+
+    <target name="copy-mock-services-to-build-folder" depends="mockServicesCheck" if="mockServicesExist">
         <copy todir="${outputDir}\mockServices">
             <fileset dir="${basedir}\test\mockServices"/>
         </copy>
+    </target>
+
+    <target name="mockServicesCheck">
+        <condition property="mockServicesExist">
+            <available file="${basedir}\test\mockServices" type="dir"/>
+        </condition>
     </target>
 
     <target name="merge-js">
@@ -46,12 +55,12 @@
             <union>
                 <fileset dir="${jsLibSource}" casesensitive="false" includes="zepto.min.js"/>
                 <fileset dir="${jsLibSource}" casesensitive="false" includes="handlebars-v1.1.2.js"/>
-                <fileset dir="${jsLibSource}" casesensitive="false" includes="**/*.js" excludes="zepto.min.js, handlebars-v1.1.2.js"/>
+                <fileset excludes="**/---*" dir="${jsLibSource}" casesensitive="false" includes="**/*.js"/>
                 <fileset dir="${jsSource}" casesensitive="false" includes="namespace.js"/>
                 <fileset dir="${jsSource}" casesensitive="false" includes="serviceURLs.js"/>
-                <fileset dir="${jsSource}" casesensitive="false" includes="modules/**/*.js" />
-                <fileset dir="${outputDir}\mockServices" casesensitive="false" includes="**/*.js"/>
-                <fileset dir="${jsSource}" casesensitive="false" includes="*.js" />
+                <fileset excludes="**/---*" dir="${jsSource}" casesensitive="false" includes="modules/**/*.js" />
+                <fileset excludes="**/---*" dir="${outputDir}\mockServices" casesensitive="false" includes="**/*.js"/>
+                <fileset excludes="**/---*" dir="${jsSource}" casesensitive="false" includes="*.js" />
             </union>
         </concat>
         <delete dir="${outputDir}\lib\js" includeemptydirs="true" excludes="combined.js, **/modernizr*, **/i18n/*"/>
