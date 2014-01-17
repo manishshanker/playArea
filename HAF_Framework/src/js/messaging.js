@@ -9,13 +9,15 @@
         }
 
         function subscribe(scope, subject, callback) {
-            messageBus.on(subject, function (e, message) {
+            var unsubscribeMethod = function (e, message) {
                 callback.call(scope, message);
-            });
+            };
+            messageBus.on(subject, unsubscribeMethod);
+            return unsubscribeMethod;
         }
 
-        function unsubscribe(subject) {
-            messageBus.off(subject);
+        function unsubscribe(subject, fn) {
+            messageBus.off(subject, fn);
         }
 
         return {
