@@ -15,14 +15,12 @@
         templates: null,
         controls: null,
         services: null,
-        load: function (data) {
-            autoLoadAndRenderTemplates(this, data);
+        load: function () {
             subscribeToMessages(this);
             autoLoadControls(this);
         },
         unload: function () {
             destroyMessages(this);
-            destroyControlMessages(this);
             unloadControls(this);
         },
         update: function (data) {
@@ -101,13 +99,6 @@
         }
     }
 
-    function autoLoadAndRenderTemplates(ctx, data) {
-        var templates = ctx.templates;
-        if (templates && ctx.autoWire) {
-            loadTemplateAndRender(ctx, data, templates);
-        }
-    }
-
     function autoRenderTemplates(ctx, data) {
         if (ctx.autoWire) {
             renderTemplates(ctx, data);
@@ -173,6 +164,7 @@
         if (!(ctx.messages || ctx.controlMessages)) {
             return;
         }
+        destroyControlMessages(ctx);
         var messages = ctx.controlMessages;
         HAF.messaging.subscribe(ctx, messages.show, ctx.onShow);
         HAF.messaging.subscribe(ctx, messages.hide, ctx.onHide);
@@ -185,17 +177,6 @@
         });
         HAF.each(ctx.messages, function (message, key) {
             HAF.messaging.subscribe(ctx, key, message);
-        });
-    }
-
-    function loadTemplateAndRender(that, data, templates) {
-        var renderFunction = function (template) {
-            return function () {
-                that.render(data, template);
-            };
-        };
-        HAF.each(templates, function (template, key) {
-            template.load(renderFunction(key));
         });
     }
 
