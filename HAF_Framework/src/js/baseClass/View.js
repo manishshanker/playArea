@@ -2,9 +2,11 @@
     "use strict";
 
     HAF.View = HAF.Base.extend({
-        init: function () {
+        init: function (dependencies) {
+            this.injectDependencies(dependencies);
             this.$container = $(this.container);
             this.$el = this.$container.$item;
+            this.bind();
         },
         container: null,
         $container: null,

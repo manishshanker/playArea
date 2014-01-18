@@ -19,13 +19,15 @@ describe("News.controller", function () {
             var mockService = sinon.mock(newsListService);
             var mockServiceExpectation = mockService.expects("fetch").once();
             var controller = new APP.controller.News({
-                services: {
-                    newsList: newsListService,
-                    newsDetail: newsDetailService
-                },
-                controls: {
-                    newsList: new APP.controller.NewsList(),
-                    newsDetail: new APP.controller.NewsDetail()
+                inject: {
+                    services: {
+                        newsList: newsListService,
+                        newsDetail: newsDetailService
+                    },
+                    controls: {
+                        newsList: new APP.controller.NewsList(),
+                        newsDetail: new APP.controller.NewsDetail()
+                    }
                 }
             });
             controller.load();

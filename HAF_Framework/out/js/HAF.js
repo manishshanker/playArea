@@ -137,15 +137,38 @@
 
     HAF.Base = Class.extend({
         _guid: null,
+        messageBus: {
+            publish: noop,
+            subscribe: noop,
+            unsubscribe: noop
+        },
         guid: function () {
             if (!this._guid) {
                 this._guid = guid();
             }
             return this._guid;
+        },
+        injectDependencies: function (dependencies) {
+            injectDependencies(this, dependencies);
         }
     });
 
     HAF.Base.noop = noop;
+
+    function injectDependencies(ctx, dependencies) {
+        var dependency;
+        if (HAF.Messaging && (dependencies instanceof HAF.Messaging)) {
+            ctx.messageBus = dependencies;
+        }
+        var injectedDependencies = (dependencies && dependencies.inject && dependencies.inject) || (ctx.inject && ctx.inject());
+        if (injectedDependencies) {
+            for (dependency in injectedDependencies) {
+                if (injectedDependencies.hasOwnProperty(dependency)) {
+                    ctx[dependency] = injectedDependencies[dependency];
+                }
+            }
+        }
+    }
 
     function guid() {
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
@@ -168,16 +191,28 @@
         autoWire: false,
         autoDestroy: false,
         autoShowHide: false,
+        autoLoadControls: false,
         messages: null,
-        init: function (options) {
-            this.options = options;
+        inject: null,
+        init: function (dependecies) {
+            this.injectDependencies(dependecies);
         },
         views: null,
         templates: null,
         controls: null,
         services: null,
         load: function (data) {
-            load(this, data);
+            autoLoadAndRenderTemplates(this, data);
+            subscribeToMessages(this);
+            autoLoadControls(this);
+        },
+        unload: function () {
+            destroyMessages(this);
+            destroyControlMessages(this);
+            unloadControls(this);
+        },
+        update: function (data) {
+            autoRenderTemplates(this, data);
         },
         onUpdateReceive: function (data, item) {
             onUpdateReceive(this, data, item);
@@ -189,12 +224,6 @@
             if (this.autoWire) {
                 this.views[viewName].render(this.templates[viewName].process(data));
             }
-        },
-        inject: function (dependencies) {
-            this.views = dependencies.views || this.views;
-            this.templates = dependencies.templates || this.templates;
-            this.services = dependencies.services || this.services;
-            this.controls = dependencies.controls || this.controls;
         },
         onStateChange: HAF.Base.noop,
         onShow: function () {
@@ -216,13 +245,13 @@
         }
     });
 
-    function load(ctx, data) {
-        if (!ctx._loaded) {
-            autoLoadAndRenderTemplates(ctx, data);
-            subscribeToMessages(ctx);
-            ctx._loaded = true;
-        } else {
-            autoRenderTemplates(ctx, data);
+    function unloadControls(ctx) {
+        loop(ctx.controls, "unload");
+    }
+
+    function autoLoadControls(ctx) {
+        if (ctx.autoLoadControls) {
+            loop(ctx.controls, "load");
         }
     }
 
@@ -252,7 +281,7 @@
     }
 
     function onUpdateReceive(ctx, data, item) {
-        ctx.controls[item].load(data);
+        ctx.controls[item].update(data);
         if (ctx.lastStateData && ctx.onStateChange()[item]) {
             ctx.onStateChange()[item].call(ctx, ctx.controls[item], ctx.lastStateData);
         }
@@ -283,7 +312,6 @@
         ctx.templates = null;
         ctx.options = null;
         ctx.controls = null;
-        ctx._loaded = false;
         ctx._exist = false;
     }
 
@@ -483,13 +511,23 @@
     "use strict";
 
     HAF.View = HAF.Base.extend({
-        init: function () {
+        /**
+         *
+         * @param {Object} dependencies
+         */
+        init: function (dependencies) {
+            this.injectDependencies(dependencies);
             this.$container = $(this.container);
             this.$el = this.$container.$item;
+            this.bind();
         },
         container: null,
         $container: null,
         $el: null,
+        /**
+         *
+         * @param {string} html
+         */
         render: function (html) {
             this.$container.html(html);
         },
@@ -558,29 +596,23 @@
     "use strict";
 
     var Messaging = function () {
-        var messageBus = $({});
+        this.messageBus = $({});
+    };
 
-        function publish(subject, message) {
-            messageBus.trigger(subject, [message]);
-        }
-
-        function subscribe(scope, subject, callback) {
+    Messaging.prototype = {
+        publish: function (subject, message) {
+            this.messageBus.trigger(subject, [message]);
+        },
+        subscribe: function (scope, subject, callback) {
             var unsubscribeMethod = function (e, message) {
                 callback.call(scope, message);
             };
-            messageBus.on(subject, unsubscribeMethod);
+            this.messageBus.on(subject, unsubscribeMethod);
             return unsubscribeMethod;
+        },
+        unsubscribe: function (subject, fn) {
+            this.messageBus.off(subject, fn);
         }
-
-        function unsubscribe(subject, fn) {
-            messageBus.off(subject, fn);
-        }
-
-        return {
-            publish: publish,
-            subscribe: subscribe,
-            unsubscribe: unsubscribe
-        };
     };
 
     HAF.messaging = new Messaging();

@@ -2,29 +2,23 @@
     "use strict";
 
     var Messaging = function () {
-        var messageBus = $({});
+        this.messageBus = $({});
+    };
 
-        function publish(subject, message) {
-            messageBus.trigger(subject, [message]);
-        }
-
-        function subscribe(scope, subject, callback) {
+    Messaging.prototype = {
+        publish: function (subject, message) {
+            this.messageBus.trigger(subject, [message]);
+        },
+        subscribe: function (scope, subject, callback) {
             var unsubscribeMethod = function (e, message) {
                 callback.call(scope, message);
             };
-            messageBus.on(subject, unsubscribeMethod);
+            this.messageBus.on(subject, unsubscribeMethod);
             return unsubscribeMethod;
+        },
+        unsubscribe: function (subject, fn) {
+            this.messageBus.off(subject, fn);
         }
-
-        function unsubscribe(subject, fn) {
-            messageBus.off(subject, fn);
-        }
-
-        return {
-            publish: publish,
-            subscribe: subscribe,
-            unsubscribe: unsubscribe
-        };
     };
 
     HAF.messaging = new Messaging();
