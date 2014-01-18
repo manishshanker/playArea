@@ -3,6 +3,7 @@
 
     APP.controller.News = HAF.Controller.extend({
         autoWire: true,
+        lastSelectedNewsItem: null,
         inject: function () {
             return {
                 services: {
@@ -15,15 +16,17 @@
                 }
             };
         },
-        onStateChange: function () {
-            return {
-                newsList: function (newsList, stateData) {
-                    if (stateData.moduleItem) {
-                        newsList.selectItem(stateData.moduleItem);
-                    }
-                    this.services.newsDetail.fetch(this.services.newsList.lastResult(), stateData.moduleItem);
-                }
-            };
+        serviceUpdate: {
+            /*resetting the state back after re-render*/
+            newsList: function (newsList) {
+                updateNews(this, newsList, this.lastSelectedNewsItem);
+            }
+        },
+        routes: {
+            "/example/news/:id": function (id) {
+                this.lastSelectedNewsItem = id;
+                updateNews(this, this.controls.newsList, id);
+            }
         },
         controlMessages: {
             show: "navigationChangedTo:example",
@@ -31,5 +34,10 @@
             stateChange: "navigationStateChange:example"
         }
     });
+
+    function updateNews(ctx, newsList, newsItemId) {
+        newsList.selectItem(newsItemId);
+        ctx.services.newsDetail.fetch(ctx.services.newsList.lastResult(), newsItemId);
+    }
 
 }(HAF));

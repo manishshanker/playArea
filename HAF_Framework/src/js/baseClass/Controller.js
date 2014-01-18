@@ -8,6 +8,8 @@
         autoLoadControls: false,
         messages: null,
         inject: null,
+        routes: {},
+        serviceUpdate: {},
         init: function (dependecies) {
             this.injectDependencies(dependecies);
         },
@@ -37,7 +39,12 @@
                 this.views[viewName].render(this.templates[viewName].process(data));
             }
         },
-        onStateChange: HAF.noop,
+        onRouteChange: function () {
+            return this.routes;
+        },
+        onServiceUpdate: function () {
+            return this.serviceUpdate;
+        },
         onShow: function () {
             autoShowHide(this, true);
             autoInitServices(this);
@@ -94,8 +101,8 @@
 
     function onUpdateReceive(ctx, data, item) {
         ctx.controls[item].update(data);
-        if (ctx.lastStateData && ctx.onStateChange()[item]) {
-            ctx.onStateChange()[item].call(ctx, ctx.controls[item], ctx.lastStateData);
+        if (ctx.lastStateData && ctx.onServiceUpdate()[item]) {
+            ctx.onServiceUpdate()[item].call(ctx, ctx.controls[item], ctx.lastStateData);
         }
     }
 
@@ -170,9 +177,8 @@
         HAF.messaging.subscribe(ctx, messages.hide, ctx.onHide);
         HAF.messaging.subscribe(ctx, messages.stateChange, function (stateData) {
             ctx.lastStateData = stateData;
-            var stateChanges = ctx.onStateChange();
-            HAF.each(stateChanges, function (stateChange, key) {
-                stateChange.call(ctx, ctx.controls[key], stateData);
+            HAF.each(ctx.onRouteChange(stateData), function (item, key) {
+                HAF.navigation.route(ctx, key, item);
             });
         });
         HAF.each(ctx.messages, function (message, key) {
