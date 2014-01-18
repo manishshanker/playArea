@@ -14,8 +14,8 @@
                 this.updated(data);
             });
         },
-        update: HAF.Base.noop,
-        get: HAF.Base.noop,
+        update: HAF.noop,
+        get: HAF.noop,
         lastResult: function () {
             return privateVar[this.guid()].lastResult;
         },
@@ -35,8 +35,8 @@
         destroy: function () {
             delete privateVar[this.guid()];
         },
-        stop: HAF.Base.noop,
-        start: HAF.Base.noop
+        stop: HAF.noop,
+        start: HAF.noop
     });
 
 }(HAF, HAF.DOM));

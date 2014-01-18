@@ -19,21 +19,45 @@
         }
     });
 
-    HAF.Base.noop = noop;
+    HAF.noop = noop;
+    HAF.each = function (data, callback) {
+        if (data) {
+            if (data instanceof Array) {
+                loopArray(data, callback);
+            } else {
+                loopObject(data, callback);
+            }
+        }
+    };
+
+    function loopObject(data, callback) {
+        var d;
+        if (data) {
+            for (d in data) {
+                if (data.hasOwnProperty(d)) {
+                    callback(data[d], d);
+                }
+            }
+        }
+    }
+
+    function loopArray(data, callback) {
+        var i, l;
+        if (data) {
+            for (i = 0, l = data.length; i < l; i++) {
+                callback(data[i], i);
+            }
+        }
+    }
 
     function injectDependencies(ctx, dependencies) {
-        var dependency;
         if (HAF.Messaging && (dependencies instanceof HAF.Messaging)) {
             ctx.messageBus = dependencies;
         }
         var injectedDependencies = (dependencies && dependencies.inject && dependencies.inject) || (ctx.inject && ctx.inject());
-        if (injectedDependencies) {
-            for (dependency in injectedDependencies) {
-                if (injectedDependencies.hasOwnProperty(dependency)) {
-                    ctx[dependency] = injectedDependencies[dependency];
-                }
-            }
-        }
+        HAF.each(injectedDependencies, function (dependency, key) {
+            ctx[key] = dependency;
+        });
     }
 
     function guid() {

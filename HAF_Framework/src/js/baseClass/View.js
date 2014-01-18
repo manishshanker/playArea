@@ -17,7 +17,7 @@
         destroy: function () {
             this.$container.empty();
         },
-        bind: HAF.Base.noop,
+        bind: HAF.noop,
         hide: function () {
             this.$el.hide();
         },

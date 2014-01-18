@@ -153,21 +153,45 @@
         }
     });
 
-    HAF.Base.noop = noop;
+    HAF.noop = noop;
+    HAF.each = function (data, callback) {
+        if (data) {
+            if (data instanceof Array) {
+                loopArray(data, callback);
+            } else {
+                loopObject(data, callback);
+            }
+        }
+    };
+
+    function loopObject(data, callback) {
+        var d;
+        if (data) {
+            for (d in data) {
+                if (data.hasOwnProperty(d)) {
+                    callback(data[d], d);
+                }
+            }
+        }
+    }
+
+    function loopArray(data, callback) {
+        var i, l;
+        if (data) {
+            for (i = 0, l = data.length; i < l; i++) {
+                callback(data[i], i);
+            }
+        }
+    }
 
     function injectDependencies(ctx, dependencies) {
-        var dependency;
         if (HAF.Messaging && (dependencies instanceof HAF.Messaging)) {
             ctx.messageBus = dependencies;
         }
         var injectedDependencies = (dependencies && dependencies.inject && dependencies.inject) || (ctx.inject && ctx.inject());
-        if (injectedDependencies) {
-            for (dependency in injectedDependencies) {
-                if (injectedDependencies.hasOwnProperty(dependency)) {
-                    ctx[dependency] = injectedDependencies[dependency];
-                }
-            }
-        }
+        HAF.each(injectedDependencies, function (dependency, key) {
+            ctx[key] = dependency;
+        });
     }
 
     function guid() {
@@ -225,7 +249,7 @@
                 this.views[viewName].render(this.templates[viewName].process(data));
             }
         },
-        onStateChange: HAF.Base.noop,
+        onStateChange: HAF.noop,
         onShow: function () {
             autoShowHide(this, true);
             autoInitServices(this);
@@ -246,12 +270,12 @@
     });
 
     function unloadControls(ctx) {
-        loop(ctx.controls, "unload");
+        loopMethods(ctx.controls, "unload");
     }
 
     function autoLoadControls(ctx) {
         if (ctx.autoLoadControls) {
-            loop(ctx.controls, "load");
+            loopMethods(ctx.controls, "load");
         }
     }
 
@@ -270,13 +294,13 @@
 
     function autoStartServices(ctx) {
         if (ctx.autoWire) {
-            loop(ctx.services, "start");
+            loopMethods(ctx.services, "start");
         }
     }
 
     function autoStopServices(ctx) {
         if (ctx.autoWire) {
-            loop(ctx.services, "stop");
+            loopMethods(ctx.services, "stop");
         }
     }
 
@@ -303,9 +327,9 @@
     function destroy(ctx) {
         destroyControlMessages(ctx);
         destroyMessages(ctx);
-        loop(ctx.views, "destroy");
-        loop(ctx.controls, "destroy");
-        loop(ctx.services, "destroy");
+        loopMethods(ctx.views, "destroy");
+        loopMethods(ctx.controls, "destroy");
+        loopMethods(ctx.services, "destroy");
         ctx.services = null;
         ctx.views = null;
         ctx.lastStateData = null;
@@ -325,46 +349,28 @@
     }
 
     function destroyMessages(ctx) {
-        if (ctx.messages) {
-            var message;
-            for (message in ctx.messages) {
-                if (ctx.messages.hasOwnProperty(message)) {
-                    HAF.messaging.unsubscribe(ctx.messages[message]);
-                }
-            }
-        }
+        HAF.each(ctx.messages, function (item) {
+            HAF.messaging.unsubscribe(item);
+        });
     }
 
     function renderTemplates(ctx, data) {
-        var templates = ctx.templates, template;
-        for (template in templates) {
-            if (templates.hasOwnProperty(template)) {
-                ctx.render(data, template);
-            }
-        }
+        HAF.each(ctx.templates, function (item, key) {
+            ctx.render(data, key);
+        });
     }
 
-    function loop(collection, method, data) {
-        var item;
-        if (collection) {
-            for (item in collection) {
-                if (collection.hasOwnProperty(item)) {
-                    collection[item][method](data);
-                }
-            }
-        }
+    function loopMethods(collection, method, data) {
+        HAF.each(collection, function (item) {
+            item[method](data);
+        });
     }
 
     function initServices(services, that) {
-        var service;
-        if (services) {
-            for (service in services) {
-                if (services.hasOwnProperty(service)) {
-                    services[service].onUpdate(getFunction(that, service));
-                    services[service].fetch();
-                }
-            }
-        }
+        HAF.each(services, function (service, key) {
+            service.onUpdate(getFunction(that, key));
+            service.fetch();
+        });
     }
 
     function getFunction(scope, service) {
@@ -382,40 +388,31 @@
         HAF.messaging.subscribe(ctx, messages.hide, ctx.onHide);
         HAF.messaging.subscribe(ctx, messages.stateChange, function (stateData) {
             ctx.lastStateData = stateData;
-            var stateChanges = ctx.onStateChange(), stateChange;
-            for (stateChange in stateChanges) {
-                if (stateChanges.hasOwnProperty(stateChange)) {
-                    stateChanges[stateChange].call(ctx, ctx.controls[stateChange], stateData);
-                }
-            }
+            var stateChanges = ctx.onStateChange();
+            HAF.each(stateChanges, function (stateChange, key) {
+                stateChange.call(ctx, ctx.controls[key], stateData);
+            });
         });
-        messages = ctx.messages;
-        var message;
-        for (message in messages) {
-            if (messages.hasOwnProperty(message)) {
-                HAF.messaging.subscribe(ctx, message, messages[message]);
-            }
-        }
+        HAF.each(ctx.messages, function (message, key) {
+            HAF.messaging.subscribe(ctx, key, message);
+        });
     }
 
     function loadTemplateAndRender(that, data, templates) {
-        var template;
         var renderFunction = function (template) {
             return function () {
                 that.render(data, template);
             };
         };
-        for (template in templates) {
-            if (templates.hasOwnProperty(template)) {
-                templates[template].load(renderFunction(template));
-            }
-        }
+        HAF.each(templates, function (template, key) {
+            template.load(renderFunction(key));
+        });
     }
 
     function autoShowHide(that, isShow) {
         if (that.autoShowHide) {
-            loop(that.views, isShow ? "show" : "hide");
-            loop(that.controls, isShow ? "show" : "hide");
+            loopMethods(that.views, isShow ? "show" : "hide");
+            loopMethods(that.controls, isShow ? "show" : "hide");
         }
     }
 
@@ -436,8 +433,8 @@
                 this.updated(data);
             });
         },
-        update: HAF.Base.noop,
-        get: HAF.Base.noop,
+        update: HAF.noop,
+        get: HAF.noop,
         lastResult: function () {
             return privateVar[this.guid()].lastResult;
         },
@@ -457,8 +454,8 @@
         destroy: function () {
             delete privateVar[this.guid()];
         },
-        stop: HAF.Base.noop,
-        start: HAF.Base.noop
+        stop: HAF.noop,
+        start: HAF.noop
     });
 
 }(HAF, HAF.DOM));
@@ -529,7 +526,7 @@
         destroy: function () {
             this.$container.empty();
         },
-        bind: HAF.Base.noop,
+        bind: HAF.noop,
         hide: function () {
             this.$el.hide();
         },
