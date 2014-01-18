@@ -544,8 +544,8 @@
                 that.bind();
             }
             if (that.autoLayout) {
-                $(window).off("resize." + that.guid()).on(("resize." + that.guid()), function() {
-                    that.messageBus.publish("visual-filtering-layout-change");
+                $(window).off("resize." + that.guid()).on(("resize." + that.guid()), function () {
+                    that.layoutChange();
                 });
             }
         }
@@ -559,7 +559,8 @@
     }
 
     function bindEvents(ctx) {
-        HAF.each(ctx.bindings, function (fn, key) {
+        var bindings = typeof ctx.bindings === "function" ? ctx.bindings() : ctx.bindings;
+        HAF.each(bindings, function (fn, key) {
             var parts = /([a-z]+)\s([a-zA-Z0-9\-\.\(\)>]+)/.exec(key);
             ctx.$container.on(parts[1], parts[2], function (e) {
                 fn.call(ctx, e, this);
