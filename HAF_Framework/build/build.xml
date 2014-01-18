@@ -21,7 +21,7 @@
         <delete dir="${outputDir}"/>
     </target>
 
-    <target name="build" depends="copy-source-to-build-folder, merge-js, minify-js"></target>
+    <target name="build" depends="copy-source-to-build-folder, merge-js, minify-js, copy-to-boiler-plate"></target>
 
     <target name="copy-source-to-build-folder">
         <echo message="${outputDir}"/>
@@ -64,6 +64,10 @@
             </fileset>
         </yuicompress>
         <echo message="END: JS MINIFY"/>
+    </target>
+
+    <target name="copy-to-boiler-plate">
+        <copy file="${outputDir}\js\HAF.min.js" toFile="${outputDir}\..\..\HAF_Boilerplate\src\lib\js\vendor\HAF.min.js" />
     </target>
 
 </project>
