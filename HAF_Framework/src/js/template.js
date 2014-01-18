@@ -5,7 +5,8 @@
         getById: getById,
         getByCSSSelector: getByCSSSelector,
         getByURL: getByURL,
-        process: process
+        process: process,
+        remove: remove
     };
 
     function getByURL(url, onSuccess) {
@@ -16,6 +17,11 @@
 
     function getCompiledTemplate(template) {
         return Handlebars.compile(template);
+    }
+
+    function remove(id) {
+        var $el = $("#" + id);
+        $el.remove();
     }
 
     function getById(id) {

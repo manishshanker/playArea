@@ -472,7 +472,10 @@
             this.path = path;
             this.loadBy = loadType || HAF.Template.LOAD.DEFAULT;
             if (this.loadBy === HAF.Template.LOAD.BY_ID) {
-                templateCache[this.guid()] = templateCache[this.guid()] || HAF.templateEngine.getById(path);
+                if (!templateCache[this.guid()]) {
+                    templateCache[this.guid()] = HAF.templateEngine.getById(path);
+                    HAF.templateEngine.remove(path);
+                }
             }
         },
         process: function (data) {
@@ -511,10 +514,6 @@
     "use strict";
 
     HAF.View = HAF.Base.extend({
-        /**
-         *
-         * @param {Object} dependencies
-         */
         init: function (dependencies) {
             this.injectDependencies(dependencies);
             this.$container = $(this.container);
@@ -524,10 +523,6 @@
         container: null,
         $container: null,
         $el: null,
-        /**
-         *
-         * @param {string} html
-         */
         render: function (html) {
             this.$container.html(html);
         },
@@ -549,8 +544,10 @@
 
     Handlebars.registerHelper('list', function (items, options) {
         var out = "<ul>", i, l;
-        for (i = 0, l = items.length; i < l; i++) {
-            out = out + "<li>" + options.fn(items[i]) + "</li>";
+        if (items && items.length) {
+            for (i = 0, l = items.length; i < l; i++) {
+                out += "<li>" + options.fn(items[i]) + "</li>";
+            }
         }
         return out + "</ul>";
     });
@@ -709,7 +706,8 @@
         getById: getById,
         getByCSSSelector: getByCSSSelector,
         getByURL: getByURL,
-        process: process
+        process: process,
+        remove: remove
     };
 
     function getByURL(url, onSuccess) {
@@ -720,6 +718,11 @@
 
     function getCompiledTemplate(template) {
         return Handlebars.compile(template);
+    }
+
+    function remove(id) {
+        var $el = $("#" + id);
+        $el.remove();
     }
 
     function getById(id) {

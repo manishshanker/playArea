@@ -8,7 +8,10 @@
             this.path = path;
             this.loadBy = loadType || HAF.Template.LOAD.DEFAULT;
             if (this.loadBy === HAF.Template.LOAD.BY_ID) {
-                templateCache[this.guid()] = templateCache[this.guid()] || HAF.templateEngine.getById(path);
+                if (!templateCache[this.guid()]) {
+                    templateCache[this.guid()] = HAF.templateEngine.getById(path);
+                    HAF.templateEngine.remove(path);
+                }
             }
         },
         process: function (data) {
