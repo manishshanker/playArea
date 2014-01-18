@@ -6,6 +6,7 @@
         autoDestroy: false,
         autoShowHide: false,
         autoLoadControls: false,
+        autoLayout: false,
         messages: null,
         inject: null,
         routes: {},
@@ -17,6 +18,12 @@
         templates: null,
         controls: null,
         services: null,
+        layoutChange: function () {
+            if (this.autoLayout) {
+                loopMethods(this.controls, "layoutChange");
+                loopMethods(this.views, "layoutChange");
+            }
+        },
         load: function () {
             subscribeToMessages(this);
             autoLoadControls(this);

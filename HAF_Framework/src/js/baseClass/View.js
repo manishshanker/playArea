@@ -3,6 +3,7 @@
 
     HAF.View = HAF.Base.extend({
         autoBindManagement: false,
+        autoLayout: false,
         init: function (dependencies) {
             this.injectDependencies(dependencies);
             this.$container = $(this.container);
@@ -14,6 +15,7 @@
         container: null,
         $container: null,
         bindings: null,
+        layoutChange: HAF.noop,
         bind: function () {
             bindEvents(this);
         },
@@ -28,15 +30,25 @@
             this.$container.empty();
         },
         hide: function () {
-            this.$el.hide();
-            if (this.autoBindManagement) {
-                this.unbind();
+            var that = this;
+            that.$el.hide();
+            if (that.autoBindManagement) {
+                that.unbind();
+            }
+            if (that.autoLayout) {
+                $(window).off("resize." + that.guid());
             }
         },
         show: function () {
-            this.$el.show();
-            if (this.autoBindManagement) {
-                this.bind();
+            var that = this;
+            that.$el.show();
+            if (that.autoBindManagement) {
+                that.bind();
+            }
+            if (that.autoLayout) {
+                $(window).off("resize." + that.guid()).on(("resize." + that.guid()), function() {
+                    that.messageBus.publish("visual-filtering-layout-change");
+                });
             }
         }
     });
