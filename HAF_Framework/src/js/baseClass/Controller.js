@@ -34,11 +34,6 @@
         destroy: function () {
             destroy(this);
         },
-        render: function (data, viewName) {
-            if (this.autoWire) {
-                this.views[viewName].render(this.templates[viewName].process(data));
-            }
-        },
         onRouteChange: function () {
             return this.routes;
         },
@@ -143,8 +138,8 @@
     }
 
     function renderTemplates(ctx, data) {
-        HAF.each(ctx.templates, function (item, key) {
-            ctx.render(data, key);
+        HAF.each(ctx.templates, function (template, key) {
+            ctx.views[key].render(template.process(data));
         });
     }
 

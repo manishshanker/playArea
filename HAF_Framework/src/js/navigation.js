@@ -59,6 +59,14 @@
             };
         }
 
+        function setRoute(route) {
+            currentPath = route;
+            location.hash = route;
+            if ("onhashchange" in window) {
+                onLocationChange();
+            }
+        }
+
         function route(context, pattern, callback, callbackFailure) {
             var items = new RegExp(("^" + pattern + "$").replace("?", ".").replace(/:[a-zA-Z0-9-_]+/g, function (a) {
                 return "([a-zA-Z0-9-_]+)";
@@ -75,7 +83,8 @@
 
         return {
             load: load,
-            route: route
+            route: route,
+            setRoute: setRoute
         };
     };
 
