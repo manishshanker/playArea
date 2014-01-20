@@ -63,7 +63,7 @@
     <option passfail="false" />
     <option white="false" />
     <option maxerr="50" />
-    <option predef="HAF,APP" />
+    <option predef="HAF,APP,Handlebars" />
   </component>
 </project>
 
