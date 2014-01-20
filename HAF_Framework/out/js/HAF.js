@@ -569,20 +569,27 @@
     }
 
 }(HAF, HAF.DOM));
-(function () {
+(function (HB) {
     "use strict";
 
-    Handlebars.registerHelper('list', function (items, options) {
-        var out = "<ul>", i, l;
+    HB.registerHelper('list', function (items, className, options) {
+        var out, i, l, listCSSClass = "", listItemCSSClass = "";
+        if (typeof className === "string") {
+            listCSSClass = " class='" + className + "' ";
+            listItemCSSClass = " class='" + className + "-item' ";
+        } else {
+            options = className;
+        }
+        out = "<ul" + listCSSClass + ">";
         if (items && items.length) {
             for (i = 0, l = items.length; i < l; i++) {
-                out += "<li>" + options.fn(items[i]) + "</li>";
+                out += "<li" + listItemCSSClass + ">" + options.fn(items[i]) + "</li>";
             }
         }
         return out + "</ul>";
     });
 
-}());
+}(Handlebars));
 /*i18n Handlebar helper*/
 (function (HAF) {
     "use strict";
