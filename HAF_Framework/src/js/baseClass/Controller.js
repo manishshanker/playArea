@@ -11,8 +11,8 @@
         inject: null,
         routes: {},
         serviceUpdate: {},
-        init: function (dependecies) {
-            this.injectDependencies(dependecies);
+        init: function (dependencies) {
+            this.injectDependencies(dependencies);
         },
         views: null,
         templates: null,

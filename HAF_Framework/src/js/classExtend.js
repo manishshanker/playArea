@@ -15,6 +15,7 @@
         k.prototype = new this(isFn);
         var makeSuper = function (fn, sfn) {
             return function () {
+                //noinspection JSPotentiallyInvalidUsageOfThis
                 this._super = sfn;
                 return fn.apply(this, arguments);
             };

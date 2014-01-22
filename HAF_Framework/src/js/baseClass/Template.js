@@ -27,7 +27,7 @@
                     onSuccess();
                 }
                 HAF.templateEngine.getByURL(that.path, function (template) {
-                    templateCache[this.guid()] = template;
+                    templateCache[that.guid()] = template;
                     onSuccess();
                 });
             } else {

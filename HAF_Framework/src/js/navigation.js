@@ -62,7 +62,7 @@
         function setRoute(route) {
             currentPath = route;
             location.hash = route;
-            if ("onhashchange" in window) {
+            if (window.hasOwnProperty("onhashchange")) {
                 onLocationChange();
             }
         }

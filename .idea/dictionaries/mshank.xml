@@ -2,7 +2,12 @@
   <dictionary name="mshank">
     <words>
       <w>guid</w>
+      <w>hafdom</w>
+      <w>hashchange</w>
       <w>noop</w>
+      <w>onhashchange</w>
+      <w>proto</w>
+      <w>unsubscribe</w>
     </words>
   </dictionary>
 </component>
