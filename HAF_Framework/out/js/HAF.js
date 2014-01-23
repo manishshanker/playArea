@@ -114,6 +114,7 @@
         k.prototype = new this(isFn);
         var makeSuper = function (fn, sfn) {
             return function () {
+                //noinspection JSPotentiallyInvalidUsageOfThis
                 this._super = sfn;
                 return fn.apply(this, arguments);
             };
@@ -188,7 +189,7 @@
         if (HAF.Messaging && (dependencies instanceof HAF.Messaging)) {
             ctx.messageBus = dependencies;
         }
-        var injectedDependencies = (dependencies && dependencies.inject && dependencies.inject) || (ctx.inject && ctx.inject());
+        var injectedDependencies = (dependencies && dependencies.inject) || (ctx.inject && ctx.inject());
         HAF.each(injectedDependencies, function (dependency, key) {
             ctx[key] = dependency;
         });
@@ -218,11 +219,15 @@
         autoLoadControls: false,
         autoLayout: false,
         messages: null,
+        injectMessageBus: false,
         inject: null,
         routes: {},
         serviceUpdate: {},
-        init: function (dependecies) {
-            this.injectDependencies(dependecies);
+        init: function (dependencies) {
+            if (this.injectMessageBus) {
+                this.messageBus = new HAF.Messaging();
+            }
+            this.injectDependencies(dependencies);
         },
         views: null,
         templates: null,
@@ -477,7 +482,7 @@
                     onSuccess();
                 }
                 HAF.templateEngine.getByURL(that.path, function (template) {
-                    templateCache[this.guid()] = template;
+                    templateCache[that.guid()] = template;
                     onSuccess();
                 });
             } else {

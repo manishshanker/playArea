@@ -54,7 +54,7 @@
         if (HAF.Messaging && (dependencies instanceof HAF.Messaging)) {
             ctx.messageBus = dependencies;
         }
-        var injectedDependencies = (dependencies && dependencies.inject && dependencies.inject) || (ctx.inject && ctx.inject());
+        var injectedDependencies = (dependencies && dependencies.inject) || (ctx.inject && ctx.inject());
         HAF.each(injectedDependencies, function (dependency, key) {
             ctx[key] = dependency;
         });

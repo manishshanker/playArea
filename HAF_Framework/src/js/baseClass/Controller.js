@@ -8,10 +8,14 @@
         autoLoadControls: false,
         autoLayout: false,
         messages: null,
+        injectMessageBus: false,
         inject: null,
         routes: {},
         serviceUpdate: {},
         init: function (dependencies) {
+            if (this.injectMessageBus) {
+                this.messageBus = new HAF.Messaging();
+            }
             this.injectDependencies(dependencies);
         },
         views: null,
