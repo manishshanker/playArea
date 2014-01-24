@@ -8,7 +8,7 @@
             this.injectDependencies(dependencies);
             this.$container = $(this.container);
             this.$el = this.$container.$item;
-            if (this.autoManageEventBind) {
+            if (!this.autoManageEventBind) {
                 this.bind();
             }
         },
@@ -27,6 +27,7 @@
             this.$container.html(html);
         },
         destroy: function () {
+            this.unbind();
             this.$container.empty();
         },
         hide: function () {
