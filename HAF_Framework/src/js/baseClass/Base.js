@@ -1,13 +1,16 @@
 (function (HAF) {
     "use strict";
 
+    var defaultMessageBus = {
+        publish: noop,
+        subscribe: noop,
+        unsubscribe: noop
+    };
+
     HAF.Base = Class.extend({
         _guid: null,
-        messageBus: {
-            publish: noop,
-            subscribe: noop,
-            unsubscribe: noop
-        },
+        messageBus: defaultMessageBus,
+        parentMessageBus: defaultMessageBus,
         guid: function () {
             if (!this._guid) {
                 this._guid = guid();
@@ -52,7 +55,10 @@
 
     function injectDependencies(ctx, dependencies) {
         if (HAF.Messaging && (dependencies instanceof HAF.Messaging)) {
-            ctx.messageBus = dependencies;
+            ctx.parentMessageBus = dependencies;
+        }
+        if (ctx.injectMessageBus) {
+            ctx.messageBus = (dependencies && dependencies.inject && dependencies.inject.messageBus) || new HAF.Messaging();
         }
         var injectedDependencies = (dependencies && dependencies.inject) || (ctx.inject && ctx.inject());
         HAF.each(injectedDependencies, function (dependency, key) {

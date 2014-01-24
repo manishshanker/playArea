@@ -136,13 +136,16 @@
 (function (HAF) {
     "use strict";
 
+    var defaultMessageBus = {
+        publish: noop,
+        subscribe: noop,
+        unsubscribe: noop
+    };
+
     HAF.Base = Class.extend({
         _guid: null,
-        messageBus: {
-            publish: noop,
-            subscribe: noop,
-            unsubscribe: noop
-        },
+        messageBus: defaultMessageBus,
+        parentMessageBus: defaultMessageBus,
         guid: function () {
             if (!this._guid) {
                 this._guid = guid();
@@ -187,7 +190,10 @@
 
     function injectDependencies(ctx, dependencies) {
         if (HAF.Messaging && (dependencies instanceof HAF.Messaging)) {
-            ctx.messageBus = dependencies;
+            ctx.parentMessageBus = dependencies;
+        }
+        if (ctx.injectMessageBus) {
+            ctx.messageBus = (dependencies && dependencies.inject && dependencies.inject.messageBus) || new HAF.Messaging();
         }
         var injectedDependencies = (dependencies && dependencies.inject) || (ctx.inject && ctx.inject());
         HAF.each(injectedDependencies, function (dependency, key) {
@@ -223,10 +229,9 @@
         inject: null,
         routes: {},
         serviceUpdate: {},
+        parentMessageBus: null,
+        messageBus: null,
         init: function (dependencies) {
-            if (this.injectMessageBus) {
-                this.messageBus = new HAF.Messaging();
-            }
             this.injectDependencies(dependencies);
         },
         views: null,
@@ -505,13 +510,13 @@
     "use strict";
 
     HAF.View = HAF.Base.extend({
-        autoBindManagement: false,
+        autoManageEventBind: false,
         autoLayout: false,
         init: function (dependencies) {
             this.injectDependencies(dependencies);
             this.$container = $(this.container);
             this.$el = this.$container.$item;
-            if (!this.autoBindManagement) {
+            if (this.autoManageEventBind) {
                 this.bind();
             }
         },
@@ -535,7 +540,7 @@
         hide: function () {
             var that = this;
             that.$el.hide();
-            if (that.autoBindManagement) {
+            if (that.autoManageEventBind) {
                 that.unbind();
             }
             if (that.autoLayout) {
@@ -545,7 +550,7 @@
         show: function () {
             var that = this;
             that.$el.show();
-            if (that.autoBindManagement) {
+            if (that.autoManageEventBind) {
                 that.bind();
             }
             if (that.autoLayout) {

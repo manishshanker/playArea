@@ -2,13 +2,13 @@
     "use strict";
 
     HAF.View = HAF.Base.extend({
-        autoBindManagement: false,
+        autoManageEventBind: false,
         autoLayout: false,
         init: function (dependencies) {
             this.injectDependencies(dependencies);
             this.$container = $(this.container);
             this.$el = this.$container.$item;
-            if (!this.autoBindManagement) {
+            if (this.autoManageEventBind) {
                 this.bind();
             }
         },
@@ -32,7 +32,7 @@
         hide: function () {
             var that = this;
             that.$el.hide();
-            if (that.autoBindManagement) {
+            if (that.autoManageEventBind) {
                 that.unbind();
             }
             if (that.autoLayout) {
@@ -42,7 +42,7 @@
         show: function () {
             var that = this;
             that.$el.show();
-            if (that.autoBindManagement) {
+            if (that.autoManageEventBind) {
                 that.bind();
             }
             if (that.autoLayout) {

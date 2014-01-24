@@ -12,10 +12,9 @@
         inject: null,
         routes: {},
         serviceUpdate: {},
+        parentMessageBus: null,
+        messageBus: null,
         init: function (dependencies) {
-            if (this.injectMessageBus) {
-                this.messageBus = new HAF.Messaging();
-            }
             this.injectDependencies(dependencies);
         },
         views: null,
