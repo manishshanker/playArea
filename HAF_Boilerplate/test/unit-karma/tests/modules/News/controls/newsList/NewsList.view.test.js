@@ -3,6 +3,7 @@ describe("NewsList.view", function () {
 
     describe(".selectItem", function () {
         it("should add selected class on selected item", function () {
+            HAF.init(APP);
             var $fragments = $("<div id='fragments'></div>");
             $fragments.html("<div id='newsItem_1'>{{title}}</div>");
             $("body").append($fragments);

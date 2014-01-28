@@ -6,7 +6,7 @@
         inject: function () {
             return {
                 templates: {
-                    newsList: new HAF.Template("newsListTemplate")
+                    newsList: new HAF.Template("tmplNewsList")
                 },
                 views: {
                     newsList: new APP.view.NewsList()

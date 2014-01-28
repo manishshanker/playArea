@@ -7,6 +7,7 @@
       <w>noop</w>
       <w>onhashchange</w>
       <w>proto</w>
+      <w>tmpl</w>
       <w>unsubscribe</w>
     </words>
   </dictionary>

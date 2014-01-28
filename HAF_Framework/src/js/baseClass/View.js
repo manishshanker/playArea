@@ -11,6 +11,7 @@
             if (!this.autoManageEventBind) {
                 this.bind();
             }
+            addAutoLayoutHandler(this);
         },
         container: null,
         $container: null,
@@ -27,30 +28,22 @@
             this.$container.html(html);
         },
         destroy: function () {
-            this.unbind();
-            this.$container.empty();
+            var that = this;
+            removeAutoLayoutHandler(that);
+            that.unbind();
+            that.$container.empty();
         },
         hide: function () {
             var that = this;
             that.$el.hide();
-            if (that.autoManageEventBind) {
-                that.unbind();
-            }
-            if (that.autoLayout) {
-                $(window).off("resize." + that.guid());
-            }
+            autoUnbindEvents(that);
+            removeAutoLayoutHandler(that);
         },
         show: function () {
             var that = this;
             that.$el.show();
-            if (that.autoManageEventBind) {
-                that.bind();
-            }
-            if (that.autoLayout) {
-                $(window).off("resize." + that.guid()).on(("resize." + that.guid()), function () {
-                    that.layoutChange();
-                });
-            }
+            autoBindEvents(that);
+            addAutoLayoutHandler(that);
         }
     });
 
@@ -69,6 +62,32 @@
                 fn.call(ctx, e, this);
             });
         });
+    }
+
+    function addAutoLayoutHandler(that) {
+        if (that.autoLayout) {
+            $(window).off("resize." + that.guid()).on(("resize." + that.guid()), function () {
+                that.layoutChange();
+            });
+        }
+    }
+
+    function removeAutoLayoutHandler(that) {
+        if (that.autoLayout) {
+            $(window).off("resize." + that.guid());
+        }
+    }
+
+    function autoUnbindEvents(that) {
+        if (that.autoManageEventBind) {
+            that.unbind();
+        }
+    }
+
+    function autoBindEvents(that) {
+        if (that.autoManageEventBind) {
+            that.bind();
+        }
     }
 
 }(HAF, HAF.DOM));

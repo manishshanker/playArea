@@ -22,8 +22,9 @@
 
     window.HAF = HAF = HAF || {};
 
-    HAF.init = function (locale) {
+    HAF.init = function (appNameSpace, locale) {
         HAF.i18nT = locale;
+        HAF.Module = appNameSpace || {};
     };
 
 }(window.HAF, window));
@@ -136,29 +137,10 @@
 (function (HAF) {
     "use strict";
 
-    var defaultMessageBus = {
-        publish: noop,
-        subscribe: noop,
-        unsubscribe: noop
-    };
-
-    HAF.Base = Class.extend({
-        _guid: null,
-        messageBus: defaultMessageBus,
-        parentMessageBus: defaultMessageBus,
-        guid: function () {
-            if (!this._guid) {
-                this._guid = guid();
-            }
-            return this._guid;
-        },
-        injectDependencies: function (dependencies) {
-            injectDependencies(this, dependencies);
-        }
-    });
-
     HAF.noop = noop;
-    HAF.each = function (data, callback) {
+    HAF.each = each;
+
+    function each(data, callback) {
         if (data) {
             if (data instanceof Array) {
                 loopArray(data, callback);
@@ -166,7 +148,7 @@
                 loopObject(data, callback);
             }
         }
-    };
+    }
 
     function loopObject(data, callback) {
         var d;
@@ -188,18 +170,34 @@
         }
     }
 
-    function injectDependencies(ctx, dependencies) {
-        if (HAF.Messaging && (dependencies instanceof HAF.Messaging)) {
-            ctx.parentMessageBus = dependencies;
-        }
-        if (ctx.injectMessageBus) {
-            ctx.messageBus = (dependencies && dependencies.inject && dependencies.inject.messageBus) || new HAF.Messaging();
-        }
-        var injectedDependencies = (dependencies && dependencies.inject) || (ctx.inject && ctx.inject());
-        HAF.each(injectedDependencies, function (dependency, key) {
-            ctx[key] = dependency;
-        });
+    function noop() {
     }
+
+}(HAF));
+(function (HAF) {
+    "use strict";
+
+    var defaultMessageBus = {
+        publish: HAF.noop,
+        subscribe: HAF.noop,
+        unsubscribe: HAF.noop
+    };
+
+    HAF.Base = Class.extend({
+        _guid: null,
+        messageBus: defaultMessageBus,
+        parentMessageBus: defaultMessageBus,
+        injector: null,
+        guid: function () {
+            if (!this._guid) {
+                this._guid = guid();
+            }
+            return this._guid;
+        },
+        injectDependencies: function (dependencies) {
+            HAF.dependencyInjector(this, dependencies);
+        }
+    });
 
     function guid() {
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
@@ -209,9 +207,6 @@
         return Math.floor((1 + Math.random()) * 0x10000)
             .toString(16)
             .substring(1);
-    }
-
-    function noop() {
     }
 
 }(HAF));
@@ -519,6 +514,7 @@
             if (!this.autoManageEventBind) {
                 this.bind();
             }
+            addAutoLayoutHandler(this);
         },
         container: null,
         $container: null,
@@ -535,30 +531,22 @@
             this.$container.html(html);
         },
         destroy: function () {
-            this.unbind();
-            this.$container.empty();
+            var that = this;
+            removeAutoLayoutHandler(that);
+            that.unbind();
+            that.$container.empty();
         },
         hide: function () {
             var that = this;
             that.$el.hide();
-            if (that.autoManageEventBind) {
-                that.unbind();
-            }
-            if (that.autoLayout) {
-                $(window).off("resize." + that.guid());
-            }
+            autoUnbindEvents(that);
+            removeAutoLayoutHandler(that);
         },
         show: function () {
             var that = this;
             that.$el.show();
-            if (that.autoManageEventBind) {
-                that.bind();
-            }
-            if (that.autoLayout) {
-                $(window).off("resize." + that.guid()).on(("resize." + that.guid()), function () {
-                    that.layoutChange();
-                });
-            }
+            autoBindEvents(that);
+            addAutoLayoutHandler(that);
         }
     });
 
@@ -579,7 +567,113 @@
         });
     }
 
+    function addAutoLayoutHandler(that) {
+        if (that.autoLayout) {
+            $(window).off("resize." + that.guid()).on(("resize." + that.guid()), function () {
+                that.layoutChange();
+            });
+        }
+    }
+
+    function removeAutoLayoutHandler(that) {
+        if (that.autoLayout) {
+            $(window).off("resize." + that.guid());
+        }
+    }
+
+    function autoUnbindEvents(that) {
+        if (that.autoManageEventBind) {
+            that.unbind();
+        }
+    }
+
+    function autoBindEvents(that) {
+        if (that.autoManageEventBind) {
+            that.bind();
+        }
+    }
+
 }(HAF, HAF.DOM));
+(function (HAF) {
+    "use strict";
+
+    HAF.dependencyInjector = injectDependencies;
+
+    var TYPES = {
+        "views": "view",
+        "templates": "template",
+        "services": "service",
+        "controls": "controller"
+    };
+
+    function injectDependencies(ctx, dependencies) {
+        if (HAF.Messaging && (dependencies instanceof HAF.Messaging)) {
+            ctx.parentMessageBus = dependencies;
+        }
+        if (ctx.injectMessageBus) {
+            ctx.messageBus = (dependencies && dependencies.inject && dependencies.inject.messageBus) || new HAF.Messaging();
+        }
+        var injectedDependencies = (dependencies && dependencies.inject) || (ctx.inject && (typeof ctx.inject === "function" ? ctx.inject() : ctx.inject));
+        HAF.each(injectedDependencies, function (dependency, key) {
+            var depType = /^controls$|^templates$|^views$|^services$/.exec(key);
+            if (depType && (dependency instanceof Array)) {
+                HAF.each(dependency, function (subDependency) {
+                    ctx[key] = ctx[key] || {};
+                    if (typeof subDependency === "string") {
+                        ctx[key][subDependency] = ctx[subDependency] || {};
+                        injectInCtx(ctx[key], subDependency, getDependencyInstance(ctx, key, subDependency));
+                    } else {
+                        HAF.each(subDependency, function (dep, subSubKey) {
+                            injectInCtx(ctx[key], subSubKey, getDep(dep, ctx, key));
+                        });
+                    }
+                });
+            } else {
+                ctx[key] = getDep(dependency, ctx, key);
+            }
+        });
+    }
+
+    function getDep(dependency, ctx, key) {
+        return (typeof dependency === "string") ? getDependencyInstance(ctx, key, dependency) : dependency;
+    }
+
+    function injectInCtx(ctx, dependency, depInstance) {
+        ctx[dependency] = depInstance;
+    }
+
+    function getDependencyInstance(ctx, key, dependency) {
+        if (ctx.injector) {
+            HAF.Module.dependency = HAF.Module.dependency || {};
+            var depInjector = HAF.Module.dependency[ctx.injector];
+            if (depInjector) {
+                if (depInjector[key][dependency]) {
+                    return depInjector[key][dependency](ctx);
+                }
+            }
+        }
+        return defaultInjector(ctx, key, dependency);
+    }
+
+    function defaultInjector(ctx, type, dependency) {
+        if (type === "templates") {
+            HAF.Module.template = HAF.Module.template || {};
+            if (HAF.Module.template[dependency]) {
+                return new HAF.Module.template[dependency]();
+            }
+            return new HAF.Template("tmpl" + dependency.substr(0, 1).toUpperCase() + dependency.substr(1));
+        }
+        var moduleNameSpace = TYPES[type];
+        HAF.Module[moduleNameSpace] = HAF.Module[moduleNameSpace] || {};
+        try {
+            return new HAF.Module[moduleNameSpace][dependency.substr(0, 1).toUpperCase() + dependency.substr(1)](ctx.injectMessageBus ? ctx.messageBus : ctx.parentMessageBus);
+        } catch (e) {
+            console.log(e);
+            throw new Error("Dependency instance creation error: (" + type + "," + dependency + " | " + moduleNameSpace + "." + (dependency.substr(0, 1).toUpperCase() + dependency.substr(1)) + ")");
+        }
+    }
+
+}(HAF));
 (function (HB) {
     "use strict";
 

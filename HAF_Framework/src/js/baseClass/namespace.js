@@ -3,8 +3,9 @@
 
     window.HAF = HAF = HAF || {};
 
-    HAF.init = function (locale) {
+    HAF.init = function (appNameSpace, locale) {
         HAF.i18nT = locale;
+        HAF.Module = appNameSpace || {};
     };
 
 }(window.HAF, window));

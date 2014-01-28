@@ -56,12 +56,12 @@
 
             <div class="news">
                 <div id="newsList">
-                    <script id="newsListTemplate" type="text/x-handlebars-template">
+                    <script id="tmplNewsList" type="text/x-handlebars-template">
                         {{#list this}}<a id="newsItem_{{id}}" href="#/example/news/{{id}}">{{title}}</a>{{/list}}
                     </script>
                 </div>
                 <div id="newsDetail">
-                    <script id="newsDetailTemplate" type="text/x-handlebars-template">
+                    <script id="tmplNewsDetail" type="text/x-handlebars-template">
 	                    {{#if title}}
                             <h3>{{title}}</h3>
                             <p>{{description}}</p>
@@ -117,6 +117,7 @@
 	<script src="lib/js/app/serviceURLs.js"></script>
 
 	<script src="lib/js/app/modules/News/controls/newsDetail/NewsDetail.controller.js"></script>
+	<script src="lib/js/app/modules/News/controls/newsDetail/NewsDetail.dependency.js"></script>
     <script src="lib/js/app/modules/News/controls/newsDetail/NewsDetail.view.js"></script>
     <script src="lib/js/app/modules/News/controls/newsList/NewsList.controller.js"></script>
     <script src="lib/js/app/modules/News/controls/newsList/NewsList.view.js"></script>

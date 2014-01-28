@@ -4,17 +4,9 @@
     APP.controller.News = HAF.Controller.extend({
         autoWire: true,
         lastSelectedNewsItem: null,
-        inject: function () {
-            return {
-                services: {
-                    newsList: new APP.service.NewsList(),
-                    newsDetail: new APP.service.NewsDetail()
-                },
-                controls: {
-                    newsList: new APP.controller.NewsList(),
-                    newsDetail: new APP.controller.NewsDetail()
-                }
-            };
+        inject: {
+            services: ["newsDetail", "newsList"],
+            controls: ["newsList", "newsDetail"]
         },
         serviceUpdate: {
             /*resetting the state back after re-render*/
