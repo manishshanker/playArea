@@ -4,27 +4,46 @@
     var currentView;
     var currentPath;
     var viewState = {};
+    var restoringState = false;
+    var dView = "#/home";
+    var KPS = true;
 
     var Navigation = function () {
 
-        function load(defaultView) {
+        function load(defaultView, keepPreviousState) {
+            KPS = keepPreviousState === undefined ? KPS : keepPreviousState;
+            dView = defaultView;
             $(window).on("hashchange", onLocationChange);
             if (location.hash) {
                 onLocationChange();
             } else {
-                location.href = "#/" + defaultView;
+                location.href = "#/" + dView;
             }
         }
 
         function onLocationChange() {
             currentPath = location.hash;
             var appStateData = parseLocationData(currentPath);
+            if (!appStateData) {
+                location.href = "#/" + dView;
+                return;
+            }
             if (appStateData.page !== currentView) {
                 hidePage(currentView, appStateData);
                 currentView = appStateData.page;
                 showPage(currentView, appStateData);
             }
+            var newAppStateData = parseLocationData(location.hash);
+            if (!restoringState && (!viewState[currentView] || (newAppStateData.pageData !== viewState[newAppStateData.page].pageData))) {
+                publishStateUpdate(newAppStateData);
+            }
             viewState[currentView] = appStateData;
+            window.setTimeout(function () {
+                restoringState = false;
+            }, 200);
+        }
+
+        function publishStateUpdate(appStateData) {
             HAF.messaging.publish("navigationStateChange:" + currentView, appStateData);
             HAF.messaging.publish("navigationStateChange", appStateData);
         }
@@ -42,20 +61,26 @@
             $("a[href$='#/" + page + "']").addClass("selected");
             var cachedViewState = viewState[page];
             if (cachedViewState) {
-                if (cachedViewState.moduleItem) {
-                    location.replace("#/" + page + "/" + cachedViewState.module + "/" + cachedViewState.moduleItem);
+                if (cachedViewState.pageData) {
+                    location.replace("#/" + page + "/" + cachedViewState.pageData);
+                    if (KPS) {
+                        restoringState = true;
+                    }
                 }
             }
             HAF.messaging.publish("navigationChangedTo:" + currentView, appStateData);
         }
 
         function parseLocationData(locationData) {
-            var a = locationData.substr(1).split("/");
+            var a = /#\/([a-zA-Z_\-0-9\$]+)(\/(.+))?/.exec(locationData);
+            if (!a) {
+                return null;
+            }
             return {
                 path: locationData,
                 page: a[1],
-                module: a[2],
-                moduleItem: a[3]
+                pageData: a[3],
+                keepPreviousState: KPS
             };
         }
 

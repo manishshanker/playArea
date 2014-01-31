@@ -35,13 +35,13 @@
         },
         hide: function () {
             var that = this;
-            that.$el.hide();
+            that.$el.removeClass("show").addClass("hide");
             autoUnbindEvents(that);
             removeAutoLayoutHandler(that);
         },
         show: function () {
             var that = this;
-            that.$el.show();
+            that.$el.removeClass("hide").addClass("show");
             autoBindEvents(that);
             addAutoLayoutHandler(that);
         }

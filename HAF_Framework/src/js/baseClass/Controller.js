@@ -21,6 +21,7 @@
         templates: null,
         controls: null,
         services: null,
+        shownAndLoaded: false,
         layoutChange: function () {
             if (this.autoLayout) {
                 loopMethods(this.controls, "layoutChange");
@@ -50,24 +51,34 @@
         onServiceUpdate: function () {
             return this.serviceUpdate;
         },
-        onShow: function () {
-            autoShowHide(this, true);
-            autoInitServices(this);
-        },
-        onHide: function () {
+        hide: function (data) {
             autoStopServices(this);
-            autoShowHide(this, false);
-            autoDestroy(this);
+            if (!(data && data.keepPreviousState)) {
+                autoShowHide(this, false);
+                autoDestroy(this);
+            }
         },
-        hide: function () {
-            autoShowHide(this, false);
-            autoStopServices(this);
-        },
-        show: function () {
-            autoShowHide(this, true);
-            autoStartServices(this);
+        show: function (data) {
+            if (!this.shownAndLoaded) {
+                autoShowAndInitServices(this);
+                this.shownAndLoaded = true;
+            } else if (data && data.keepPreviousState) {
+                autoStartServices(this);
+            } else {
+                autoShowAndStartServices(this);
+            }
         }
     });
+
+    function autoShowAndInitServices(ctx) {
+        autoShowHide(ctx, true);
+        autoInitServices(ctx);
+    }
+
+    function autoShowAndStartServices(ctx) {
+        autoShowHide(ctx, true);
+        autoStartServices(ctx);
+    }
 
     function unloadControls(ctx) {
         loopMethods(ctx.controls, "unload");
@@ -130,6 +141,7 @@
         ctx.options = null;
         ctx.controls = null;
         ctx._exist = false;
+        this.shownAndLoaded = false;
     }
 
     function destroyControlMessages(ctx) {
@@ -178,8 +190,8 @@
         }
         destroyControlMessages(ctx);
         var messages = ctx.controlMessages;
-        HAF.messaging.subscribe(ctx, messages.show, ctx.onShow);
-        HAF.messaging.subscribe(ctx, messages.hide, ctx.onHide);
+        HAF.messaging.subscribe(ctx, messages.show, ctx.show);
+        HAF.messaging.subscribe(ctx, messages.hide, ctx.hide);
         HAF.messaging.subscribe(ctx, messages.stateChange, function (stateData) {
             ctx.lastStateData = stateData;
             HAF.each(ctx.onRouteChange(stateData), function (item, key) {

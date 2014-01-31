@@ -233,6 +233,7 @@
         templates: null,
         controls: null,
         services: null,
+        shownAndLoaded: false,
         layoutChange: function () {
             if (this.autoLayout) {
                 loopMethods(this.controls, "layoutChange");
@@ -262,24 +263,34 @@
         onServiceUpdate: function () {
             return this.serviceUpdate;
         },
-        onShow: function () {
-            autoShowHide(this, true);
-            autoInitServices(this);
-        },
-        onHide: function () {
+        hide: function (data) {
             autoStopServices(this);
-            autoShowHide(this, false);
-            autoDestroy(this);
+            if (!(data && data.keepPreviousState)) {
+                autoShowHide(this, false);
+                autoDestroy(this);
+            }
         },
-        hide: function () {
-            autoShowHide(this, false);
-            autoStopServices(this);
-        },
-        show: function () {
-            autoShowHide(this, true);
-            autoStartServices(this);
+        show: function (data) {
+            if (!this.shownAndLoaded) {
+                autoShowAndInitServices(this);
+                this.shownAndLoaded = true;
+            } else if (data && data.keepPreviousState) {
+                autoStartServices(this);
+            } else {
+                autoShowAndStartServices(this);
+            }
         }
     });
+
+    function autoShowAndInitServices(ctx) {
+        autoShowHide(ctx, true);
+        autoInitServices(ctx);
+    }
+
+    function autoShowAndStartServices(ctx) {
+        autoShowHide(ctx, true);
+        autoStartServices(ctx);
+    }
 
     function unloadControls(ctx) {
         loopMethods(ctx.controls, "unload");
@@ -342,6 +353,7 @@
         ctx.options = null;
         ctx.controls = null;
         ctx._exist = false;
+        this.shownAndLoaded = false;
     }
 
     function destroyControlMessages(ctx) {
@@ -390,8 +402,8 @@
         }
         destroyControlMessages(ctx);
         var messages = ctx.controlMessages;
-        HAF.messaging.subscribe(ctx, messages.show, ctx.onShow);
-        HAF.messaging.subscribe(ctx, messages.hide, ctx.onHide);
+        HAF.messaging.subscribe(ctx, messages.show, ctx.show);
+        HAF.messaging.subscribe(ctx, messages.hide, ctx.hide);
         HAF.messaging.subscribe(ctx, messages.stateChange, function (stateData) {
             ctx.lastStateData = stateData;
             HAF.each(ctx.onRouteChange(stateData), function (item, key) {
@@ -538,13 +550,13 @@
         },
         hide: function () {
             var that = this;
-            that.$el.hide();
+            that.$el.removeClass("show").addClass("hide");
             autoUnbindEvents(that);
             removeAutoLayoutHandler(that);
         },
         show: function () {
             var that = this;
-            that.$el.show();
+            that.$el.removeClass("hide").addClass("show");
             autoBindEvents(that);
             addAutoLayoutHandler(that);
         }
@@ -783,27 +795,46 @@
     var currentView;
     var currentPath;
     var viewState = {};
+    var restoringState = false;
+    var dView = "#/home";
+    var KPS = true;
 
     var Navigation = function () {
 
-        function load(defaultView) {
+        function load(defaultView, keepPreviousState) {
+            KPS = keepPreviousState === undefined ? KPS : keepPreviousState;
+            dView = defaultView;
             $(window).on("hashchange", onLocationChange);
             if (location.hash) {
                 onLocationChange();
             } else {
-                location.href = "#/" + defaultView;
+                location.href = "#/" + dView;
             }
         }
 
         function onLocationChange() {
             currentPath = location.hash;
             var appStateData = parseLocationData(currentPath);
+            if (!appStateData) {
+                location.href = "#/" + dView;
+                return;
+            }
             if (appStateData.page !== currentView) {
                 hidePage(currentView, appStateData);
                 currentView = appStateData.page;
                 showPage(currentView, appStateData);
             }
+            var newAppStateData = parseLocationData(location.hash);
+            if (!restoringState && (!viewState[currentView] || (newAppStateData.pageData !== viewState[newAppStateData.page].pageData))) {
+                publishStateUpdate(newAppStateData);
+            }
             viewState[currentView] = appStateData;
+            window.setTimeout(function () {
+                restoringState = false;
+            }, 200);
+        }
+
+        function publishStateUpdate(appStateData) {
             HAF.messaging.publish("navigationStateChange:" + currentView, appStateData);
             HAF.messaging.publish("navigationStateChange", appStateData);
         }
@@ -821,20 +852,26 @@
             $("a[href$='#/" + page + "']").addClass("selected");
             var cachedViewState = viewState[page];
             if (cachedViewState) {
-                if (cachedViewState.moduleItem) {
-                    location.replace("#/" + page + "/" + cachedViewState.module + "/" + cachedViewState.moduleItem);
+                if (cachedViewState.pageData) {
+                    location.replace("#/" + page + "/" + cachedViewState.pageData);
+                    if (KPS) {
+                        restoringState = true;
+                    }
                 }
             }
             HAF.messaging.publish("navigationChangedTo:" + currentView, appStateData);
         }
 
         function parseLocationData(locationData) {
-            var a = locationData.substr(1).split("/");
+            var a = /#\/([a-zA-Z_\-0-9\$]+)(\/(.+))?/.exec(locationData);
+            if (!a) {
+                return null;
+            }
             return {
                 path: locationData,
                 page: a[1],
-                module: a[2],
-                moduleItem: a[3]
+                pageData: a[3],
+                keepPreviousState: KPS
             };
         }
 
