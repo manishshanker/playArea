@@ -5,7 +5,9 @@
         getById: getById,
         getByCSSSelector: getByCSSSelector,
         getByURL: getByURL,
+        getByString: getByString,
         process: process,
+        safeString: safeString,
         remove: remove
     };
 
@@ -15,6 +17,10 @@
         });
     }
 
+    function safeString(template) {
+        return new Handlebars.SafeString(template);
+    }
+
     function getCompiledTemplate(template) {
         return Handlebars.compile(template);
     }
@@ -22,6 +28,10 @@
     function remove(id) {
         var $el = $("#" + id);
         $el.remove();
+    }
+
+    function getByString(string) {
+        return getCompiledTemplate(string);
     }
 
     function getById(id) {

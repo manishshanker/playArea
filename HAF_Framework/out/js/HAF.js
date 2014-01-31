@@ -373,7 +373,9 @@
 
     function renderTemplates(ctx, data) {
         HAF.each(ctx.templates, function (template, key) {
-            ctx.views[key].render(template.process(data));
+            template.load(function () {
+                ctx.views[key].render(template.process(data));
+            });
         });
     }
 
@@ -470,35 +472,59 @@
 
     var templateCache = {};
 
+    HAF.TemplateByString = function (string) {
+        return new HAF.Template(string, HAF.Template.LOAD.BY_STRING);
+    };
+
+    HAF.TemplateByID = function (string) {
+        return new HAF.Template(string, HAF.Template.LOAD.BY_ID);
+    };
+
+    HAF.TemplateByURL = function (string) {
+        return new HAF.Template(string, HAF.Template.LOAD.BY_URL);
+    };
+
+    HAF.TemplateSafeString = function (template) {
+        return new HAF.templateEngine.safeString(template);
+    };
+
     HAF.Template = HAF.Base.extend({
         init: function (path, loadType) {
             this.path = path;
             this.loadBy = loadType || HAF.Template.LOAD.DEFAULT;
-            if (this.loadBy === HAF.Template.LOAD.BY_ID) {
-                if (!templateCache[this.guid()]) {
-                    templateCache[this.guid()] = HAF.templateEngine.getById(path);
-                    HAF.templateEngine.remove(path);
-                }
-            }
         },
         process: function (data) {
+            if (this.path === undefined) {
+                return "";
+            }
             if (!templateCache[this.guid()]) {
+                console.log("Template param: ", this.path, this.loadBy);
                 throw new Error("Template not in cache!!");
             }
             return HAF.templateEngine.process(templateCache[this.guid()], data);
         },
         load: function (onSuccess) {
             var that = this;
-            if (that.loadBy === HAF.Template.LOAD.BY_URL) {
-                if (templateCache[this.guid()]) {
-                    onSuccess();
-                }
-                HAF.templateEngine.getByURL(that.path, function (template) {
-                    templateCache[that.guid()] = template;
-                    onSuccess();
-                });
-            } else {
+            if (this.path === undefined || templateCache[this.guid()]) {
                 onSuccess();
+            } else {
+                if (that.loadBy === HAF.Template.LOAD.BY_URL) {
+                    HAF.templateEngine.getByURL(that.path, function (template) {
+                        templateCache[that.guid()] = template;
+                        onSuccess.call(that);
+                    });
+                } else if (this.loadBy === HAF.Template.LOAD.BY_ID) {
+                    templateCache[this.guid()] = HAF.templateEngine.getById(this.path);
+                    HAF.templateEngine.remove(this.path);
+                    setTimeout(function () {
+                        onSuccess.call(that);
+                    }, 5);
+                } else {
+                    templateCache[this.guid()] = HAF.templateEngine.getByString(this.path);
+                    setTimeout(function () {
+                        onSuccess.call(that);
+                    }, 5);
+                }
             }
         },
         destroy: function () {
@@ -509,6 +535,7 @@
     HAF.Template.LOAD = {
         BY_ID: "APP_TEMPLATE_BY_ID",
         BY_URL: "APP_TEMPLATE_BY_URL",
+        BY_STRING: "APP_TEMPLATE_BY_STRING",
         DEFAULT: "APP_TEMPLATE_BY_ID"
     };
 
@@ -667,21 +694,28 @@
         return defaultInjector(ctx, key, dependency);
     }
 
+    function capitalise(string) {
+        return string.substr(0, 1).toUpperCase() + string.substr(1);
+    }
+
     function defaultInjector(ctx, type, dependency) {
         if (type === "templates") {
             HAF.Module.template = HAF.Module.template || {};
-            if (HAF.Module.template[dependency]) {
-                return new HAF.Module.template[dependency]();
+            if (HAF.Module.template[capitalise(dependency)]) {
+                return new HAF.Module.template[capitalise(dependency)]();
             }
-            return new HAF.Template("tmpl" + dependency.substr(0, 1).toUpperCase() + dependency.substr(1));
+            if (HAF.Module.template[dependency]) {
+                return HAF.Module.template[dependency];
+            }
+            return new HAF.Template("tmpl" + capitalise(dependency));
         }
         var moduleNameSpace = TYPES[type];
         HAF.Module[moduleNameSpace] = HAF.Module[moduleNameSpace] || {};
         try {
-            return new HAF.Module[moduleNameSpace][dependency.substr(0, 1).toUpperCase() + dependency.substr(1)](ctx.injectMessageBus ? ctx.messageBus : ctx.parentMessageBus);
+            return new HAF.Module[moduleNameSpace][capitalise(dependency)](ctx.injectMessageBus ? ctx.messageBus : ctx.parentMessageBus);
         } catch (e) {
             console.log(e);
-            throw new Error("Dependency instance creation error: (" + type + "," + dependency + " | " + moduleNameSpace + "." + (dependency.substr(0, 1).toUpperCase() + dependency.substr(1)) + ")");
+            throw new Error("Dependency instance creation error: (" + type + "," + dependency + " | " + moduleNameSpace + "." + (capitalise(dependency)) + ")");
         }
     }
 
@@ -930,7 +964,9 @@
         getById: getById,
         getByCSSSelector: getByCSSSelector,
         getByURL: getByURL,
+        getByString: getByString,
         process: process,
+        safeString: safeString,
         remove: remove
     };
 
@@ -940,6 +976,10 @@
         });
     }
 
+    function safeString(template) {
+        return new Handlebars.SafeString(template);
+    }
+
     function getCompiledTemplate(template) {
         return Handlebars.compile(template);
     }
@@ -947,6 +987,10 @@
     function remove(id) {
         var $el = $("#" + id);
         $el.remove();
+    }
+
+    function getByString(string) {
+        return getCompiledTemplate(string);
     }
 
     function getById(id) {

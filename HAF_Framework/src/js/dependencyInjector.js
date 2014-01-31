@@ -59,21 +59,28 @@
         return defaultInjector(ctx, key, dependency);
     }
 
+    function capitalise(string) {
+        return string.substr(0, 1).toUpperCase() + string.substr(1);
+    }
+
     function defaultInjector(ctx, type, dependency) {
         if (type === "templates") {
             HAF.Module.template = HAF.Module.template || {};
-            if (HAF.Module.template[dependency]) {
-                return new HAF.Module.template[dependency]();
+            if (HAF.Module.template[capitalise(dependency)]) {
+                return new HAF.Module.template[capitalise(dependency)]();
             }
-            return new HAF.Template("tmpl" + dependency.substr(0, 1).toUpperCase() + dependency.substr(1));
+            if (HAF.Module.template[dependency]) {
+                return HAF.Module.template[dependency];
+            }
+            return new HAF.Template("tmpl" + capitalise(dependency));
         }
         var moduleNameSpace = TYPES[type];
         HAF.Module[moduleNameSpace] = HAF.Module[moduleNameSpace] || {};
         try {
-            return new HAF.Module[moduleNameSpace][dependency.substr(0, 1).toUpperCase() + dependency.substr(1)](ctx.injectMessageBus ? ctx.messageBus : ctx.parentMessageBus);
+            return new HAF.Module[moduleNameSpace][capitalise(dependency)](ctx.injectMessageBus ? ctx.messageBus : ctx.parentMessageBus);
         } catch (e) {
             console.log(e);
-            throw new Error("Dependency instance creation error: (" + type + "," + dependency + " | " + moduleNameSpace + "." + (dependency.substr(0, 1).toUpperCase() + dependency.substr(1)) + ")");
+            throw new Error("Dependency instance creation error: (" + type + "," + dependency + " | " + moduleNameSpace + "." + (capitalise(dependency)) + ")");
         }
     }
 
