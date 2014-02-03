@@ -14,8 +14,8 @@
         },
         subscribe: function (scope, subjects, fn) {
             if (typeof scope === "string") {
-                subjects = scope;
                 fn = subjects;
+                subjects = scope;
                 scope = window;
             }
             HAF.infoLogger("messageBus.__subscribe", this.guid, subjects);
