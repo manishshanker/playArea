@@ -42,6 +42,7 @@
                 <fileset dir="${jsSource}" casesensitive="false" includes="DOM.js" />
                 <fileset dir="${jsSource}" casesensitive="false" includes="classExtend.js" />
                 <fileset dir="${jsSource}" casesensitive="false" includes="utility.js"/>
+                <fileset dir="${jsSource}" casesensitive="false" includes="messaging.js"/>
                 <fileset dir="${jsSource}" casesensitive="false" includes="baseClass/Base.js"/>
                 <fileset dir="${jsSource}" casesensitive="false" includes="**/*.js" />
                 <fileset dir="${jsSource}" casesensitive="false" includes="*.js" />

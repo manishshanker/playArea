@@ -12,10 +12,10 @@
 
     function injectDependencies(ctx, dependencies) {
         if (HAF.Messaging && (dependencies instanceof HAF.Messaging)) {
-            ctx.parentMessageBus = dependencies;
+            ctx.messageBus = dependencies;
         }
-        if (ctx.injectMessageBus) {
-            ctx.messageBus = (dependencies && dependencies.inject && dependencies.inject.messageBus) || new HAF.Messaging();
+        if (ctx.injectLocalMessageBus) {
+            ctx.localMessageBus = (dependencies && dependencies.inject && dependencies.inject.localMessageBus) || new HAF.Messaging();
         }
         var injectedDependencies = (dependencies && dependencies.inject) || (ctx.inject && (typeof ctx.inject === "function" ? ctx.inject() : ctx.inject));
         HAF.each(injectedDependencies, function (dependency, key) {
@@ -77,7 +77,7 @@
         var moduleNameSpace = TYPES[type];
         HAF.Module[moduleNameSpace] = HAF.Module[moduleNameSpace] || {};
         try {
-            return new HAF.Module[moduleNameSpace][capitalise(dependency)](ctx.injectMessageBus ? ctx.messageBus : ctx.parentMessageBus);
+            return new HAF.Module[moduleNameSpace][capitalise(dependency)](ctx.injectLocalMessageBus ? ctx.localMessageBus : ctx.messageBus);
         } catch (e) {
             console.log(e);
             throw new Error("Dependency instance creation error: (" + type + "," + dependency + " | " + moduleNameSpace + "." + (capitalise(dependency)) + ")");

@@ -8,12 +8,12 @@
         autoLoadControls: false,
         autoLayout: false,
         messages: null,
-        injectMessageBus: false,
+        injectLocalMessageBus: false,
         inject: null,
         routes: {},
         serviceUpdate: {},
-        parentMessageBus: null,
-        messageBus: null,
+        messageBus: HAF.messaging,
+        localMessageBus: null,
         init: function (dependencies) {
             this.injectDependencies(dependencies);
         },
@@ -141,7 +141,7 @@
         ctx.options = null;
         ctx.controls = null;
         ctx._exist = false;
-        this.shownAndLoaded = false;
+        ctx.shownAndLoaded = false;
     }
 
     function destroyControlMessages(ctx) {

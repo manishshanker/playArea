@@ -89,7 +89,7 @@
         }
 
         function parseLocationData(locationData) {
-            var a = /#\/([a-zA-Z_\-0-9\$]+)(\/(.+))?/.exec(locationData);
+            var a = /#\/([a-zA-Z_\-0-9\$]+)(\/([\w\W]+))?/.exec(locationData);
             if (!a) {
                 return null;
             }

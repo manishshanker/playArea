@@ -1,16 +1,9 @@
 (function (HAF) {
     "use strict";
 
-    var defaultMessageBus = {
-        publish: HAF.noop,
-        subscribe: HAF.noop,
-        unsubscribe: HAF.noop
-    };
-
     HAF.Base = Class.extend({
         _guid: null,
-        messageBus: defaultMessageBus,
-        parentMessageBus: defaultMessageBus,
+        messageBus: HAF.messaging,
         injector: null,
         guid: function () {
             if (!this._guid) {

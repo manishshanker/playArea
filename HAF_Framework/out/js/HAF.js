@@ -174,19 +174,58 @@
     }
 
 }(HAF));
+(function (HAF, $) {
+    "use strict";
+
+    var Messaging = function () {
+        this.localMessageBus = $({});
+    };
+
+    Messaging.prototype = {
+        publish: function (subject, message) {
+            this.localMessageBus.trigger(subject, [message]);
+        },
+        subscribe: function (scope, subjects, fn) {
+            var that = this;
+            if (typeof subjects === "string") {
+                return getSubsricber(that, fn, scope, subjects);
+            }
+            var subscriberFNs = {};
+            HAF.each(subjects, function (fn, subject) {
+                subscriberFNs[subject] = getSubsricber(that, fn, scope, subject);
+            });
+            return subscriberFNs;
+        },
+        unsubscribe: function (subjects, fn) {
+            var that = this;
+            if (typeof subjects === "string") {
+                that.localMessageBus.off(subjects, fn);
+            } else {
+                HAF.each(subjects, function (fn, subject) {
+                    that.localMessageBus.off(subject, fn);
+                });
+            }
+        }
+    };
+
+    function getSubsricber(ctx, fn, scope, subject) {
+        var unsubscribeMethod = function (e, message) {
+            fn.call(scope, message);
+        };
+        ctx.localMessageBus.on(subject, unsubscribeMethod);
+        return unsubscribeMethod;
+    }
+
+    HAF.messaging = new Messaging();
+    HAF.Messaging = Messaging;
+
+}(HAF, HAF.DOM));
 (function (HAF) {
     "use strict";
 
-    var defaultMessageBus = {
-        publish: HAF.noop,
-        subscribe: HAF.noop,
-        unsubscribe: HAF.noop
-    };
-
     HAF.Base = Class.extend({
         _guid: null,
-        messageBus: defaultMessageBus,
-        parentMessageBus: defaultMessageBus,
+        messageBus: HAF.messaging,
         injector: null,
         guid: function () {
             if (!this._guid) {
@@ -220,12 +259,12 @@
         autoLoadControls: false,
         autoLayout: false,
         messages: null,
-        injectMessageBus: false,
+        injectLocalMessageBus: false,
         inject: null,
         routes: {},
         serviceUpdate: {},
-        parentMessageBus: null,
-        messageBus: null,
+        messageBus: HAF.messaging,
+        localMessageBus: null,
         init: function (dependencies) {
             this.injectDependencies(dependencies);
         },
@@ -353,7 +392,7 @@
         ctx.options = null;
         ctx.controls = null;
         ctx._exist = false;
-        this.shownAndLoaded = false;
+        ctx.shownAndLoaded = false;
     }
 
     function destroyControlMessages(ctx) {
@@ -647,10 +686,10 @@
 
     function injectDependencies(ctx, dependencies) {
         if (HAF.Messaging && (dependencies instanceof HAF.Messaging)) {
-            ctx.parentMessageBus = dependencies;
+            ctx.messageBus = dependencies;
         }
-        if (ctx.injectMessageBus) {
-            ctx.messageBus = (dependencies && dependencies.inject && dependencies.inject.messageBus) || new HAF.Messaging();
+        if (ctx.injectLocalMessageBus) {
+            ctx.localMessageBus = (dependencies && dependencies.inject && dependencies.inject.localMessageBus) || new HAF.Messaging();
         }
         var injectedDependencies = (dependencies && dependencies.inject) || (ctx.inject && (typeof ctx.inject === "function" ? ctx.inject() : ctx.inject));
         HAF.each(injectedDependencies, function (dependency, key) {
@@ -712,7 +751,7 @@
         var moduleNameSpace = TYPES[type];
         HAF.Module[moduleNameSpace] = HAF.Module[moduleNameSpace] || {};
         try {
-            return new HAF.Module[moduleNameSpace][capitalise(dependency)](ctx.injectMessageBus ? ctx.messageBus : ctx.parentMessageBus);
+            return new HAF.Module[moduleNameSpace][capitalise(dependency)](ctx.injectLocalMessageBus ? ctx.localMessageBus : ctx.messageBus);
         } catch (e) {
             console.log(e);
             throw new Error("Dependency instance creation error: (" + type + "," + dependency + " | " + moduleNameSpace + "." + (capitalise(dependency)) + ")");
@@ -777,52 +816,6 @@
     };
 
 }(HAF));
-(function (HAF, $) {
-    "use strict";
-
-    var Messaging = function () {
-        this.messageBus = $({});
-    };
-
-    Messaging.prototype = {
-        publish: function (subject, message) {
-            this.messageBus.trigger(subject, [message]);
-        },
-        subscribe: function (scope, subjects, fn) {
-            var that = this;
-            if (typeof subjects === "string") {
-                return getSubsricber(that, fn, scope, subjects);
-            }
-            var subscriberFNs = {};
-            HAF.each(subjects, function (fn, subject) {
-                subscriberFNs[subject] = getSubsricber(that, fn, scope, subject);
-            });
-            return subscriberFNs;
-        },
-        unsubscribe: function (subjects, fn) {
-            var that = this;
-            if (typeof subjects === "string") {
-                that.messageBus.off(subjects, fn);
-            } else {
-                HAF.each(subjects, function (fn, subject) {
-                    that.messageBus.off(subject, fn);
-                });
-            }
-        }
-    };
-
-    function getSubsricber(ctx, fn, scope, subject) {
-        var unsubscribeMethod = function (e, message) {
-            fn.call(scope, message);
-        };
-        ctx.messageBus.on(subject, unsubscribeMethod);
-        return unsubscribeMethod;
-    }
-
-    HAF.messaging = new Messaging();
-    HAF.Messaging = Messaging;
-
-}(HAF, HAF.DOM));
 (function (HAF, $) {
     "use strict";
 
@@ -914,7 +907,7 @@
         }
 
         function parseLocationData(locationData) {
-            var a = /#\/([a-zA-Z_\-0-9\$]+)(\/(.+))?/.exec(locationData);
+            var a = /#\/([a-zA-Z_\-0-9\$]+)(\/([\w\W]+))?/.exec(locationData);
             if (!a) {
                 return null;
             }

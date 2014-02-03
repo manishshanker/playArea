@@ -2,12 +2,12 @@
     "use strict";
 
     var Messaging = function () {
-        this.messageBus = $({});
+        this.localMessageBus = $({});
     };
 
     Messaging.prototype = {
         publish: function (subject, message) {
-            this.messageBus.trigger(subject, [message]);
+            this.localMessageBus.trigger(subject, [message]);
         },
         subscribe: function (scope, subjects, fn) {
             var that = this;
@@ -23,10 +23,10 @@
         unsubscribe: function (subjects, fn) {
             var that = this;
             if (typeof subjects === "string") {
-                that.messageBus.off(subjects, fn);
+                that.localMessageBus.off(subjects, fn);
             } else {
                 HAF.each(subjects, function (fn, subject) {
-                    that.messageBus.off(subject, fn);
+                    that.localMessageBus.off(subject, fn);
                 });
             }
         }
@@ -36,7 +36,7 @@
         var unsubscribeMethod = function (e, message) {
             fn.call(scope, message);
         };
-        ctx.messageBus.on(subject, unsubscribeMethod);
+        ctx.localMessageBus.on(subject, unsubscribeMethod);
         return unsubscribeMethod;
     }
 
