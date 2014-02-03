@@ -139,6 +139,18 @@
 
     HAF.noop = noop;
     HAF.each = each;
+    HAF.infoLogger = (window.console && window.console.log && function () {
+        console.info.apply(console, arguments);
+    }) || HAF.noop;
+    HAF.logger = (window.console && window.console.log && function () {
+        console.log.apply(console, arguments);
+    }) || HAF.noop;
+    HAF.errorLogger = (window.console && window.console.log && function () {
+        console.error.apply(console, arguments);
+    }) || HAF.noop;
+    HAF.warningLogger = (window.console && window.console.log && function () {
+        console.warn.apply(console, arguments);
+    }) || HAF.noop;
 
     function each(data, callback) {
         if (data) {
@@ -178,14 +190,23 @@
     "use strict";
 
     var Messaging = function () {
+        this.guid = guid();
         this.localMessageBus = $({});
+        HAF.infoLogger("messageBus._____create", this.guid);
     };
 
     Messaging.prototype = {
         publish: function (subject, message) {
+            HAF.infoLogger("messageBus.____publish", this.guid, subject, message);
             this.localMessageBus.trigger(subject, [message]);
         },
         subscribe: function (scope, subjects, fn) {
+            if (typeof scope === "string") {
+                subjects = scope;
+                fn = subjects;
+                scope = window;
+            }
+            HAF.infoLogger("messageBus.__subscribe", this.guid, subjects);
             var that = this;
             if (typeof subjects === "string") {
                 return getSubsricber(that, fn, scope, subjects);
@@ -197,6 +218,7 @@
             return subscriberFNs;
         },
         unsubscribe: function (subjects, fn) {
+            HAF.infoLogger("messageBus.unsubscribe", this.guid, subjects);
             var that = this;
             if (typeof subjects === "string") {
                 that.localMessageBus.off(subjects, fn);
@@ -214,6 +236,16 @@
         };
         ctx.localMessageBus.on(subject, unsubscribeMethod);
         return unsubscribeMethod;
+    }
+
+    function guid() {
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
     }
 
     HAF.messaging = new Messaging();

@@ -3,6 +3,18 @@
 
     HAF.noop = noop;
     HAF.each = each;
+    HAF.infoLogger = (window.console && window.console.log && function () {
+        console.info.apply(console, arguments);
+    }) || HAF.noop;
+    HAF.logger = (window.console && window.console.log && function () {
+        console.log.apply(console, arguments);
+    }) || HAF.noop;
+    HAF.errorLogger = (window.console && window.console.log && function () {
+        console.error.apply(console, arguments);
+    }) || HAF.noop;
+    HAF.warningLogger = (window.console && window.console.log && function () {
+        console.warn.apply(console, arguments);
+    }) || HAF.noop;
 
     function each(data, callback) {
         if (data) {
