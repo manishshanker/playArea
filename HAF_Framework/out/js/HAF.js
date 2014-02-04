@@ -192,12 +192,12 @@
     var Messaging = function () {
         this.guid = guid();
         this.localMessageBus = $({});
-        HAF.infoLogger("messageBus._____create", this.guid);
+//        HAF.infoLogger("messageBus._____create", this.guid);
     };
 
     Messaging.prototype = {
         publish: function (subject, message) {
-            HAF.infoLogger("messageBus.____publish", this.guid, subject, message);
+//            HAF.infoLogger("messageBus.____publish", this.guid, subject, message);
             this.localMessageBus.trigger(subject, [message]);
         },
         subscribe: function (scope, subjects, fn) {
@@ -206,7 +206,7 @@
                 subjects = scope;
                 scope = window;
             }
-            HAF.infoLogger("messageBus.__subscribe", this.guid, subjects);
+//            HAF.infoLogger("messageBus.__subscribe", this.guid, subjects);
             var that = this;
             if (typeof subjects === "string") {
                 return getSubsricber(that, fn, scope, subjects);
@@ -218,7 +218,7 @@
             return subscriberFNs;
         },
         unsubscribe: function (subjects, fn) {
-            HAF.infoLogger("messageBus.unsubscribe", this.guid, subjects);
+//            HAF.infoLogger("messageBus.unsubscribe", this.guid, subjects);
             var that = this;
             if (typeof subjects === "string") {
                 that.localMessageBus.off(subjects, fn);
