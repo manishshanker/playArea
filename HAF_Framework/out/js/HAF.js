@@ -724,29 +724,46 @@
         if (ctx.injectLocalMessageBus) {
             ctx.localMessageBus = (dependencies && dependencies.inject && dependencies.inject.localMessageBus) || new HAF.Messaging();
         }
-        var injectedDependencies = (dependencies && dependencies.inject) || (ctx.inject && (typeof ctx.inject === "function" ? ctx.inject() : ctx.inject));
+        var injectedDependencies = (dependencies && dependencies.inject) || (ctx.inject && (isFunction(ctx.inject) ? ctx.inject() : ctx.inject));
+
+        injectedDependencies = injectDepUsingShorthand(injectedDependencies);
+
         HAF.each(injectedDependencies, function (dependency, key) {
             var depType = /^controls$|^templates$|^views$|^services$/.exec(key);
-            if (depType && (dependency instanceof Array)) {
-                HAF.each(dependency, function (subDependency) {
-                    ctx[key] = ctx[key] || {};
-                    if (typeof subDependency === "string") {
-                        ctx[key][subDependency] = ctx[subDependency] || {};
-                        injectInCtx(ctx[key], subDependency, getDependencyInstance(ctx, key, subDependency));
-                    } else {
-                        HAF.each(subDependency, function (dep, subSubKey) {
-                            injectInCtx(ctx[key], subSubKey, getDep(dep, ctx, key));
-                        });
-                    }
-                });
+            if (depType) {
+                if (dependency instanceof Array) {
+                    injectFromArray(dependency, ctx, key);
+                } else if (isFunction(dependency)) {
+                    ctx[key] = dependency.call(ctx, ctx);
+                } else {
+                    HAF.each(dependency, function (dep, subSubKey) {
+                        ctx[key] = ctx[key] || {};
+                        ctx[key][subSubKey] = ctx[key][subSubKey] = {};
+                        injectInCtx(ctx[key], subSubKey, getDep(dep, ctx, key));
+                    });
+                }
             } else {
                 ctx[key] = getDep(dependency, ctx, key);
             }
         });
     }
 
+    function injectFromArray(dependency, ctx, key) {
+        HAF.each(dependency, function (subDependency) {
+            ctx[key] = ctx[key] || {};
+            if (isString(subDependency)) {
+                ctx[key][subDependency] = ctx[subDependency] || {};
+                injectInCtx(ctx[key], subDependency, getDependencyInstance(ctx, key, subDependency));
+            } else {
+                HAF.each(subDependency, function (dep, subSubKey) {
+                    injectInCtx(ctx[key], subSubKey, getDep(dep, ctx, key));
+                });
+            }
+        });
+    }
+
     function getDep(dependency, ctx, key) {
-        return (typeof dependency === "string") ? getDependencyInstance(ctx, key, dependency) : dependency;
+        return isString(dependency) ? getDependencyInstance(ctx, key, dependency) : (isFunction(dependency) ? dependency() : dependency);
     }
 
     function injectInCtx(ctx, dependency, depInstance) {
@@ -789,6 +806,34 @@
             console.log(e);
             throw new Error("Dependency instance creation error: (" + type + "," + dependency + " | " + moduleNameSpace + "." + (capitalise(dependency)) + ")");
         }
+    }
+
+    function injectDepUsingShorthand(injectedDependencies) {
+        if (isString(injectedDependencies)) {
+            var dep = {};
+            var parts = injectedDependencies.split(":");
+            var classObjectName = parts[1];
+            var types = parts[0];
+            HAF.each({
+                "templates": /T/,
+                "views": /V/,
+                "services": /S/
+            }, function (type, ns) {
+                if (type.test(types)) {
+                    dep[ns] = [classObjectName];
+                }
+            });
+            injectedDependencies = dep;
+        }
+        return injectedDependencies;
+    }
+
+    function isFunction(dependency) {
+        return typeof dependency === "function";
+    }
+
+    function isString(subDependency) {
+        return typeof subDependency === "string";
     }
 
 }(HAF));
