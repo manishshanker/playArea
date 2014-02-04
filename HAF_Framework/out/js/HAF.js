@@ -16,6 +16,7 @@
 
 /*!
  * @author Manish Shanker
+ * @timestamp 04022014034204
  */
 (function (HAF, window) {
     "use strict";

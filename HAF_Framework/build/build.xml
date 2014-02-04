@@ -21,7 +21,7 @@
         <delete dir="${outputDir}"/>
     </target>
 
-    <target name="build" depends="copy-source-to-build-folder, merge-js, minify-js, copy-to-boiler-plate"></target>
+    <target name="build" depends="copy-source-to-build-folder, merge-js, minify-js, add-build-timestamp, copy-to-boiler-plate"></target>
 
     <target name="copy-source-to-build-folder">
         <echo message="${outputDir}"/>
@@ -66,6 +66,19 @@
             </fileset>
         </yuicompress>
         <echo message="END: JS MINIFY"/>
+    </target>
+
+    <target name="add-build-timestamp">
+        <echo message="BEGIN: ADD BUILD TIMESTAMP"/>
+        <replaceregexp file="${outputDir}\js\HAF.min.js"
+                       match="(__TIMESTAMP__)"
+                       flags="gs"
+                       replace="${TIMESTAMP}"/>
+        <replaceregexp file="${outputDir}\js\HAF.js"
+                       match="(__TIMESTAMP__)"
+                       flags="gs"
+                       replace="${TIMESTAMP}"/>
+        <echo message="END: ADD BUILD TIMESTAMP"/>
     </target>
 
     <target name="copy-to-boiler-plate">
