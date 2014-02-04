@@ -803,7 +803,7 @@
         try {
             return new HAF.Module[moduleNameSpace][capitalise(dependency)](ctx.injectLocalMessageBus ? ctx.localMessageBus : ctx.messageBus);
         } catch (e) {
-            console.log(e);
+            HAF.errorLogger(e);
             throw new Error("Dependency instance creation error: (" + type + "," + dependency + " | " + moduleNameSpace + "." + (capitalise(dependency)) + ")");
         }
     }
