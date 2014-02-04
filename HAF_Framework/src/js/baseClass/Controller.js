@@ -54,29 +54,29 @@
         hide: function (data) {
             autoStopServices(this);
             if (!(data && data.keepPreviousState)) {
-                autoShowHide(this, false);
+                autoShowHide(this, false, arguments);
                 autoDestroy(this);
             }
         },
         show: function (data) {
             if (!this.shownAndLoaded) {
-                autoShowAndInitServices(this);
+                autoShowAndInitServices(this, arguments);
                 this.shownAndLoaded = true;
             } else if (data && data.keepPreviousState) {
                 autoStartServices(this);
             } else {
-                autoShowAndStartServices(this);
+                autoShowAndStartServices(this, arguments);
             }
         }
     });
 
-    function autoShowAndInitServices(ctx) {
-        autoShowHide(ctx, true);
+    function autoShowAndInitServices(ctx, args) {
+        autoShowHide(ctx, true, args);
         autoInitServices(ctx);
     }
 
-    function autoShowAndStartServices(ctx) {
-        autoShowHide(ctx, true);
+    function autoShowAndStartServices(ctx, args) {
+        autoShowHide(ctx, true, args);
         autoStartServices(ctx);
     }
 
@@ -167,9 +167,10 @@
         });
     }
 
-    function loopMethods(collection, method, data) {
+    function loopMethods(collection, method, args) {
+        args = args || [];
         HAF.each(collection, function (item) {
-            item[method](data);
+            item[method].apply(item, args);
         });
     }
 
@@ -205,10 +206,10 @@
         });
     }
 
-    function autoShowHide(that, isShow) {
+    function autoShowHide(that, isShow, args) {
         if (that.autoShowHide) {
-            loopMethods(that.views, isShow ? "show" : "hide");
-            loopMethods(that.controls, isShow ? "show" : "hide");
+            loopMethods(that.views, isShow ? "show" : "hide", args);
+            loopMethods(that.controls, isShow ? "show" : "hide", args);
         }
     }
 
