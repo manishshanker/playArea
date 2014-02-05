@@ -15,7 +15,7 @@
     </taskdef>
 
     <tstamp>
-        <format property="TIMESTAMP" pattern="ddMMyyyyhhmmss" locale="en,UK"/>
+        <format property="TIMESTAMP" pattern="ddMMyyyyHHmmss" locale="en,UK"/>
     </tstamp>
 
     <target name="package" depends="clean, build"></target>
