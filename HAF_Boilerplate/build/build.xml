@@ -63,7 +63,7 @@
                 <fileset excludes="**/---*" dir="${jsSource}" casesensitive="false" includes="*.js" />
             </union>
         </concat>
-        <delete dir="${outputDir}\lib\js" includeemptydirs="true" excludes="combined.js, **/---*, **/i18n/*"/>
+        <delete dir="${outputDir}\lib\js" includeemptydirs="true" includes="**/*.js" excludes="combined.js, **/---*, **/i18n/*"/>
         <delete dir="${outputDir}\mockServices" includeemptydirs="true"/>
         <echo message="END: JS MERGE"/>
         </sequential>
