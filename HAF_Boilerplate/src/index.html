@@ -60,16 +60,7 @@
                         {{#list this}}<a id="newsItem_{{id}}" href="#/example/news/{{id}}">{{title}}</a>{{/list}}
                     </script>
                 </div>
-                <div id="newsDetail">
-                    <script id="tmplNewsDetail" type="text/x-handlebars-template">
-	                    {{#if title}}
-                            <h3>{{title}}</h3>
-                            <p>{{description}}</p>
-	                    {{else}}
-	                        <p>{{i18n "Please select a news item"}}</p>
-	                    {{/if}}
-                    </script>
-                </div>
+                <div id="newsDetail"></div>
             </div>
         </section>
 

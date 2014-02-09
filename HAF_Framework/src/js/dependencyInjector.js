@@ -89,7 +89,10 @@
             if (HAF.Module.template[dependency]) {
                 return HAF.Module.template[dependency];
             }
-            return new HAF.Template("tmpl" + capitalise(dependency));
+            if (dependency.indexOf("tmpl!") === 0) {
+                return HAF.TemplateByURL(dependency.substr(5));
+            }
+            return HAF.TemplateByID("tmpl" + capitalise(dependency));
         }
         var moduleNameSpace = TYPES[type];
         HAF.Module[moduleNameSpace] = HAF.Module[moduleNameSpace] || {};

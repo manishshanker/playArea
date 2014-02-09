@@ -16,7 +16,7 @@
 
 /*!
  * @author Manish Shanker
- * @timestamp 04022014034204
+ * @timestamp 09022014102755
  */
 (function (HAF, window) {
     "use strict";
@@ -446,7 +446,9 @@
     function renderTemplates(ctx, data) {
         HAF.each(ctx.templates, function (template, key) {
             template.load(function () {
-                ctx.views[key].render(template.process(data));
+                if (ctx.views[key]) {
+                    ctx.views[key].render(template.process(data));
+                }
             });
         });
     }
@@ -582,7 +584,8 @@
                 onSuccess();
             } else {
                 if (that.loadBy === HAF.Template.LOAD.BY_URL) {
-                    HAF.templateEngine.getByURL(that.path, function (template) {
+                    var path = addExtension(addForwardSlash(HAF.Template.LOAD.BY_URL_DEFAULT_PATH) + that.path);
+                    HAF.templateEngine.getByURL(path, function (template) {
                         templateCache[that.guid()] = template;
                         onSuccess.call(that);
                     });
@@ -605,11 +608,21 @@
         }
     });
 
+    function addExtension(path) {
+        return path + (/\.[a-z]{3,4}$/.test(path) ? "" : HAF.Template.LOAD.BY_URL_DEFAULT_EXTENSION);
+    }
+
+    function addForwardSlash(path) {
+        return path + (/\/$/.test(path) ? "" : "/");
+    }
+
     HAF.Template.LOAD = {
         BY_ID: "APP_TEMPLATE_BY_ID",
         BY_URL: "APP_TEMPLATE_BY_URL",
         BY_STRING: "APP_TEMPLATE_BY_STRING",
-        DEFAULT: "APP_TEMPLATE_BY_ID"
+        DEFAULT: "APP_TEMPLATE_BY_ID",
+        BY_URL_DEFAULT_PATH: "",
+        BY_URL_DEFAULT_EXTENSION: ".hbs"
     };
 
 }(HAF));
@@ -797,7 +810,10 @@
             if (HAF.Module.template[dependency]) {
                 return HAF.Module.template[dependency];
             }
-            return new HAF.Template("tmpl" + capitalise(dependency));
+            if (dependency.indexOf("tmpl!") === 0) {
+                return HAF.TemplateByURL(dependency.substr(5));
+            }
+            return HAF.TemplateByID("tmpl" + capitalise(dependency));
         }
         var moduleNameSpace = TYPES[type];
         HAF.Module[moduleNameSpace] = HAF.Module[moduleNameSpace] || {};

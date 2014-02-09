@@ -162,7 +162,9 @@
     function renderTemplates(ctx, data) {
         HAF.each(ctx.templates, function (template, key) {
             template.load(function () {
-                ctx.views[key].render(template.process(data));
+                if (ctx.views[key]) {
+                    ctx.views[key].render(template.process(data));
+                }
             });
         });
     }
