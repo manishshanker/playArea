@@ -5,7 +5,7 @@
         autoWire: true,
         injector: "NewsDetail",
         inject: {
-            templates: {newsDetail: "hbs!lib/templates/newsDetail"},
+            templates: {newsDetail: "tmpl!newsDetail"},
             views: ["newsDetail"]
         }
     });

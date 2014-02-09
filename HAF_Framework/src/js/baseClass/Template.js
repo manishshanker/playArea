@@ -1,4 +1,4 @@
-(function (HAF) {
+(function (HAF, window) {
     "use strict";
 
     var templateCache = {};
@@ -77,8 +77,8 @@
         BY_URL: "APP_TEMPLATE_BY_URL",
         BY_STRING: "APP_TEMPLATE_BY_STRING",
         DEFAULT: "APP_TEMPLATE_BY_ID",
-        BY_URL_DEFAULT_PATH: "",
-        BY_URL_DEFAULT_EXTENSION: ".hbs"
+        BY_URL_DEFAULT_PATH: window.HAF_Template_LOAD_BY_URL_DEFAULT_PATH || "",
+        BY_URL_DEFAULT_EXTENSION: window.HAF_Template_LOAD_BY_URL_DEFAULT_EXTENSION || ".hbs"
     };
 
-}(HAF));
+}(HAF, window));
