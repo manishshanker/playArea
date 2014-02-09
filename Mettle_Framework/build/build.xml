@@ -82,7 +82,7 @@
     </target>
 
     <target name="copy-to-boiler-plate">
-        <copy file="${outputDir}\js\Mettle.min.js" toFile="${outputDir}\..\..\HAF_Boilerplate\src\lib\js\vendor\Mettle.min.js" />
+        <copy file="${outputDir}\js\Mettle.min.js" toFile="${outputDir}\..\..\Mettle_Boilerplate\src\lib\js\vendor\Mettle.min.js" />
     </target>
 
 </project>
