@@ -1,15 +1,15 @@
-(function (HAF, $) {
+(function (Mettle, $) {
     "use strict";
 
     var Messaging = function () {
         this.guid = guid();
         this.localMessageBus = $({});
-//        HAF.infoLogger("messageBus._____create", this.guid);
+//        Mettle.infoLogger("messageBus._____create", this.guid);
     };
 
     Messaging.prototype = {
         publish: function (subject, message) {
-//            HAF.infoLogger("messageBus.____publish", this.guid, subject, message);
+//            Mettle.infoLogger("messageBus.____publish", this.guid, subject, message);
             this.localMessageBus.trigger(subject, [message]);
         },
         subscribe: function (scope, subjects, fn) {
@@ -18,24 +18,24 @@
                 subjects = scope;
                 scope = window;
             }
-//            HAF.infoLogger("messageBus.__subscribe", this.guid, subjects);
+//            Mettle.infoLogger("messageBus.__subscribe", this.guid, subjects);
             var that = this;
             if (typeof subjects === "string") {
                 return getSubsricber(that, fn, scope, subjects);
             }
             var subscriberFNs = {};
-            HAF.each(subjects, function (fn, subject) {
+            Mettle.each(subjects, function (fn, subject) {
                 subscriberFNs[subject] = getSubsricber(that, fn, scope, subject);
             });
             return subscriberFNs;
         },
         unsubscribe: function (subjects, fn) {
-//            HAF.infoLogger("messageBus.unsubscribe", this.guid, subjects);
+//            Mettle.infoLogger("messageBus.unsubscribe", this.guid, subjects);
             var that = this;
             if (typeof subjects === "string") {
                 that.localMessageBus.off(subjects, fn);
             } else {
-                HAF.each(subjects, function (fn, subject) {
+                Mettle.each(subjects, function (fn, subject) {
                     that.localMessageBus.off(subject, fn);
                 });
             }
@@ -60,7 +60,7 @@
             .substring(1);
     }
 
-    HAF.messaging = new Messaging();
-    HAF.Messaging = Messaging;
+    Mettle.messaging = new Messaging();
+    Mettle.Messaging = Messaging;
 
-}(HAF, HAF.DOM));
+}(Mettle, Mettle.DOM));

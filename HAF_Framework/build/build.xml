@@ -35,7 +35,7 @@
     <target name="merge-js">
         <sequential>
         <echo message="BEGIN: JS MERGE"/>
-        <concat destfile="${outputDir}\js\HAF.js" fixlastline="true">
+        <concat destfile="${outputDir}\js\Mettle.js" fixlastline="true">
             <union>
                 <fileset dir="${jsSource}" casesensitive="false" includes="copyright.js"/>
                 <fileset dir="${jsSource}" casesensitive="false" includes="baseClass/namespace.js"/>
@@ -48,21 +48,21 @@
                 <fileset dir="${jsSource}" casesensitive="false" includes="*.js" />
             </union>
         </concat>
-        <delete dir="${outputDir}\js" includeemptydirs="true" excludes="HAF.js"/>
+        <delete dir="${outputDir}\js" includeemptydirs="true" excludes="Mettle.js"/>
         <echo message="END: JS MERGE"/>
         </sequential>
     </target>
 
     <target name="minify-js">
         <echo message="BEGIN: JS MINIFY"/>
-        <copy file="${outputDir}\js\HAF.js" toFile="${outputDir}\js\HAF.min.js"/>
+        <copy file="${outputDir}\js\Mettle.js" toFile="${outputDir}\js\Mettle.min.js"/>
         <yuicompress linebreak="300"
                      warn="false"
                      munge="yes"
                      preserveallsemicolons="true"
                      outputfolder="${outputDir}\js\">
             <fileset dir="${outputDir}\js\">
-                <include name="HAF.min.js"/>
+                <include name="Mettle.min.js"/>
             </fileset>
         </yuicompress>
         <echo message="END: JS MINIFY"/>
@@ -70,11 +70,11 @@
 
     <target name="add-build-timestamp">
         <echo message="BEGIN: ADD BUILD TIMESTAMP"/>
-        <replaceregexp file="${outputDir}\js\HAF.min.js"
+        <replaceregexp file="${outputDir}\js\Mettle.min.js"
                        match="(__TIMESTAMP__)"
                        flags="gs"
                        replace="${TIMESTAMP}"/>
-        <replaceregexp file="${outputDir}\js\HAF.js"
+        <replaceregexp file="${outputDir}\js\Mettle.js"
                        match="(__TIMESTAMP__)"
                        flags="gs"
                        replace="${TIMESTAMP}"/>
@@ -82,7 +82,7 @@
     </target>
 
     <target name="copy-to-boiler-plate">
-        <copy file="${outputDir}\js\HAF.min.js" toFile="${outputDir}\..\..\HAF_Boilerplate\src\lib\js\vendor\HAF.min.js" />
+        <copy file="${outputDir}\js\Mettle.min.js" toFile="${outputDir}\..\..\HAF_Boilerplate\src\lib\js\vendor\Mettle.min.js" />
     </target>
 
 </project>

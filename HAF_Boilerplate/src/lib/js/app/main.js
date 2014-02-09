@@ -1,8 +1,8 @@
-(function (HAF) {
+(function (Mettle) {
     "use strict";
 
-    HAF.init(APP, APP.i18nT);
+    Mettle.init(APP, APP.i18nT);
     (new APP.controller.News()).load();
-    HAF.navigation.load("introduction");
+    Mettle.navigation.load("introduction");
 
-}(HAF));
+}(Mettle));

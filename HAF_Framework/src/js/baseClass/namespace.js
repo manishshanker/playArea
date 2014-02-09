@@ -1,11 +1,11 @@
-(function (HAF, window) {
+(function (Mettle, window) {
     "use strict";
 
-    window.HAF = HAF = HAF || {};
+    window.Mettle = Mettle = Mettle || {};
 
-    HAF.init = function (appNameSpace, locale) {
-        HAF.i18nT = locale;
-        HAF.Module = appNameSpace || {};
+    Mettle.init = function (appNameSpace, locale) {
+        Mettle.i18nT = locale;
+        Mettle.Module = appNameSpace || {};
     };
 
-}(window.HAF, window));
+}(window.Mettle, window));

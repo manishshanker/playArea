@@ -1,7 +1,7 @@
-(function (HAF, $) {
+(function (Mettle, $) {
     "use strict";
 
-    APP.view.NewsList = HAF.View.extend({
+    APP.view.NewsList = Mettle.View.extend({
         container: "#newsList",
         selectItem: function (itemId) {
             if (this._$selectedItem) {
@@ -12,4 +12,4 @@
         }
     });
 
-}(HAF, HAF.DOM));
+}(Mettle, Mettle.DOM));

@@ -1,20 +1,20 @@
-(function (HAF) {
+(function (Mettle) {
     "use strict";
 
-    HAF.noop = noop;
-    HAF.each = each;
-    HAF.infoLogger = (window.console && window.console.log && function () {
+    Mettle.noop = noop;
+    Mettle.each = each;
+    Mettle.infoLogger = (window.console && window.console.log && function () {
         console.info.apply(console, arguments);
-    }) || HAF.noop;
-    HAF.logger = (window.console && window.console.log && function () {
+    }) || Mettle.noop;
+    Mettle.logger = (window.console && window.console.log && function () {
         console.log.apply(console, arguments);
-    }) || HAF.noop;
-    HAF.errorLogger = (window.console && window.console.log && function () {
+    }) || Mettle.noop;
+    Mettle.errorLogger = (window.console && window.console.log && function () {
         console.error.apply(console, arguments);
-    }) || HAF.noop;
-    HAF.warningLogger = (window.console && window.console.log && function () {
+    }) || Mettle.noop;
+    Mettle.warningLogger = (window.console && window.console.log && function () {
         console.warn.apply(console, arguments);
-    }) || HAF.noop;
+    }) || Mettle.noop;
 
     function each(data, callback) {
         if (data) {
@@ -49,4 +49,4 @@
     function noop() {
     }
 
-}(HAF));
+}(Mettle));

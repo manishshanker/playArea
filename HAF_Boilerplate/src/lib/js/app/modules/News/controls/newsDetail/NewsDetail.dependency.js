@@ -4,7 +4,7 @@
     APP.dependency.NewsDetail = {
         templates: {
             newsDetail: function () {
-                return new HAF.Template("tmplNewsDetail");
+                return new Mettle.Template("tmplNewsDetail");
             }
         },
         views: {

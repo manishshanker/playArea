@@ -1,8 +1,8 @@
-(function (HAF) {
+(function (Mettle) {
     "use strict";
 
-    HAF.i18n = function (actualText, alias_key) {
-        if (!HAF.i18nT) {
+    Mettle.i18n = function (actualText, alias_key) {
+        if (!Mettle.i18nT) {
             throw new Error("No resource bundle included for i18n!!");
         }
         if (actualText === null) {
@@ -18,10 +18,10 @@
             i18n_key = i18n_key.charAt(0).toLowerCase() + i18n_key.substring(1);
         }
 //        console.log("\"" + i18n_key + "\": \"" + actualText + "\",");
-//        if (!HAF.i18nT[i18n_key]) {
+//        if (!Mettle.i18nT[i18n_key]) {
 //            console.log("\"" + i18n_key + "\": \"" + actualText + "\",");
 //        }
-        return HAF.i18nT[i18n_key] || "!!!" + actualText + "!!!";
+        return Mettle.i18nT[i18n_key] || "!!!" + actualText + "!!!";
     };
 
-}(HAF));
+}(Mettle));

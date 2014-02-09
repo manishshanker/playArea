@@ -16,39 +16,39 @@
 
 /*!
  * @author Manish Shanker
- * @timestamp 09022014104737
+ * @timestamp 09022014144029
  */
-(function (HAF, window) {
+(function (Mettle, window) {
     "use strict";
 
-    window.HAF = HAF = HAF || {};
+    window.Mettle = Mettle = Mettle || {};
 
-    HAF.init = function (appNameSpace, locale) {
-        HAF.i18nT = locale;
-        HAF.Module = appNameSpace || {};
+    Mettle.init = function (appNameSpace, locale) {
+        Mettle.i18nT = locale;
+        Mettle.Module = appNameSpace || {};
     };
 
-}(window.HAF, window));
-(function (HAF, $) {
+}(window.Mettle, window));
+(function (Mettle, $) {
     "use strict";
 
-    function HAFDOM(selector) {
-        return new HAFDOMElement($(selector));
+    function MettleDOM(selector) {
+        return new MettleDOMElement($(selector));
     }
 
-    HAFDOM.get = function () {
+    MettleDOM.get = function () {
         return $.get.apply(this, arguments);
     };
 
-    HAFDOM.grep = function () {
+    MettleDOM.grep = function () {
         return $.grep.apply(this, arguments);
     };
 
-    var HAFDOMElement = function ($item) {
+    var MettleDOMElement = function ($item) {
         this.$item = $item;
     };
 
-    HAFDOMElement.prototype = {
+    MettleDOMElement.prototype = {
         on: function () {
             this.$item.on.apply(this.$item, arguments);
             return this;
@@ -96,9 +96,9 @@
         }
     };
 
-    HAF.DOM = HAFDOM;
+    Mettle.DOM = MettleDOM;
 
-}(HAF,  (window.Zepto || window.jQuery)));
+}(Mettle,  (window.Zepto || window.jQuery)));
 (function () {
     "use strict";
 
@@ -135,23 +135,23 @@
 
     window.Class = Class;
 }());
-(function (HAF) {
+(function (Mettle) {
     "use strict";
 
-    HAF.noop = noop;
-    HAF.each = each;
-    HAF.infoLogger = (window.console && window.console.log && function () {
+    Mettle.noop = noop;
+    Mettle.each = each;
+    Mettle.infoLogger = (window.console && window.console.log && function () {
         console.info.apply(console, arguments);
-    }) || HAF.noop;
-    HAF.logger = (window.console && window.console.log && function () {
+    }) || Mettle.noop;
+    Mettle.logger = (window.console && window.console.log && function () {
         console.log.apply(console, arguments);
-    }) || HAF.noop;
-    HAF.errorLogger = (window.console && window.console.log && function () {
+    }) || Mettle.noop;
+    Mettle.errorLogger = (window.console && window.console.log && function () {
         console.error.apply(console, arguments);
-    }) || HAF.noop;
-    HAF.warningLogger = (window.console && window.console.log && function () {
+    }) || Mettle.noop;
+    Mettle.warningLogger = (window.console && window.console.log && function () {
         console.warn.apply(console, arguments);
-    }) || HAF.noop;
+    }) || Mettle.noop;
 
     function each(data, callback) {
         if (data) {
@@ -186,19 +186,19 @@
     function noop() {
     }
 
-}(HAF));
-(function (HAF, $) {
+}(Mettle));
+(function (Mettle, $) {
     "use strict";
 
     var Messaging = function () {
         this.guid = guid();
         this.localMessageBus = $({});
-//        HAF.infoLogger("messageBus._____create", this.guid);
+//        Mettle.infoLogger("messageBus._____create", this.guid);
     };
 
     Messaging.prototype = {
         publish: function (subject, message) {
-//            HAF.infoLogger("messageBus.____publish", this.guid, subject, message);
+//            Mettle.infoLogger("messageBus.____publish", this.guid, subject, message);
             this.localMessageBus.trigger(subject, [message]);
         },
         subscribe: function (scope, subjects, fn) {
@@ -207,24 +207,24 @@
                 subjects = scope;
                 scope = window;
             }
-//            HAF.infoLogger("messageBus.__subscribe", this.guid, subjects);
+//            Mettle.infoLogger("messageBus.__subscribe", this.guid, subjects);
             var that = this;
             if (typeof subjects === "string") {
                 return getSubsricber(that, fn, scope, subjects);
             }
             var subscriberFNs = {};
-            HAF.each(subjects, function (fn, subject) {
+            Mettle.each(subjects, function (fn, subject) {
                 subscriberFNs[subject] = getSubsricber(that, fn, scope, subject);
             });
             return subscriberFNs;
         },
         unsubscribe: function (subjects, fn) {
-//            HAF.infoLogger("messageBus.unsubscribe", this.guid, subjects);
+//            Mettle.infoLogger("messageBus.unsubscribe", this.guid, subjects);
             var that = this;
             if (typeof subjects === "string") {
                 that.localMessageBus.off(subjects, fn);
             } else {
-                HAF.each(subjects, function (fn, subject) {
+                Mettle.each(subjects, function (fn, subject) {
                     that.localMessageBus.off(subject, fn);
                 });
             }
@@ -249,16 +249,16 @@
             .substring(1);
     }
 
-    HAF.messaging = new Messaging();
-    HAF.Messaging = Messaging;
+    Mettle.messaging = new Messaging();
+    Mettle.Messaging = Messaging;
 
-}(HAF, HAF.DOM));
-(function (HAF) {
+}(Mettle, Mettle.DOM));
+(function (Mettle) {
     "use strict";
 
-    HAF.Base = Class.extend({
+    Mettle.Base = Class.extend({
         _guid: null,
-        messageBus: HAF.messaging,
+        messageBus: Mettle.messaging,
         injector: null,
         guid: function () {
             if (!this._guid) {
@@ -267,7 +267,7 @@
             return this._guid;
         },
         injectDependencies: function (dependencies) {
-            HAF.dependencyInjector(this, dependencies);
+            Mettle.dependencyInjector(this, dependencies);
         }
     });
 
@@ -281,11 +281,11 @@
             .substring(1);
     }
 
-}(HAF));
-(function (HAF) {
+}(Mettle));
+(function (Mettle) {
     "use strict";
 
-    HAF.Controller = HAF.Base.extend({
+    Mettle.Controller = Mettle.Base.extend({
         autoWire: false,
         autoDestroy: false,
         autoShowHide: false,
@@ -296,7 +296,7 @@
         inject: null,
         routes: {},
         serviceUpdate: {},
-        messageBus: HAF.messaging,
+        messageBus: Mettle.messaging,
         localMessageBus: null,
         init: function (dependencies) {
             this.injectDependencies(dependencies);
@@ -431,20 +431,20 @@
     function destroyControlMessages(ctx) {
         if (ctx.controlMessages) {
             var controlMessages = ctx.controlMessages;
-            HAF.messaging.unsubscribe(controlMessages.show);
-            HAF.messaging.unsubscribe(controlMessages.hide);
-            HAF.messaging.unsubscribe(controlMessages.stateChange);
+            Mettle.messaging.unsubscribe(controlMessages.show);
+            Mettle.messaging.unsubscribe(controlMessages.hide);
+            Mettle.messaging.unsubscribe(controlMessages.stateChange);
         }
     }
 
     function destroyMessages(ctx) {
-        HAF.each(ctx.messages, function (item) {
-            HAF.messaging.unsubscribe(item);
+        Mettle.each(ctx.messages, function (item) {
+            Mettle.messaging.unsubscribe(item);
         });
     }
 
     function renderTemplates(ctx, data) {
-        HAF.each(ctx.templates, function (template, key) {
+        Mettle.each(ctx.templates, function (template, key) {
             template.load(function () {
                 if (ctx.views[key]) {
                     ctx.views[key].render(template.process(data));
@@ -455,13 +455,13 @@
 
     function loopMethods(collection, method, args) {
         args = args || [];
-        HAF.each(collection, function (item) {
+        Mettle.each(collection, function (item) {
             item[method].apply(item, args);
         });
     }
 
     function initServices(services, that) {
-        HAF.each(services, function (service, key) {
+        Mettle.each(services, function (service, key) {
             service.onUpdate(getFunction(that, key));
             service.fetch();
         });
@@ -479,16 +479,16 @@
         }
         destroyControlMessages(ctx);
         var messages = ctx.controlMessages;
-        HAF.messaging.subscribe(ctx, messages.show, ctx.show);
-        HAF.messaging.subscribe(ctx, messages.hide, ctx.hide);
-        HAF.messaging.subscribe(ctx, messages.stateChange, function (stateData) {
+        Mettle.messaging.subscribe(ctx, messages.show, ctx.show);
+        Mettle.messaging.subscribe(ctx, messages.hide, ctx.hide);
+        Mettle.messaging.subscribe(ctx, messages.stateChange, function (stateData) {
             ctx.lastStateData = stateData;
-            HAF.each(ctx.onRouteChange(stateData), function (item, key) {
-                HAF.navigation.route(ctx, key, item);
+            Mettle.each(ctx.onRouteChange(stateData), function (item, key) {
+                Mettle.navigation.route(ctx, key, item);
             });
         });
-        HAF.each(ctx.messages, function (message, key) {
-            HAF.messaging.subscribe(ctx, key, message);
+        Mettle.each(ctx.messages, function (message, key) {
+            Mettle.messaging.subscribe(ctx, key, message);
         });
     }
 
@@ -499,13 +499,13 @@
         }
     }
 
-}(HAF));
-(function (HAF, $) {
+}(Mettle));
+(function (Mettle, $) {
     "use strict";
 
     var privateVar = {};
 
-    HAF.Service = HAF.Base.extend({
+    Mettle.Service = Mettle.Base.extend({
         dataURL: null,
         init: function () {
             privateVar[this.guid()] = {};
@@ -516,8 +516,8 @@
                 this.updated(data);
             });
         },
-        update: HAF.noop,
-        get: HAF.noop,
+        update: Mettle.noop,
+        get: Mettle.noop,
         lastResult: function () {
             return privateVar[this.guid()].lastResult;
         },
@@ -537,36 +537,36 @@
         destroy: function () {
             delete privateVar[this.guid()];
         },
-        stop: HAF.noop,
-        start: HAF.noop
+        stop: Mettle.noop,
+        start: Mettle.noop
     });
 
-}(HAF, HAF.DOM));
-(function (HAF, window) {
+}(Mettle, Mettle.DOM));
+(function (Mettle, window) {
     "use strict";
 
     var templateCache = {};
 
-    HAF.TemplateByString = function (string) {
-        return new HAF.Template(string, HAF.Template.LOAD.BY_STRING);
+    Mettle.TemplateByString = function (string) {
+        return new Mettle.Template(string, Mettle.Template.LOAD.BY_STRING);
     };
 
-    HAF.TemplateByID = function (string) {
-        return new HAF.Template(string, HAF.Template.LOAD.BY_ID);
+    Mettle.TemplateByID = function (string) {
+        return new Mettle.Template(string, Mettle.Template.LOAD.BY_ID);
     };
 
-    HAF.TemplateByURL = function (string) {
-        return new HAF.Template(string, HAF.Template.LOAD.BY_URL);
+    Mettle.TemplateByURL = function (string) {
+        return new Mettle.Template(string, Mettle.Template.LOAD.BY_URL);
     };
 
-    HAF.TemplateSafeString = function (template) {
-        return new HAF.templateEngine.safeString(template);
+    Mettle.TemplateSafeString = function (template) {
+        return new Mettle.templateEngine.safeString(template);
     };
 
-    HAF.Template = HAF.Base.extend({
+    Mettle.Template = Mettle.Base.extend({
         init: function (path, loadType) {
             this.path = path;
-            this.loadBy = loadType || HAF.Template.LOAD.DEFAULT;
+            this.loadBy = loadType || Mettle.Template.LOAD.DEFAULT;
         },
         process: function (data) {
             if (this.path === undefined) {
@@ -576,27 +576,27 @@
                 console.log("Template param: ", this.path, this.loadBy);
                 throw new Error("Template not in cache!!");
             }
-            return HAF.templateEngine.process(templateCache[this.guid()], data);
+            return Mettle.templateEngine.process(templateCache[this.guid()], data);
         },
         load: function (onSuccess) {
             var that = this;
             if (this.path === undefined || templateCache[this.guid()]) {
                 onSuccess();
             } else {
-                if (that.loadBy === HAF.Template.LOAD.BY_URL) {
-                    var path = addExtension(addForwardSlash(HAF.Template.LOAD.BY_URL_DEFAULT_PATH) + that.path);
-                    HAF.templateEngine.getByURL(path, function (template) {
+                if (that.loadBy === Mettle.Template.LOAD.BY_URL) {
+                    var path = addExtension(addForwardSlash(Mettle.Template.LOAD.BY_URL_DEFAULT_PATH) + that.path);
+                    Mettle.templateEngine.getByURL(path, function (template) {
                         templateCache[that.guid()] = template;
                         onSuccess.call(that);
                     });
-                } else if (this.loadBy === HAF.Template.LOAD.BY_ID) {
-                    templateCache[this.guid()] = HAF.templateEngine.getById(this.path);
-                    HAF.templateEngine.remove(this.path);
+                } else if (this.loadBy === Mettle.Template.LOAD.BY_ID) {
+                    templateCache[this.guid()] = Mettle.templateEngine.getById(this.path);
+                    Mettle.templateEngine.remove(this.path);
                     setTimeout(function () {
                         onSuccess.call(that);
                     }, 5);
                 } else {
-                    templateCache[this.guid()] = HAF.templateEngine.getByString(this.path);
+                    templateCache[this.guid()] = Mettle.templateEngine.getByString(this.path);
                     setTimeout(function () {
                         onSuccess.call(that);
                     }, 5);
@@ -609,27 +609,27 @@
     });
 
     function addExtension(path) {
-        return path + (/\.[a-z]{3,4}$/.test(path) ? "" : HAF.Template.LOAD.BY_URL_DEFAULT_EXTENSION);
+        return path + (/\.[a-z]{3,4}$/.test(path) ? "" : Mettle.Template.LOAD.BY_URL_DEFAULT_EXTENSION);
     }
 
     function addForwardSlash(path) {
         return path + (/\/$/.test(path) ? "" : "/");
     }
 
-    HAF.Template.LOAD = {
+    Mettle.Template.LOAD = {
         BY_ID: "APP_TEMPLATE_BY_ID",
         BY_URL: "APP_TEMPLATE_BY_URL",
         BY_STRING: "APP_TEMPLATE_BY_STRING",
         DEFAULT: "APP_TEMPLATE_BY_ID",
-        BY_URL_DEFAULT_PATH: window.HAF_Template_LOAD_BY_URL_DEFAULT_PATH || "",
-        BY_URL_DEFAULT_EXTENSION: window.HAF_Template_LOAD_BY_URL_DEFAULT_EXTENSION || ".hbs"
+        BY_URL_DEFAULT_PATH: window.Mettle_Template_LOAD_BY_URL_DEFAULT_PATH || "",
+        BY_URL_DEFAULT_EXTENSION: window.Mettle_Template_LOAD_BY_URL_DEFAULT_EXTENSION || ".hbs"
     };
 
-}(HAF, window));
-(function (HAF, $) {
+}(Mettle, window));
+(function (Mettle, $) {
     "use strict";
 
-    HAF.View = HAF.Base.extend({
+    Mettle.View = Mettle.Base.extend({
         autoManageEventBind: false,
         autoLayout: false,
         init: function (dependencies) {
@@ -644,7 +644,7 @@
         container: null,
         $container: null,
         bindings: null,
-        layoutChange: HAF.noop,
+        layoutChange: Mettle.noop,
         bind: function () {
             bindEvents(this);
         },
@@ -676,7 +676,7 @@
     });
 
     function unbindEvents(ctx) {
-        HAF.each(ctx.bindings, function (fn, key) {
+        Mettle.each(ctx.bindings, function (fn, key) {
             var parts = /([a-z]+)\s([a-zA-Z0-9\-\.\(\)>]+)/.exec(key);
             ctx.$container.off(parts[1], parts[2]);
         });
@@ -684,7 +684,7 @@
 
     function bindEvents(ctx) {
         var bindings = typeof ctx.bindings === "function" ? ctx.bindings() : ctx.bindings;
-        HAF.each(bindings, function (fn, key) {
+        Mettle.each(bindings, function (fn, key) {
             var parts = /([a-z]+)\s([a-zA-Z0-9\-\.\(\)>]+)/.exec(key);
             ctx.$container.on(parts[1], parts[2], function (e) {
                 fn.call(ctx, e, this);
@@ -718,11 +718,11 @@
         }
     }
 
-}(HAF, HAF.DOM));
-(function (HAF) {
+}(Mettle, Mettle.DOM));
+(function (Mettle) {
     "use strict";
 
-    HAF.dependencyInjector = injectDependencies;
+    Mettle.dependencyInjector = injectDependencies;
 
     var TYPES = {
         "views": "view",
@@ -732,17 +732,17 @@
     };
 
     function injectDependencies(ctx, dependencies) {
-        if (HAF.Messaging && (dependencies instanceof HAF.Messaging)) {
+        if (Mettle.Messaging && (dependencies instanceof Mettle.Messaging)) {
             ctx.messageBus = dependencies;
         }
         if (ctx.injectLocalMessageBus) {
-            ctx.localMessageBus = (dependencies && dependencies.inject && dependencies.inject.localMessageBus) || new HAF.Messaging();
+            ctx.localMessageBus = (dependencies && dependencies.inject && dependencies.inject.localMessageBus) || new Mettle.Messaging();
         }
         var injectedDependencies = (dependencies && dependencies.inject) || (ctx.inject && (isFunction(ctx.inject) ? ctx.inject() : ctx.inject));
 
         injectedDependencies = injectDepUsingShorthand(injectedDependencies);
 
-        HAF.each(injectedDependencies, function (dependency, key) {
+        Mettle.each(injectedDependencies, function (dependency, key) {
             var depType = /^controls$|^templates$|^views$|^services$/.exec(key);
             if (depType) {
                 if (dependency instanceof Array) {
@@ -750,7 +750,7 @@
                 } else if (isFunction(dependency)) {
                     ctx[key] = dependency.call(ctx, ctx);
                 } else {
-                    HAF.each(dependency, function (dep, subSubKey) {
+                    Mettle.each(dependency, function (dep, subSubKey) {
                         ctx[key] = ctx[key] || {};
                         ctx[key][subSubKey] = ctx[key][subSubKey] = {};
                         injectInCtx(ctx[key], subSubKey, getDep(dep, ctx, key));
@@ -763,13 +763,13 @@
     }
 
     function injectFromArray(dependency, ctx, key) {
-        HAF.each(dependency, function (subDependency) {
+        Mettle.each(dependency, function (subDependency) {
             ctx[key] = ctx[key] || {};
             if (isString(subDependency)) {
                 ctx[key][subDependency] = ctx[subDependency] || {};
                 injectInCtx(ctx[key], subDependency, getDependencyInstance(ctx, key, subDependency));
             } else {
-                HAF.each(subDependency, function (dep, subSubKey) {
+                Mettle.each(subDependency, function (dep, subSubKey) {
                     injectInCtx(ctx[key], subSubKey, getDep(dep, ctx, key));
                 });
             }
@@ -786,8 +786,8 @@
 
     function getDependencyInstance(ctx, key, dependency) {
         if (ctx.injector) {
-            HAF.Module.dependency = HAF.Module.dependency || {};
-            var depInjector = HAF.Module.dependency[ctx.injector];
+            Mettle.Module.dependency = Mettle.Module.dependency || {};
+            var depInjector = Mettle.Module.dependency[ctx.injector];
             if (depInjector) {
                 if (depInjector[key][dependency]) {
                     return depInjector[key][dependency](ctx);
@@ -803,24 +803,24 @@
 
     function defaultInjector(ctx, type, dependency) {
         if (type === "templates") {
-            HAF.Module.template = HAF.Module.template || {};
-            if (HAF.Module.template[capitalise(dependency)]) {
-                return new HAF.Module.template[capitalise(dependency)]();
+            Mettle.Module.template = Mettle.Module.template || {};
+            if (Mettle.Module.template[capitalise(dependency)]) {
+                return new Mettle.Module.template[capitalise(dependency)]();
             }
-            if (HAF.Module.template[dependency]) {
-                return HAF.Module.template[dependency];
+            if (Mettle.Module.template[dependency]) {
+                return Mettle.Module.template[dependency];
             }
             if (dependency.indexOf("tmpl!") === 0) {
-                return HAF.TemplateByURL(dependency.substr(5));
+                return Mettle.TemplateByURL(dependency.substr(5));
             }
-            return HAF.TemplateByID("tmpl" + capitalise(dependency));
+            return Mettle.TemplateByID("tmpl" + capitalise(dependency));
         }
         var moduleNameSpace = TYPES[type];
-        HAF.Module[moduleNameSpace] = HAF.Module[moduleNameSpace] || {};
+        Mettle.Module[moduleNameSpace] = Mettle.Module[moduleNameSpace] || {};
         try {
-            return new HAF.Module[moduleNameSpace][capitalise(dependency)](ctx.injectLocalMessageBus ? ctx.localMessageBus : ctx.messageBus);
+            return new Mettle.Module[moduleNameSpace][capitalise(dependency)](ctx.injectLocalMessageBus ? ctx.localMessageBus : ctx.messageBus);
         } catch (e) {
-            HAF.errorLogger(e);
+            Mettle.errorLogger(e);
             throw new Error("Dependency instance creation error: (" + type + "," + dependency + " | " + moduleNameSpace + "." + (capitalise(dependency)) + ")");
         }
     }
@@ -831,7 +831,7 @@
             var parts = injectedDependencies.split(":");
             var classObjectName = parts[1];
             var types = parts[0];
-            HAF.each({
+            Mettle.each({
                 "templates": /T/,
                 "views": /V/,
                 "services": /S/
@@ -853,7 +853,7 @@
         return typeof subDependency === "string";
     }
 
-}(HAF));
+}(Mettle));
 (function (HB) {
     "use strict";
 
@@ -876,19 +876,19 @@
 
 }(Handlebars));
 /*i18n Handlebar helper*/
-(function (HAF) {
+(function (Mettle) {
     "use strict";
 
     Handlebars.registerHelper('i18n', function (i18n_key, alias_key) {
         alias_key = typeof alias_key === "object" ? null : alias_key;
-        return new Handlebars.SafeString(HAF.i18n(i18n_key, alias_key));
+        return new Handlebars.SafeString(Mettle.i18n(i18n_key, alias_key));
     });
-}(HAF));
-(function (HAF) {
+}(Mettle));
+(function (Mettle) {
     "use strict";
 
-    HAF.i18n = function (actualText, alias_key) {
-        if (!HAF.i18nT) {
+    Mettle.i18n = function (actualText, alias_key) {
+        if (!Mettle.i18nT) {
             throw new Error("No resource bundle included for i18n!!");
         }
         if (actualText === null) {
@@ -904,14 +904,14 @@
             i18n_key = i18n_key.charAt(0).toLowerCase() + i18n_key.substring(1);
         }
 //        console.log("\"" + i18n_key + "\": \"" + actualText + "\",");
-//        if (!HAF.i18nT[i18n_key]) {
+//        if (!Mettle.i18nT[i18n_key]) {
 //            console.log("\"" + i18n_key + "\": \"" + actualText + "\",");
 //        }
-        return HAF.i18nT[i18n_key] || "!!!" + actualText + "!!!";
+        return Mettle.i18nT[i18n_key] || "!!!" + actualText + "!!!";
     };
 
-}(HAF));
-(function (HAF, $) {
+}(Mettle));
+(function (Mettle, $) {
     "use strict";
 
     var currentView;
@@ -961,15 +961,15 @@
         }
 
         function publishStateUpdate(appStateData) {
-            HAF.messaging.publish("navigationStateChange:" + currentView, appStateData);
-            HAF.messaging.publish("navigationStateChange", appStateData);
+            Mettle.messaging.publish("navigationStateChange:" + currentView, appStateData);
+            Mettle.messaging.publish("navigationStateChange", appStateData);
         }
 
         function hidePage(page, appStateData) {
             if (page) {
                 $("a[href$='#/" + page + "']").removeClass("selected");
                 $("#" + page).removeClass("page-visible");
-                HAF.messaging.publish("navigationChangedFrom:" + page, appStateData);
+                Mettle.messaging.publish("navigationChangedFrom:" + page, appStateData);
             }
         }
 
@@ -988,7 +988,7 @@
                 }
             }
             if (!restoringState) {
-                HAF.messaging.publish("navigationChangedTo:" + currentView, appStateData);
+                Mettle.messaging.publish("navigationChangedTo:" + currentView, appStateData);
             }
         }
 
@@ -1043,12 +1043,12 @@
         };
     };
 
-    HAF.navigation = new Navigation();
-}(HAF, HAF.DOM));
-(function (HAF, $) {
+    Mettle.navigation = new Navigation();
+}(Mettle, Mettle.DOM));
+(function (Mettle, $) {
     "use strict";
 
-    HAF.templateEngine = {
+    Mettle.templateEngine = {
         getById: getById,
         getByCSSSelector: getByCSSSelector,
         getByURL: getByURL,
@@ -1105,4 +1105,4 @@
         return template(templateData);
     }
 
-}(HAF, HAF.DOM));
+}(Mettle, Mettle.DOM));

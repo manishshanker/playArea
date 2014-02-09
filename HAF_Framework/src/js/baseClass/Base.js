@@ -1,9 +1,9 @@
-(function (HAF) {
+(function (Mettle) {
     "use strict";
 
-    HAF.Base = Class.extend({
+    Mettle.Base = Class.extend({
         _guid: null,
-        messageBus: HAF.messaging,
+        messageBus: Mettle.messaging,
         injector: null,
         guid: function () {
             if (!this._guid) {
@@ -12,7 +12,7 @@
             return this._guid;
         },
         injectDependencies: function (dependencies) {
-            HAF.dependencyInjector(this, dependencies);
+            Mettle.dependencyInjector(this, dependencies);
         }
     });
 
@@ -26,4 +26,4 @@
             .substring(1);
     }
 
-}(HAF));
+}(Mettle));

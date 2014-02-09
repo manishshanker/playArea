@@ -1,7 +1,7 @@
-(function (HAF, $) {
+(function (Mettle, $) {
     "use strict";
 
-    HAF.View = HAF.Base.extend({
+    Mettle.View = Mettle.Base.extend({
         autoManageEventBind: false,
         autoLayout: false,
         init: function (dependencies) {
@@ -16,7 +16,7 @@
         container: null,
         $container: null,
         bindings: null,
-        layoutChange: HAF.noop,
+        layoutChange: Mettle.noop,
         bind: function () {
             bindEvents(this);
         },
@@ -48,7 +48,7 @@
     });
 
     function unbindEvents(ctx) {
-        HAF.each(ctx.bindings, function (fn, key) {
+        Mettle.each(ctx.bindings, function (fn, key) {
             var parts = /([a-z]+)\s([a-zA-Z0-9\-\.\(\)>]+)/.exec(key);
             ctx.$container.off(parts[1], parts[2]);
         });
@@ -56,7 +56,7 @@
 
     function bindEvents(ctx) {
         var bindings = typeof ctx.bindings === "function" ? ctx.bindings() : ctx.bindings;
-        HAF.each(bindings, function (fn, key) {
+        Mettle.each(bindings, function (fn, key) {
             var parts = /([a-z]+)\s([a-zA-Z0-9\-\.\(\)>]+)/.exec(key);
             ctx.$container.on(parts[1], parts[2], function (e) {
                 fn.call(ctx, e, this);
@@ -90,4 +90,4 @@
         }
     }
 
-}(HAF, HAF.DOM));
+}(Mettle, Mettle.DOM));

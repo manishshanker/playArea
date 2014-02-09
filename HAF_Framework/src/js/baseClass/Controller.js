@@ -1,7 +1,7 @@
-(function (HAF) {
+(function (Mettle) {
     "use strict";
 
-    HAF.Controller = HAF.Base.extend({
+    Mettle.Controller = Mettle.Base.extend({
         autoWire: false,
         autoDestroy: false,
         autoShowHide: false,
@@ -12,7 +12,7 @@
         inject: null,
         routes: {},
         serviceUpdate: {},
-        messageBus: HAF.messaging,
+        messageBus: Mettle.messaging,
         localMessageBus: null,
         init: function (dependencies) {
             this.injectDependencies(dependencies);
@@ -147,20 +147,20 @@
     function destroyControlMessages(ctx) {
         if (ctx.controlMessages) {
             var controlMessages = ctx.controlMessages;
-            HAF.messaging.unsubscribe(controlMessages.show);
-            HAF.messaging.unsubscribe(controlMessages.hide);
-            HAF.messaging.unsubscribe(controlMessages.stateChange);
+            Mettle.messaging.unsubscribe(controlMessages.show);
+            Mettle.messaging.unsubscribe(controlMessages.hide);
+            Mettle.messaging.unsubscribe(controlMessages.stateChange);
         }
     }
 
     function destroyMessages(ctx) {
-        HAF.each(ctx.messages, function (item) {
-            HAF.messaging.unsubscribe(item);
+        Mettle.each(ctx.messages, function (item) {
+            Mettle.messaging.unsubscribe(item);
         });
     }
 
     function renderTemplates(ctx, data) {
-        HAF.each(ctx.templates, function (template, key) {
+        Mettle.each(ctx.templates, function (template, key) {
             template.load(function () {
                 if (ctx.views[key]) {
                     ctx.views[key].render(template.process(data));
@@ -171,13 +171,13 @@
 
     function loopMethods(collection, method, args) {
         args = args || [];
-        HAF.each(collection, function (item) {
+        Mettle.each(collection, function (item) {
             item[method].apply(item, args);
         });
     }
 
     function initServices(services, that) {
-        HAF.each(services, function (service, key) {
+        Mettle.each(services, function (service, key) {
             service.onUpdate(getFunction(that, key));
             service.fetch();
         });
@@ -195,16 +195,16 @@
         }
         destroyControlMessages(ctx);
         var messages = ctx.controlMessages;
-        HAF.messaging.subscribe(ctx, messages.show, ctx.show);
-        HAF.messaging.subscribe(ctx, messages.hide, ctx.hide);
-        HAF.messaging.subscribe(ctx, messages.stateChange, function (stateData) {
+        Mettle.messaging.subscribe(ctx, messages.show, ctx.show);
+        Mettle.messaging.subscribe(ctx, messages.hide, ctx.hide);
+        Mettle.messaging.subscribe(ctx, messages.stateChange, function (stateData) {
             ctx.lastStateData = stateData;
-            HAF.each(ctx.onRouteChange(stateData), function (item, key) {
-                HAF.navigation.route(ctx, key, item);
+            Mettle.each(ctx.onRouteChange(stateData), function (item, key) {
+                Mettle.navigation.route(ctx, key, item);
             });
         });
-        HAF.each(ctx.messages, function (message, key) {
-            HAF.messaging.subscribe(ctx, key, message);
+        Mettle.each(ctx.messages, function (message, key) {
+            Mettle.messaging.subscribe(ctx, key, message);
         });
     }
 
@@ -215,4 +215,4 @@
         }
     }
 
-}(HAF));
+}(Mettle));

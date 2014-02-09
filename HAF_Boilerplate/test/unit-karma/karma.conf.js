@@ -17,7 +17,7 @@ module.exports = function (config) {
             'tests/**/*test.js',
             '../../src/lib/js/vendor/zepto.min.js',
             '../../src/lib/js/vendor/handlebars-v1.1.2.js',
-            '../../src/lib/js/vendor/HAF.min.js',
+            '../../src/lib/js/vendor/Mettle.min.js',
             '../../src/lib/js/vendor/**/*.js',
             '../../src/lib/js/app/namespace.js',
             '../../src/lib/js/app/serviceURLs.js',

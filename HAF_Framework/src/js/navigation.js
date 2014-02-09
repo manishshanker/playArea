@@ -1,4 +1,4 @@
-(function (HAF, $) {
+(function (Mettle, $) {
     "use strict";
 
     var currentView;
@@ -48,15 +48,15 @@
         }
 
         function publishStateUpdate(appStateData) {
-            HAF.messaging.publish("navigationStateChange:" + currentView, appStateData);
-            HAF.messaging.publish("navigationStateChange", appStateData);
+            Mettle.messaging.publish("navigationStateChange:" + currentView, appStateData);
+            Mettle.messaging.publish("navigationStateChange", appStateData);
         }
 
         function hidePage(page, appStateData) {
             if (page) {
                 $("a[href$='#/" + page + "']").removeClass("selected");
                 $("#" + page).removeClass("page-visible");
-                HAF.messaging.publish("navigationChangedFrom:" + page, appStateData);
+                Mettle.messaging.publish("navigationChangedFrom:" + page, appStateData);
             }
         }
 
@@ -75,7 +75,7 @@
                 }
             }
             if (!restoringState) {
-                HAF.messaging.publish("navigationChangedTo:" + currentView, appStateData);
+                Mettle.messaging.publish("navigationChangedTo:" + currentView, appStateData);
             }
         }
 
@@ -130,5 +130,5 @@
         };
     };
 
-    HAF.navigation = new Navigation();
-}(HAF, HAF.DOM));
+    Mettle.navigation = new Navigation();
+}(Mettle, Mettle.DOM));

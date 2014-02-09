@@ -1,9 +1,9 @@
-(function (HAF, $) {
+(function (Mettle, $) {
     "use strict";
 
     var privateVar = {};
 
-    HAF.Service = HAF.Base.extend({
+    Mettle.Service = Mettle.Base.extend({
         dataURL: null,
         init: function () {
             privateVar[this.guid()] = {};
@@ -14,8 +14,8 @@
                 this.updated(data);
             });
         },
-        update: HAF.noop,
-        get: HAF.noop,
+        update: Mettle.noop,
+        get: Mettle.noop,
         lastResult: function () {
             return privateVar[this.guid()].lastResult;
         },
@@ -35,8 +35,8 @@
         destroy: function () {
             delete privateVar[this.guid()];
         },
-        stop: HAF.noop,
-        start: HAF.noop
+        stop: Mettle.noop,
+        start: Mettle.noop
     });
 
-}(HAF, HAF.DOM));
+}(Mettle, Mettle.DOM));

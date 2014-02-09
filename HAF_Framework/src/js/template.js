@@ -1,7 +1,7 @@
-(function (HAF, $) {
+(function (Mettle, $) {
     "use strict";
 
-    HAF.templateEngine = {
+    Mettle.templateEngine = {
         getById: getById,
         getByCSSSelector: getByCSSSelector,
         getByURL: getByURL,
@@ -58,4 +58,4 @@
         return template(templateData);
     }
 
-}(HAF, HAF.DOM));
+}(Mettle, Mettle.DOM));

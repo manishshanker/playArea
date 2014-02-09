@@ -1,8 +1,8 @@
-(function (HAF) {
+(function (Mettle) {
     "use strict";
 
-    APP.view.NewsDetail = HAF.View.extend({
+    APP.view.NewsDetail = Mettle.View.extend({
         container: "#newsDetail"
     });
 
-}(HAF));
+}(Mettle));

@@ -1,7 +1,7 @@
-(function (HAF) {
+(function (Mettle) {
     "use strict";
 
-    HAF.dependencyInjector = injectDependencies;
+    Mettle.dependencyInjector = injectDependencies;
 
     var TYPES = {
         "views": "view",
@@ -11,17 +11,17 @@
     };
 
     function injectDependencies(ctx, dependencies) {
-        if (HAF.Messaging && (dependencies instanceof HAF.Messaging)) {
+        if (Mettle.Messaging && (dependencies instanceof Mettle.Messaging)) {
             ctx.messageBus = dependencies;
         }
         if (ctx.injectLocalMessageBus) {
-            ctx.localMessageBus = (dependencies && dependencies.inject && dependencies.inject.localMessageBus) || new HAF.Messaging();
+            ctx.localMessageBus = (dependencies && dependencies.inject && dependencies.inject.localMessageBus) || new Mettle.Messaging();
         }
         var injectedDependencies = (dependencies && dependencies.inject) || (ctx.inject && (isFunction(ctx.inject) ? ctx.inject() : ctx.inject));
 
         injectedDependencies = injectDepUsingShorthand(injectedDependencies);
 
-        HAF.each(injectedDependencies, function (dependency, key) {
+        Mettle.each(injectedDependencies, function (dependency, key) {
             var depType = /^controls$|^templates$|^views$|^services$/.exec(key);
             if (depType) {
                 if (dependency instanceof Array) {
@@ -29,7 +29,7 @@
                 } else if (isFunction(dependency)) {
                     ctx[key] = dependency.call(ctx, ctx);
                 } else {
-                    HAF.each(dependency, function (dep, subSubKey) {
+                    Mettle.each(dependency, function (dep, subSubKey) {
                         ctx[key] = ctx[key] || {};
                         ctx[key][subSubKey] = ctx[key][subSubKey] = {};
                         injectInCtx(ctx[key], subSubKey, getDep(dep, ctx, key));
@@ -42,13 +42,13 @@
     }
 
     function injectFromArray(dependency, ctx, key) {
-        HAF.each(dependency, function (subDependency) {
+        Mettle.each(dependency, function (subDependency) {
             ctx[key] = ctx[key] || {};
             if (isString(subDependency)) {
                 ctx[key][subDependency] = ctx[subDependency] || {};
                 injectInCtx(ctx[key], subDependency, getDependencyInstance(ctx, key, subDependency));
             } else {
-                HAF.each(subDependency, function (dep, subSubKey) {
+                Mettle.each(subDependency, function (dep, subSubKey) {
                     injectInCtx(ctx[key], subSubKey, getDep(dep, ctx, key));
                 });
             }
@@ -65,8 +65,8 @@
 
     function getDependencyInstance(ctx, key, dependency) {
         if (ctx.injector) {
-            HAF.Module.dependency = HAF.Module.dependency || {};
-            var depInjector = HAF.Module.dependency[ctx.injector];
+            Mettle.Module.dependency = Mettle.Module.dependency || {};
+            var depInjector = Mettle.Module.dependency[ctx.injector];
             if (depInjector) {
                 if (depInjector[key][dependency]) {
                     return depInjector[key][dependency](ctx);
@@ -82,24 +82,24 @@
 
     function defaultInjector(ctx, type, dependency) {
         if (type === "templates") {
-            HAF.Module.template = HAF.Module.template || {};
-            if (HAF.Module.template[capitalise(dependency)]) {
-                return new HAF.Module.template[capitalise(dependency)]();
+            Mettle.Module.template = Mettle.Module.template || {};
+            if (Mettle.Module.template[capitalise(dependency)]) {
+                return new Mettle.Module.template[capitalise(dependency)]();
             }
-            if (HAF.Module.template[dependency]) {
-                return HAF.Module.template[dependency];
+            if (Mettle.Module.template[dependency]) {
+                return Mettle.Module.template[dependency];
             }
             if (dependency.indexOf("tmpl!") === 0) {
-                return HAF.TemplateByURL(dependency.substr(5));
+                return Mettle.TemplateByURL(dependency.substr(5));
             }
-            return HAF.TemplateByID("tmpl" + capitalise(dependency));
+            return Mettle.TemplateByID("tmpl" + capitalise(dependency));
         }
         var moduleNameSpace = TYPES[type];
-        HAF.Module[moduleNameSpace] = HAF.Module[moduleNameSpace] || {};
+        Mettle.Module[moduleNameSpace] = Mettle.Module[moduleNameSpace] || {};
         try {
-            return new HAF.Module[moduleNameSpace][capitalise(dependency)](ctx.injectLocalMessageBus ? ctx.localMessageBus : ctx.messageBus);
+            return new Mettle.Module[moduleNameSpace][capitalise(dependency)](ctx.injectLocalMessageBus ? ctx.localMessageBus : ctx.messageBus);
         } catch (e) {
-            HAF.errorLogger(e);
+            Mettle.errorLogger(e);
             throw new Error("Dependency instance creation error: (" + type + "," + dependency + " | " + moduleNameSpace + "." + (capitalise(dependency)) + ")");
         }
     }
@@ -110,7 +110,7 @@
             var parts = injectedDependencies.split(":");
             var classObjectName = parts[1];
             var types = parts[0];
-            HAF.each({
+            Mettle.each({
                 "templates": /T/,
                 "views": /V/,
                 "services": /S/
@@ -132,4 +132,4 @@
         return typeof subDependency === "string";
     }
 
-}(HAF));
+}(Mettle));

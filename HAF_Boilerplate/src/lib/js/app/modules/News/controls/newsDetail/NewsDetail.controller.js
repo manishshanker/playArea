@@ -1,7 +1,7 @@
-(function (HAF) {
+(function (Mettle) {
     "use strict";
 
-    APP.controller.NewsDetail = HAF.Controller.extend({
+    APP.controller.NewsDetail = Mettle.Controller.extend({
         autoWire: true,
         injector: "NewsDetail",
         inject: {
@@ -10,4 +10,4 @@
         }
     });
 
-}(HAF));
+}(Mettle));

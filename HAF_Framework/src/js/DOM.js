@@ -1,23 +1,23 @@
-(function (HAF, $) {
+(function (Mettle, $) {
     "use strict";
 
-    function HAFDOM(selector) {
-        return new HAFDOMElement($(selector));
+    function MettleDOM(selector) {
+        return new MettleDOMElement($(selector));
     }
 
-    HAFDOM.get = function () {
+    MettleDOM.get = function () {
         return $.get.apply(this, arguments);
     };
 
-    HAFDOM.grep = function () {
+    MettleDOM.grep = function () {
         return $.grep.apply(this, arguments);
     };
 
-    var HAFDOMElement = function ($item) {
+    var MettleDOMElement = function ($item) {
         this.$item = $item;
     };
 
-    HAFDOMElement.prototype = {
+    MettleDOMElement.prototype = {
         on: function () {
             this.$item.on.apply(this.$item, arguments);
             return this;
@@ -65,6 +65,6 @@
         }
     };
 
-    HAF.DOM = HAFDOM;
+    Mettle.DOM = MettleDOM;
 
-}(HAF,  (window.Zepto || window.jQuery)));
+}(Mettle,  (window.Zepto || window.jQuery)));

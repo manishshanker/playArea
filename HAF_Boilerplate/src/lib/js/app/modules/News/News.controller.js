@@ -1,7 +1,7 @@
-(function (HAF) {
+(function (Mettle) {
     "use strict";
 
-    APP.controller.News = HAF.Controller.extend({
+    APP.controller.News = Mettle.Controller.extend({
         autoWire: true,
         lastSelectedNewsItem: null,
         inject: {
@@ -32,4 +32,4 @@
         ctx.services.newsDetail.fetch(ctx.services.newsList.lastResult(), newsItemId);
     }
 
-}(HAF));
+}(Mettle));

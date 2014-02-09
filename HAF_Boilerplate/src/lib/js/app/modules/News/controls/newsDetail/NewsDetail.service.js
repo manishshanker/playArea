@@ -1,7 +1,7 @@
-(function (HAF, $) {
+(function (Mettle, $) {
     "use strict";
 
-    APP.service.NewsDetail = HAF.Service.extend({
+    APP.service.NewsDetail = Mettle.Service.extend({
         fetch: function (newsList, selectedItemId, callback) {
             callback = callback || this.updated;
             if (newsList) {
@@ -15,4 +15,4 @@
         }
     });
 
-}(HAF, HAF.DOM));
+}(Mettle, Mettle.DOM));

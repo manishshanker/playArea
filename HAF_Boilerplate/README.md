@@ -1,4 +1,4 @@
-HAF BoilerPlate
+Mettle BoilerPlate
 ===============
 
 INTRODUCTION

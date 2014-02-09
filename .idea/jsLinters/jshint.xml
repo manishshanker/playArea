@@ -63,7 +63,7 @@
     <option passfail="false" />
     <option white="false" />
     <option maxerr="50" />
-    <option predef="HAF,APP,Handlebars,confirm,Class" />
+    <option predef="Mettle,APP,Handlebars,confirm,Class" />
   </component>
 </project>
 
