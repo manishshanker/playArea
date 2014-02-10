@@ -7,7 +7,7 @@
         "test": "test"
     },
     "scripts": {
-        "test": "echo \"Run through Karma\" && exit 1"
+        "test": "karma start test/unit-karma/karma.conf.js --single-run"
     },
     "author": "Manish Shanker",
     "license": "APACHE",
